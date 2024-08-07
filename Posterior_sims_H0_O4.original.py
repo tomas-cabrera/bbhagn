@@ -2,14 +2,11 @@
 
 ###############################################################################
 
-import glob
 import random
-import os.path as pa
 from math import pi
 from multiprocessing import Pool
 
 import astropy.units as u
-import pandas as pd
 import corner
 import emcee
 import healpy as hp
@@ -328,21 +325,6 @@ def cl_around_mode(edg, myprob):
     return peak, edg[bmin], edg[bmax]
 
 
-def get_flattened_skymap(
-    mapdir,
-    gweventname,
-    catdirs={
-        "GWTC2": "all_skymaps",
-        "GWTC2.1": "IGWN-GWTC2p1-v2-PESkyMaps",
-        "GWTC3": "skymaps",
-    },
-):
-    for cat, catdir in catdirs.items():
-        globstr = f"{mapdir}/{catdir}/*{gweventname}*.fits"
-        mappaths = glob.glob(globstr)
-        print(mappaths)
-
-
 ###############################################################################
 
 ##############################
@@ -354,40 +336,35 @@ lamb = 0.2  # da_array=[0.2,0.9]
 N_GW_followups = 50  # [50,10]
 # lamba_array=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.]
 # N_GW_followups=[500,200,100,100,100,100,100,50,50,50,50]
+events_file = "pareto_id_Bs_top3percent.dat"
+event_name = "O4_top3"
 H0 = 70.0
 omegam = 0.3
-mapdir = "/hildafs/projects/phy220048p/share/skymaps"
+mapdir = "/data/des70.b/data/palmese/bayestar-sims/HLVK_O4/bbh/mass_gt_50_flatten_fits/"
 steps = 5000
 z_min_b = 0.01  # Minimum z for background events
 z_max_b = 1.0  # Maximum z for background events
 mpi = False  # Compute in parallel or not
 lam_arr = np.linspace(0, 1.0, num=100)
+events_data = np.genfromtxt(mapdir + events_file)
 
 cosmo = FlatLambdaCDM(H0=H0, Om0=omegam)
-
-# Get GW catalog information
-df_gwbright = pd.read_csv(
-    f"{pa.dirname(__file__)}/data/graham23_table1.plus.dat", sep="\s+"
-)
-
-# Get GW-flare association information
-df_assoc = pd.read_csv(
-    f"{pa.dirname(__file__)}/data/graham23_table3.plus.dat", sep="\s+"
-)
-
-# Get bright? GW information
-df_gwbright = pd.read_csv(
-    f"{pa.dirname(__file__)}/data/graham23_table4.plus.dat", sep="\s+"
-)
-
-# Get background flare information
-df_flareparams = pd.read_csv(
-    f"{pa.dirname(__file__)}/data/graham23_table5.plus.dat", sep="\s+"
-)
+out_name = event_name
 
 ##############################
 ###         Science        ###
 ##############################
+
+# Randomly assign 0 or 1 signal events to each followup (frac0:frac1::lamb:(1-lamb))
+randnum = np.random.uniform(0, 1, size=N_GW_followups)
+S_cands = np.ones(N_GW_followups, dtype=int)
+mask = randnum > lamb
+S_cands[mask] = 0
+
+# Some kind of pareto calculation
+sim_pareto = np.genfromtxt(mapdir + events_file)
+simid = sim_pareto[:, 0]
+Bn = sim_pareto[:, 1]
 
 maxdist = cosmo.luminosity_distance(z_max_b)
 ds_arr_norm = np.linspace(0, maxdist.value, num=1000)
@@ -396,14 +373,14 @@ ds_arr_norm = np.linspace(0, maxdist.value, num=1000)
 cand_hpixs = []
 cand_zs = []
 pbs, distnorms, distmus, distsigmas = [], [], [], []
-for i in range(df_gwbright.shape[0]):
+for i in range(N_GW_followups):
 
     ##############################
     ###  Signals (BBH flares)  ###
     ##############################
 
     # Load skymap
-    hs = get_flattened_skymap(mapdir, df_gwbright[i]["gweventname"])
+    hs = fits.open(mapdir + str(int(simid[i])) + ".fits.fits.gz")[1]
 
     # Get data from skymap
     pb = hs.data["PROB"]
