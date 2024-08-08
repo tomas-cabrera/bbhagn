@@ -9,24 +9,26 @@ from math import pi
 from multiprocessing import Pool
 
 import astropy.units as u
+import astropy_healpix as ah
 import corner
 import emcee
 import healpy as hp
-from astropy.table import Table
-import astropy_healpix as ah
+import ligo.skymap.moc as lsm_moc
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from astropy.cosmology import FlatLambdaCDM, z_at_value
 from astropy.io import fits
+from astropy.table import Table
 from joblib import Parallel, delayed
+from ligo.skymap.io import read_sky_map
+from ligo.skymap.postprocess.crossmatch import crossmatch
 from scipy import interpolate, optimize
 from scipy.integrate import simps
 from scipy.interpolate import interp1d
 from scipy.optimize import curve_fit
 from scipy.stats import norm
-from ligo.skymap.io import read_sky_map
-import ligo.skymap.moc as lsm_moc
+from tqdm import tqdm
 
 ###############################################################################
 
@@ -146,7 +148,7 @@ def lnprior(theta):
     return -np.inf
 
 
-def lnlike(lam_li, s_arr, b_arr, f):
+def lnlike(lam_li, s_arr, b_arr, frac_det):
     """! Calculates the log likelihood on the given lambda.
     c.f. eq. 7 in the paper.
 
@@ -157,7 +159,7 @@ def lnlike(lam_li, s_arr, b_arr, f):
     @param  f           Fraction of detected to real flares
 
     """
-    return np.sum(np.log(lam_li * s_arr + b_arr)) - f * lam_li
+    return np.sum(np.log(lam_li * s_arr + b_arr)) - frac_det * lam_li
 
 
 def lnprob(
@@ -168,8 +170,10 @@ def lnprob(
     distnorm,
     distmu,
     distsigma,
-    f,
+    frac_det,
     N_GW_followups,
+    B_expected_n,
+    n_idx_sort_cut,
 ):
     """! Calculates the log posterior probability, given some signal and background.
 
@@ -259,15 +263,16 @@ def lnprob(
         # normaliz = np.trapz(ds_arr_norm**2,ds_arr_norm)
         # b_arr = followup_ds**2/normaliz/len(idx_sort_cut)*B_expected_n
 
-        normaliz = np.trapz(
-            pb_Vunif, zs_arr
-        )  # pb_Vunit isn't in the function's namespace, along with some things below
+        pb_Vunif = (
+            thiscosmo.comoving_distance(zs_arr).value ** 2 / thiscosmo.H(zs_arr).value
+        )
+        normaliz = np.trapz(pb_Vunif, zs_arr)
         b_arr = (
             thiscosmo.comoving_distance(followup_zs).value ** 2
             / thiscosmo.H(followup_zs).value
             / normaliz
-            / len(idx_sort_cut)
-            * B_expected_n
+            / n_idx_sort_cut[i]
+            * B_expected_n[i]
         )
 
         ####################
@@ -276,7 +281,7 @@ def lnprob(
         # If there are any candidates, calculate the log likelihood
         if (s_arr.shape[0]) > 0:
             # lnlike_arr.append(lnlike(s_arr,b_arr,lam_arr,f))
-            lnlike_arr[i] = lnlike(lam_po, s_arr.value, b_arr, f)
+            lnlike_arr[i] = lnlike(lam_po, s_arr.value, b_arr, frac_det)
 
         else:
             # I think we need to do something different here, maybe s_arr needs to be set to 0
@@ -332,7 +337,7 @@ def cl_around_mode(edg, myprob):
     return peak, edg[bmin], edg[bmax]
 
 
-def get_flattened_skymap(
+def get_gwtc_skymap(
     mapdir,
     gweventname,
     catdirs={
@@ -475,6 +480,14 @@ def get_flattened_skymap(
         # Load skymap
         hs = read_sky_map(mappaths[0], moc=True)
 
+    return hs
+
+
+def get_flattened_skymap(mapdir, gweventname):
+
+    # Get skymap
+    hs = get_gwtc_skymap(mapdir, gweventname)
+
     # Flatten skymap
     hs_flat = Table(lsm_moc.rasterize(hs))
     hs_flat.meta = hs.meta
@@ -493,7 +506,7 @@ def get_flattened_skymap(
 ###       Constants        ###
 ##############################
 
-f = 1.0  # f=1 in the limit where we detect all AGNs flares
+frac_det = 1.0  # frac_det=1 in the limit where we detect all AGNs flares
 lamb = 0.2  # da_array=[0.2,0.9]
 N_GW_followups = 50  # [50,10]
 # lamba_array=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.]
@@ -504,7 +517,7 @@ mapdir = "/hildafs/projects/phy220048p/share/skymaps"
 steps = 5000
 z_min_b = 0.01  # Minimum z for background events
 z_max_b = 1.0  # Maximum z for background events
-mpi = False  # Compute in parallel or not
+nproc = 1  # Compute in parallel or not
 lam_arr = np.linspace(0, 1.0, num=100)
 
 cosmo = FlatLambdaCDM(H0=H0, Om0=omegam)
@@ -516,6 +529,23 @@ df_gw = pd.read_csv(f"{pa.dirname(__file__)}/data/graham23_table1.plus.dat", sep
 df_assoc = pd.read_csv(
     f"{pa.dirname(__file__)}/data/graham23_table3.plus.dat", sep="\s+"
 )
+
+# Extract ra, dec from flare names
+flareras = []
+flaredecs = []
+for f in df_assoc["flarename"]:
+    # RA
+    rastr = f[1:10]
+    ra = float(rastr[0:2]) + float(rastr[2:4]) / 60.0 + float(rastr[4:]) / 3600.0
+    ra *= 360 / 24  # Convert to degrees
+    flareras.append(ra)
+
+    # Dec
+    decstr = f[10:]
+    dec = float(decstr[0:3]) + float(decstr[3:5]) / 60.0 + float(decstr[5:]) / 3600.0
+    flaredecs.append(dec)
+df_assoc["flare_ra"] = flareras
+df_assoc["flare_dec"] = flaredecs
 
 # Get bright? GW information
 df_gwbright = pd.read_csv(
@@ -538,8 +568,9 @@ ds_arr_norm = np.linspace(0, maxdist.value, num=1000)
 cand_hpixs = []
 cand_zs = []
 pbs, distnorms, distmus, distsigmas = [], [], [], []
-for i in df_gw.index:
-
+B_expected_n = []
+n_idx_sort_cut = []
+for i in tqdm(df_gw.index):
     ##############################
     ###  Signals (BBH flares)  ###
     ##############################
@@ -547,11 +578,16 @@ for i in df_gw.index:
     # Load skymap
     hs_flat = get_flattened_skymap(mapdir, df_gw["gweventname"][i])
 
+    # Get eventname, strip asterisk if needed
+    gweventname = df_gw["gweventname"][i]
+    if gweventname.endswith("*"):
+        gweventname = gweventname[:-1]
+
     # Get data from skymap
-    pb = hs_flat["PROB"]
-    distnorm = hs_flat["DISTNORM"]
-    distmu = hs_flat["DISTMU"]
-    distsigma = hs_flat["DISTSIGMA"]
+    pb = np.array(hs_flat["PROB"])
+    distnorm = np.array(hs_flat["DISTNORM"])
+    distmu = np.array(hs_flat["DISTMU"])
+    distsigma = np.array(hs_flat["DISTSIGMA"])
     NSIDE = ah.npix_to_nside(len(hs_flat))
 
     # Calculate <pb_frac> credible region; outputs healpix indices that compose region
@@ -568,53 +604,28 @@ for i in df_gw.index:
         id = id + 1
     # Cut indices to <pb_frac> credible region
     idx_sort_cut = idx_sort_up[:id]
+    n_idx_sort_cut.append(len(idx_sort_cut))
 
-    # Draw a random HEALpix out of the <pb_frac> region for each of the #=S_cands[i] signals in a followup,
-    #   weighting by their probabilities
-    s_hpixs = np.random.choice(
-        idx_sort_cut, p=pb[idx_sort_cut] / pb[idx_sort_cut].sum(), size=S_cands[i]
-    )
-    # Given the drawn HEALPixes, draw a random redshift for each candidate
-    s_zs = []
-    for j in range(S_cands[i]):
-        # Get the LIGO/Virgo posterior probability for each of the test distances
-        ln_los = gauss(distmu[s_hpixs[j]], distsigma[s_hpixs[j]], ds_arr_norm)
-        # Weight the probability by the square of the distance (assumes constant density of events)
-        post_los = ln_los * ds_arr_norm**2
-        # Draw a distance from the test array, weighting by the calculated probability
-        s_ds = np.random.choice(ds_arr_norm, p=post_los / post_los.sum())
-        # Transform to redshift and append to output array
-        s_zs.append(
-            z_at_value(cosmo.luminosity_distance, s_ds * u.Mpc, zmin=0.00, zmax=5.0)
+    # Get flares for this followup
+    assoc_mask = df_assoc["gweventname"] == gweventname
+    df_assoc_event = df_assoc[assoc_mask]
+
+    # Get hpxs for the flares
+    hpixs = np.array(
+        ah.lonlat_to_healpix(
+            df_assoc_event["flare_ra"].values * u.deg,
+            df_assoc_event["flare_dec"].values * u.deg,
+            NSIDE,
+            order="nested",
         )
-    s_zs = np.array(s_zs)
+    )
 
-    ##############################
-    ### Background AGN flares  ###
-    ##############################
-
-    # Draw a number of background AGN flare candidates (Poisson distribution)
-    B_expected_n = Bn[i]
-    B_cands = np.random.poisson(Bn[i])
-    # print("Background events: ",B_cands)
-    # Sample healpixes for background flares (uniform probability over 90% cred.reg.)
-    b_hpixs = np.random.choice(idx_sort_cut, size=B_cands)
-    # Sample redshifts for background flares
-    # Let's assume they are just uniform in comoving volume between z_min and z_max
-    zs_arr = np.linspace(z_min_b, z_max_b, num=1000)
-    # Define a probability that is uniform in comoving volume
-    # in redshift that is ~D_comoving^2/H
-    pb_Vunif = cosmo.comoving_distance(zs_arr).value ** 2 / cosmo.H(zs_arr).value
-    b_zs = np.random.choice(zs_arr, p=pb_Vunif / pb_Vunif.sum(), size=B_cands)
-    # print(s_zs,b_zs)
-
-    ##############################
-    ###       All flares       ###
-    ##############################
+    # Get redshifts for the flares
+    zs = df_assoc_event["Redshift"].values
 
     # Compile positions and z for all candidates in this follow up
-    cand_hpixs.append(np.concatenate((s_hpixs, b_hpixs)))
-    cand_zs.append(np.concatenate((s_zs, b_zs)))
+    cand_hpixs.append(np.array(hpixs))
+    cand_zs.append(np.array(zs))
     pbs.append(pb)
     distnorms.append(distnorm)
     distmus.append(distmu)
@@ -625,6 +636,19 @@ for i in df_gw.index:
     # for l in range(ncands):
     #    cand_ds[l]=cosmo.luminosity_distance(cand_zs[l]).value
 
+    # Skip volume calculation if no candidates
+    if len(hpixs) == 0:
+        B_expected_n.append(np.nan)
+        continue
+
+    # Load skymap, calculate expected number of background flares
+    hs = get_gwtc_skymap(mapdir, df_gw["gweventname"][i])
+    vol90 = crossmatch(hs, contours=[0.9]).contour_vols[0]
+    n_bg = vol90 * 10**-4.75 * 1e-4
+    B_expected_n.append(n_bg)
+    del hs
+
+
 ##############################
 ###          MCMC          ###
 ##############################
@@ -634,8 +658,8 @@ for i in df_gw.index:
 pos = [lamb, H0] + 1e-4 * np.random.randn(32, 2)
 nwalkers, ndim = pos.shape
 # Run the MCMC, in parallel or serial
-if mpi:
-    with Pool() as pool:
+if nproc != 1:
+    with Pool(nproc) as pool:
         # Initialize sampler + run MCMC
         sampler = emcee.EnsembleSampler(
             nwalkers,
@@ -645,11 +669,13 @@ if mpi:
                 cand_hpixs,
                 cand_zs,
                 pbs,
-                distnorm,
-                distmu,
-                distsigma,
-                f,
+                distnorms,
+                distmus,
+                distsigmas,
+                frac_det,
                 N_GW_followups,
+                B_expected_n,
+                n_idx_sort_cut,
             ),
             pool=pool,
         )
@@ -667,8 +693,10 @@ else:
             distnorms,
             distmus,
             distsigmas,
-            f,
+            frac_det,
             N_GW_followups,
+            B_expected_n,
+            n_idx_sort_cut,
         ),
     )
     sampler.run_mcmc(pos, steps, progress=True)
@@ -676,6 +704,9 @@ else:
 # Reduce and retreive MCMC samples
 flat_samples = sampler.get_chain(discard=100, thin=15, flat=True)
 print(flat_samples.shape)
+
+# Save data
+np.savetxt("O4_samples_graham23.dat", flat_samples)
 
 # Make+save corner plot
 labels = [r"$\lambda$", r"$H_0$ [km/s/Mpc]"]
@@ -687,7 +718,4 @@ fig = corner.corner(
     show_titles=True,
     title_kwargs={"fontsize": 12},
 )
-fig.savefig("corner_O4_lam0.2_50.png", dpi=200)
-
-# Save data
-np.savetxt("out/O4_samples_lam0.2_50.dat", flat_samples)
+fig.savefig("corner_O4_graham23.png", dpi=200)
