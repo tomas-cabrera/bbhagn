@@ -5,6 +5,7 @@
 import glob
 import os.path as pa
 import random
+import sys
 from math import pi
 from multiprocessing import Pool
 
@@ -29,6 +30,12 @@ from scipy.interpolate import interp1d
 from scipy.optimize import curve_fit
 from scipy.stats import norm
 from tqdm import tqdm
+
+# Local imports
+sys.path.append(pa.dirname(pa.dirname(__file__)))
+from utils.paths import DATADIR, PROJDIR
+import utils.structurefunction as sf
+import utils.graham23_tables as g23
 
 ###############################################################################
 
@@ -519,43 +526,9 @@ z_min_b = 0.01  # Minimum z for background events
 z_max_b = 1.0  # Maximum z for background events
 nproc = 1  # Compute in parallel or not
 lam_arr = np.linspace(0, 1.0, num=100)
+dt_followup = 200
 
 cosmo = FlatLambdaCDM(H0=H0, Om0=omegam)
-
-# Get GW catalog information
-df_gw = pd.read_csv(f"{pa.dirname(__file__)}/data/graham23_table1.plus.dat", sep="\s+")
-
-# Get GW-flare association information
-df_assoc = pd.read_csv(
-    f"{pa.dirname(__file__)}/data/graham23_table3.plus.dat", sep="\s+"
-)
-
-# Extract ra, dec from flare names
-flareras = []
-flaredecs = []
-for f in df_assoc["flarename"]:
-    # RA
-    rastr = f[1:10]
-    ra = float(rastr[0:2]) + float(rastr[2:4]) / 60.0 + float(rastr[4:]) / 3600.0
-    ra *= 360 / 24  # Convert to degrees
-    flareras.append(ra)
-
-    # Dec
-    decstr = f[10:]
-    dec = float(decstr[0:3]) + float(decstr[3:5]) / 60.0 + float(decstr[5:]) / 3600.0
-    flaredecs.append(dec)
-df_assoc["flare_ra"] = flareras
-df_assoc["flare_dec"] = flaredecs
-
-# Get bright? GW information
-df_gwbright = pd.read_csv(
-    f"{pa.dirname(__file__)}/data/graham23_table4.plus.dat", sep="\s+"
-)
-
-# Get background flare information
-df_flareparams = pd.read_csv(
-    f"{pa.dirname(__file__)}/data/graham23_table5.plus.dat", sep="\s+"
-)
 
 ##############################
 ###         Science        ###
@@ -570,16 +543,16 @@ cand_zs = []
 pbs, distnorms, distmus, distsigmas = [], [], [], []
 B_expected_n = []
 n_idx_sort_cut = []
-for i in tqdm(df_gw.index):
+for i in tqdm(g23.DF_GW.index):
     ##############################
     ###  Signals (BBH flares)  ###
     ##############################
 
     # Load skymap
-    hs_flat = get_flattened_skymap(mapdir, df_gw["gweventname"][i])
+    hs_flat = get_flattened_skymap(mapdir, g23.DF_GW["gweventname"][i])
 
     # Get eventname, strip asterisk if needed
-    gweventname = df_gw["gweventname"][i]
+    gweventname = g23.DF_GW["gweventname"][i]
     if gweventname.endswith("*"):
         gweventname = gweventname[:-1]
 
@@ -607,8 +580,8 @@ for i in tqdm(df_gw.index):
     n_idx_sort_cut.append(len(idx_sort_cut))
 
     # Get flares for this followup
-    assoc_mask = df_assoc["gweventname"] == gweventname
-    df_assoc_event = df_assoc[assoc_mask]
+    assoc_mask = g23.DF_ASSOC["gweventname"] == gweventname
+    df_assoc_event = g23.DF_ASSOC[assoc_mask]
 
     # Get hpxs for the flares
     hpixs = np.array(
@@ -638,13 +611,57 @@ for i in tqdm(df_gw.index):
 
     # Skip volume calculation if no candidates
     if len(hpixs) == 0:
-        B_expected_n.append(np.nan)
+        B_expected_n.append([np.nan] * df_assoc_event.shape[0])
         continue
 
+    ## Set AGNi/Mpc^3
+    # Constant physical density
+    agn_per_mpc3 = 10**-4.75
+
+    ### Set flares/AGN rate
+    ## Constant
+    flares_per_agn = np.array([1e-4] * df_assoc_event.shape[0])
+    ## Kimura+20 structure function
+    # Load fit parameters
+    df_fitparams = pd.read_csv(f"{PROJDIR}/fit_lightcurves/fitparams.csv")
+    # Iterate over flares
+    flares_per_agn = []
+    for fn in df_assoc_event["flarename"]:
+        # Get fitparams
+        df_fitparams_flare = df_fitparams[df_fitparams["flarename"] == fn]
+
+        # Iterate over filters
+        rates = []
+        print(fn)
+        for f in df_fitparams_flare["filter"]:
+            # Get row
+            params = df_fitparams_flare[df_fitparams_flare["filter"] == f]
+
+            # Calculate structure function prob
+            # 3σ = 3 * t_rise is a conservative estimate for the Δt of the Δm
+            delta_t = 3 * params["t_rise"].values[0]
+            prob = sf.calc_kimura20_sf_prob(f, delta_t, -params["f_peak"])
+
+            # Scale to follow-up window
+            rate = prob * dt_followup / delta_t
+
+            # Append to list
+            # If g-band:
+            if f == "g":
+                rates.append(rate)
+
+            print(f, rate)
+
+        # Save maximum rate
+        flares_per_agn.append(max(rates))
+
+    # Cast as array
+    flares_per_agn = np.array(flares_per_agn)
+
     # Load skymap, calculate expected number of background flares
-    hs = get_gwtc_skymap(mapdir, df_gw["gweventname"][i])
+    hs = get_gwtc_skymap(mapdir, g23.DF_GW["gweventname"][i])
     vol90 = crossmatch(hs, contours=[0.9]).contour_vols[0]
-    n_bg = vol90 * 10**-4.75 * 1e-4
+    n_bg = vol90 * agn_per_mpc3 * flares_per_agn
     B_expected_n.append(n_bg)
     del hs
 

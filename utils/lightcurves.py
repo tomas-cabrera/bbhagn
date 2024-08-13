@@ -3,8 +3,8 @@ import os
 import os.path as pa
 
 import numpy as np
-from astropy.io.votable import parse
 import pandas as pd
+from astropy.io.votable import parse
 
 from .paths import DATADIR
 

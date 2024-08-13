@@ -6,6 +6,7 @@
 #SBATCH -o %x.log
 #SBATCH -A phy220048p
 #SBATCH -p RITA
+#SBATCH --mail-type=ALL
 
 ### SETUP ###
 
@@ -25,7 +26,7 @@ conda deactivate
 condaDIR="/hildafs/projects/phy200025p/tcabrera/.conda/envs/research"
 conda activate $condaDIR
 
-scriptPATH="/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_H0_O4.py"
+scriptPATH="/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_H0_O4/Posterior_sims_H0_O4.py"
 
 ### RUN JOB ###
 

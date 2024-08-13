@@ -5,13 +5,13 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib.ticker import MultipleLocator
 from scipy.optimize import curve_fit
 from tqdm import tqdm
 
 # Local imports
 sys.path.append(pa.dirname(pa.dirname(__file__)))
 from utils import graham23_tables as g23
-from utils import paths
 from utils.flaremorphology import graham23_flare_model
 from utils.lightcurves import AlerceLightcurve
 
@@ -245,6 +245,8 @@ for flarename in tqdm(np.unique(g23.DF_ASSOC["flarename"])):
     plt.ylim(ylim)
     if plot_data.startswith("mag"):
         plt.gca().invert_yaxis()
+    plt.gca().xaxis.set_major_locator(MultipleLocator(250))
+    plt.gca().xaxis.set_minor_locator(MultipleLocator(50))
     plt.legend()
     plt.savefig(f"{pa.dirname(__file__)}/{flarename}.png")
     plt.close()

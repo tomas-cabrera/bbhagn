@@ -1,5 +1,7 @@
 import numpy as np
 
+from .paths import DATADIR
+
 
 def _graham23_flare_rise(t, t_peak, t_rise, f_peak, f_base):
     """Model for flare rise
