@@ -1,0 +1,15 @@
+Table 5 
+Parameter Values for Determining the Mean Number of Associations for an Event
+
+
+Parameter	Value	Uncertainty	
+${p}_{\mathrm{flare}}$	0.051	cdots	
+f _prof	0.006	0.017	
+f _FP	0.288	0.277	
+f _WISE	0.973	0.111	
+f _K	0.962	0.154	
+f _CP	0.026	0.190	
+			
+Total	2.12 x 10^-6	7.46 x 10^-6	
+Note. The value and uncertainty for each parameter are the mean fraction of events that pass the associated filter and its standard deviation from 1000 simulations of the full O3 LIGO/Virgo run.
+
