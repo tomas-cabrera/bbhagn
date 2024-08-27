@@ -18,14 +18,17 @@ import ligo.skymap.moc as lsm_moc
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import yaml
 from astropy.cosmology import FlatLambdaCDM, z_at_value
 from astropy.io import fits
 from astropy.table import Table
 from joblib import Parallel, delayed
 from ligo.skymap.io import read_sky_map
 from ligo.skymap.postprocess.crossmatch import crossmatch
+from myagn.flares import models as myflaremodels
+from numpy.polynomial.polynomial import Polynomial
 from scipy import interpolate, optimize
-from scipy.integrate import simps
+from scipy.integrate import simpson
 from scipy.interpolate import interp1d
 from scipy.optimize import curve_fit
 from scipy.stats import norm
@@ -33,9 +36,8 @@ from tqdm import tqdm
 
 # Local imports
 sys.path.append(pa.dirname(pa.dirname(__file__)))
-from utils.paths import DATADIR, PROJDIR
-import utils.structurefunction as sf
 import utils.graham23_tables as g23
+from utils.paths import DATADIR, PROJDIR
 
 ###############################################################################
 
@@ -169,6 +171,76 @@ def lnlike(lam_li, s_arr, b_arr, frac_det):
     return np.sum(np.log(lam_li * s_arr + b_arr)) - frac_det * lam_li
 
 
+def calc_s_arr(
+    pb,
+    pb_frac,
+    distnorm,
+    distmu,
+    distsigma,
+    z_flares,
+    cosmo,
+    z_grid,
+):
+    ncands = z_flares.shape[0]
+    dL_flares = cosmo.luminosity_distance(z_flares)
+    # ddL/dz, to transform dprob/dd_L to dprob/dz
+    jacobian = (
+        cosmo.comoving_distance(z_flares).value
+        + (1.0 + z_flares) / cosmo.H(z_flares).value
+    )
+    # Renormalize candidate posteriors along los to same z range as the background
+    # (the original skymaps normalize the posteriors over z=[0,inf))
+    new_normaliz = np.ones(ncands)
+    ds_arr = cosmo.luminosity_distance(z_grid).value
+    jacobian_arr = (
+        cosmo.comoving_distance(z_grid).value + (1.0 + z_grid) / cosmo.H(z_grid).value
+    )
+    for l in range(ncands):
+        this_post = (
+            gauss(
+                distmu[l],
+                distsigma[l],
+                ds_arr,
+            )
+            * ds_arr**2
+            * jacobian_arr
+        )
+        # Calculate normalization constant by ~integrating posterior
+        new_normaliz[l] = distnorm[l] * np.trapezoid(this_post, z_grid)
+    # Calculate signal probabilities, multiplying HEALPix and redshift probabilities
+    s_arr = (
+        pb  # HEALPix probability
+        / pb_frac  # This isn't in the function's namespace; needed to normalize over credible region
+        * distnorm  # redshift probability
+        * norm(distmu, distsigma).pdf(dL_flares)
+        * dL_flares**2
+        / new_normaliz
+        * jacobian
+    )
+    return s_arr
+
+
+def calc_b_arr(
+    z_flares,
+    f_cover,
+    n_idx_sort_cut,
+    B_expected_n,
+    cosmo,
+    z_grid,
+):
+    pb_Vunif = cosmo.comoving_distance(z_grid).value ** 2 / cosmo.H(z_grid).value
+    normaliz = np.trapezoid(pb_Vunif, z_grid)
+    b_arr = (
+        cosmo.comoving_distance(z_flares).value ** 2
+        / cosmo.H(z_flares).value
+        / normaliz
+        / n_idx_sort_cut
+        * B_expected_n
+        * f_cover
+    )
+    return b_arr
+
+
 def lnprob(
     theta,
     cand_hpixs_arr,
@@ -177,10 +249,14 @@ def lnprob(
     distnorm,
     distmu,
     distsigma,
-    frac_det,
     N_GW_followups,
-    B_expected_n,
+    flares_per_agn,
+    n_agn_coeffs,
+    f_covers,
     n_idx_sort_cut,
+    z_min_b,
+    z_max_b,
+    frac_det,
 ):
     """! Calculates the log posterior probability, given some signal and background.
 
@@ -216,70 +292,52 @@ def lnprob(
     zs_arr = np.linspace(z_min_b, z_max_b, num=1000)
     lnlike_arr = np.zeros(N_GW_followups)
     for i in range(N_GW_followups):
-        ####################
-        ###    Signal    ###
-        ####################
         # Get/calculate candidate coordinates, number of candidates for this followup
         followup_hpixs = cand_hpixs_arr[i]
         followup_zs = cand_zs_arr[i]
-        followup_ds = thiscosmo.luminosity_distance(followup_zs)
         ncands = followup_zs.shape[0]
-        # ddL/dz, to transform dprob/dd_L to dprob/dz
-        jacobian = (
-            thiscosmo.comoving_distance(followup_zs).value
-            + (1.0 + followup_zs) / thiscosmo.H(followup_zs).value
-        )
-        # Renormalize candidate posteriors along los to same z range as the background
-        # (the original skymaps normalize the posteriors over z=[0,inf))
-        new_normaliz = np.ones(ncands)
-        ds_arr = thiscosmo.luminosity_distance(zs_arr).value
-        jacobian_arr = (
-            thiscosmo.comoving_distance(zs_arr).value
-            + (1.0 + zs_arr) / thiscosmo.H(zs_arr).value
-        )
-        for l in range(ncands):
-            this_post = (
-                gauss(
-                    distmu[i][followup_hpixs[l]],
-                    distsigma[i][followup_hpixs[l]],
-                    ds_arr,
-                )
-                * ds_arr**2
-                * jacobian_arr
-            )
-            # Calculate normalization constant by ~integrating posterior
-            new_normaliz[l] = distnorm[i][followup_hpixs[l]] * np.trapz(
-                this_post, zs_arr
-            )
-        # Calculate signal probabilities, multiplying HEALPix and redshift probabilities
-        s_arr = (
-            pb[i][followup_hpixs]  # HEALPix probability
-            / pb_frac  # This isn't in the function's namespace; needed to normalize over credible region
-            * distnorm[i][followup_hpixs]  # redshift probability
-            * norm(distmu[i][followup_hpixs], distsigma[i][followup_hpixs]).pdf(
-                followup_ds
-            )
-            * followup_ds**2
-            / new_normaliz
-            * jacobian
+
+        # Skip if no candidates
+        if ncands == 0:
+            lnlike_arr[i] = -lam_po
+            continue
+
+        ####################
+        ###    Signal    ###
+        ####################
+
+        # Calculate GW counterpart probabilities
+        s_arr = calc_s_arr(
+            pb[i],
+            pb_frac,
+            distnorm[i],
+            distmu[i],
+            distsigma[i],
+            followup_zs,
+            thiscosmo,
+            zs_arr,
         )
 
         ####################
         ###  Background  ###
         ####################
-        # normaliz = np.trapz(ds_arr_norm**2,ds_arr_norm)
+        # normaliz = np.trapezoid(ds_arr_norm**2,ds_arr_norm)
         # b_arr = followup_ds**2/normaliz/len(idx_sort_cut)*B_expected_n
 
-        pb_Vunif = (
-            thiscosmo.comoving_distance(zs_arr).value ** 2 / thiscosmo.H(zs_arr).value
-        )
-        normaliz = np.trapz(pb_Vunif, zs_arr)
-        b_arr = (
-            thiscosmo.comoving_distance(followup_zs).value ** 2
-            / thiscosmo.H(followup_zs).value
-            / normaliz
-            / n_idx_sort_cut[i]
-            * B_expected_n[i]
+        # Use coeffs to interpolate number of AGN in volume
+        n_agn = np.polynomial.Polynomial(n_agn_coeffs[i])(H0_po)
+
+        # Multiply by flare rate to get expected number of background flares
+        B_expected_n = n_agn * flares_per_agn[i]
+
+        # Calculate background probabilities
+        b_arr = calc_b_arr(
+            followup_zs,
+            f_covers[i],
+            n_idx_sort_cut[i],
+            B_expected_n,
+            thiscosmo,
+            zs_arr,
         )
 
         ####################
@@ -298,7 +356,7 @@ def lnprob(
     lnlikesum = np.sum(lnlike_arr, axis=0)
     # fixer=lnlikesum[0]
     # like=np.exp(lnlikesum-fixer)
-    # normalization=np.trapz(like,lam_arr)
+    # normalization=np.trapezoid(like,lam_arr)
     return lp + lnlikesum
 
 
@@ -338,7 +396,7 @@ def cl_around_mode(edg, myprob):
             bmin = bmin - 1
             bmax = bmax
             bins.append(bmin - 1)
-        integr = simps(myprob[bmin:bmax], edg[bmin:bmax])
+        integr = simpson(myprob[bmin:bmax], edg[bmin:bmax])
     print(integr, edg[bmin], edg[bmax])
 
     return peak, edg[bmin], edg[bmax]
@@ -509,230 +567,258 @@ def get_flattened_skymap(mapdir, gweventname):
 
 ###############################################################################
 
-##############################
-###       Constants        ###
-##############################
+if __name__ == "__main__":
 
-frac_det = 1.0  # frac_det=1 in the limit where we detect all AGNs flares
-lamb = 0.2  # da_array=[0.2,0.9]
-N_GW_followups = 50  # [50,10]
-# lamba_array=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.]
-# N_GW_followups=[500,200,100,100,100,100,100,50,50,50,50]
-H0 = 70.0
-omegam = 0.3
-mapdir = "/hildafs/projects/phy220048p/share/skymaps"
-steps = 5000
-z_min_b = 0.01  # Minimum z for background events
-z_max_b = 1.0  # Maximum z for background events
-nproc = 1  # Compute in parallel or not
-lam_arr = np.linspace(0, 1.0, num=100)
-dt_followup = 200
-
-cosmo = FlatLambdaCDM(H0=H0, Om0=omegam)
-
-##############################
-###         Science        ###
-##############################
-
-maxdist = cosmo.luminosity_distance(z_max_b)
-ds_arr_norm = np.linspace(0, maxdist.value, num=1000)
-
-# Iterate over followups
-cand_hpixs = []
-cand_zs = []
-pbs, distnorms, distmus, distsigmas = [], [], [], []
-B_expected_n = []
-n_idx_sort_cut = []
-for i in tqdm(g23.DF_GW.index):
     ##############################
-    ###  Signals (BBH flares)  ###
+    ###       Constants        ###
     ##############################
 
-    # Load skymap
-    hs_flat = get_flattened_skymap(mapdir, g23.DF_GW["gweventname"][i])
+    # Load yaml file
+    config_file = sys.argv[
+        1
+    ]  # "/hildafs/home/tcabrera/HIPAL/bbhagn/bbhagn/config.yaml"
+    config_dir = pa.dirname(config_file)
+    config = yaml.safe_load(open(config_file))
 
-    # Get eventname, strip asterisk if needed
-    gweventname = g23.DF_GW["gweventname"][i]
-    if gweventname.endswith("*"):
-        gweventname = gweventname[:-1]
+    # Define constants
+    N_GW_followups = g23.DF_GW.shape[0]  # [50,10]
+    mapdir = "/hildafs/projects/phy220048p/share/skymaps"
+    lam_arr = np.linspace(0, 1.0, num=100)
 
-    # Get data from skymap
-    pb = np.array(hs_flat["PROB"])
-    distnorm = np.array(hs_flat["DISTNORM"])
-    distmu = np.array(hs_flat["DISTMU"])
-    distsigma = np.array(hs_flat["DISTSIGMA"])
-    NSIDE = ah.npix_to_nside(len(hs_flat))
-
-    # Calculate <pb_frac> credible region; outputs healpix indices that compose region
-    pb_frac = 0.90
-    # Make idx_sort_up (array of pb indices, from highest to lowest pb)
-    idx_sort = np.argsort(pb)
-    idx_sort_up = list(reversed(idx_sort))
-    # Add pbs until pb_frac is reached
-    sum = 0.0
-    id = 0
-    while sum < pb_frac:
-        this_idx = idx_sort_up[id]
-        sum = sum + pb[this_idx]
-        id = id + 1
-    # Cut indices to <pb_frac> credible region
-    idx_sort_cut = idx_sort_up[:id]
-    n_idx_sort_cut.append(len(idx_sort_cut))
-
-    # Get flares for this followup
-    assoc_mask = g23.DF_ASSOC["gweventname"] == gweventname
-    df_assoc_event = g23.DF_ASSOC[assoc_mask]
-
-    # Get hpxs for the flares
-    hpixs = np.array(
-        ah.lonlat_to_healpix(
-            df_assoc_event["flare_ra"].values * u.deg,
-            df_assoc_event["flare_dec"].values * u.deg,
-            NSIDE,
-            order="nested",
-        )
+    # Set flare model
+    flaremodel = getattr(
+        myflaremodels,
+        config["flare_rate"]["model"],
+    )(
+        *config["flare_rate"]["args"],
+        **config["flare_rate"]["kwargs"],
     )
 
-    # Get redshifts for the flares
-    zs = df_assoc_event["Redshift"].values
-
-    # Compile positions and z for all candidates in this follow up
-    cand_hpixs.append(np.array(hpixs))
-    cand_zs.append(np.array(zs))
-    pbs.append(pb)
-    distnorms.append(distnorm)
-    distmus.append(distmu)
-    distsigmas.append(distsigma)
-    # cand_ds=np.concatenate((s_ds,b_ds))
-    # ncands=cand_hpixs.shape[0]
-    # cand_ds=np.zeros(ncands)
-    # for l in range(ncands):
-    #    cand_ds[l]=cosmo.luminosity_distance(cand_zs[l]).value
-
-    # Skip volume calculation if no candidates
-    if len(hpixs) == 0:
-        B_expected_n.append([np.nan] * df_assoc_event.shape[0])
-        continue
-
-    ## Set AGNi/Mpc^3
-    # Constant physical density
-    agn_per_mpc3 = 10**-4.75
-
-    ### Set flares/AGN rate
-    ## Constant
-    flares_per_agn = np.array([1e-4] * df_assoc_event.shape[0])
-    ## Kimura+20 structure function
-    # Load fit parameters
+    # Load lightcurve fit parameters
     df_fitparams = pd.read_csv(f"{PROJDIR}/fit_lightcurves/fitparams.csv")
-    # Iterate over flares
+
+    # Calculate maximum distance for background events
+    cosmo = FlatLambdaCDM(H0=config["H00"], Om0=config["Om0"])
+    maxdist = cosmo.luminosity_distance(config["z_max_b"])
+    ds_arr_norm = np.linspace(0, maxdist.value, num=1000)
+
+    ##############################
+    ###         Science        ###
+    ##############################
+
+    # Iterate over followups
+    cand_hpixs = []
+    cand_zs = []
+    pbs, distnorms, distmus, distsigmas = [], [], [], []
     flares_per_agn = []
-    for fn in df_assoc_event["flarename"]:
-        # Get fitparams
-        df_fitparams_flare = df_fitparams[df_fitparams["flarename"] == fn]
+    n_agn_coeffs = []
+    f_covers = []
+    n_idx_sort_cut = []
+    for i in tqdm(g23.DF_GW.index):
+        ##############################
+        ###  Signals (BBH flares)  ###
+        ##############################
 
-        # Iterate over filters
-        rates = []
-        print(fn)
-        for f in df_fitparams_flare["filter"]:
-            # Get row
-            params = df_fitparams_flare[df_fitparams_flare["filter"] == f]
+        # Load skymap
+        hs_flat = get_flattened_skymap(mapdir, g23.DF_GW["gweventname"][i])
 
-            # Calculate structure function prob
-            # 3σ = 3 * t_rise is a conservative estimate for the Δt of the Δm
-            delta_t = 3 * params["t_rise"].values[0]
-            prob = sf.calc_kimura20_sf_prob(f, delta_t, -params["f_peak"])
+        # Get eventname, strip asterisk if needed
+        gweventname = g23.DF_GW["gweventname"][i]
+        if gweventname.endswith("*"):
+            gweventname = gweventname[:-1]
 
-            # Scale to follow-up window
-            rate = prob * dt_followup / delta_t
+        # Get data from skymap
+        pb = np.array(hs_flat["PROB"])
+        distnorm = np.array(hs_flat["DISTNORM"])
+        distmu = np.array(hs_flat["DISTMU"])
+        distsigma = np.array(hs_flat["DISTSIGMA"])
+        NSIDE = ah.npix_to_nside(len(hs_flat))
 
-            # Append to list
-            # If g-band:
-            if f == "g":
+        # Calculate <pb_frac> credible region; outputs healpix indices that compose region
+        pb_frac = 0.90
+        # Make idx_sort_up (array of pb indices, from highest to lowest pb)
+        idx_sort = np.argsort(pb)
+        idx_sort_up = list(reversed(idx_sort))
+        # Add pbs until pb_frac is reached
+        sum = 0.0
+        id = 0
+        while sum < pb_frac:
+            this_idx = idx_sort_up[id]
+            sum = sum + pb[this_idx]
+            id = id + 1
+        # Cut indices to <pb_frac> credible region
+        idx_sort_cut = idx_sort_up[:id]
+        n_idx_sort_cut.append(len(idx_sort_cut))
+
+        # Get flares for this followup
+        assoc_mask = g23.DF_ASSOC["gweventname"] == gweventname
+        df_assoc_event = g23.DF_ASSOC[assoc_mask]
+
+        # Get hpxs for the flares
+        hpixs = np.array(
+            ah.lonlat_to_healpix(
+                df_assoc_event["flare_ra"].values * u.deg,
+                df_assoc_event["flare_dec"].values * u.deg,
+                NSIDE,
+                order="nested",
+            )
+        )
+
+        # Get redshifts for the flares
+        zs = df_assoc_event["Redshift"].values
+
+        # Compile positions and z for all candidates in this follow up
+        cand_hpixs.append(np.array(hpixs))
+        cand_zs.append(np.array(zs))
+        if len(hpixs) == 0:
+            pbs.append(np.array([]))
+            distnorms.append(np.array([]))
+            distmus.append(np.array([]))
+            distsigmas.append(np.array([]))
+        else:
+            pbs.append(pb[hpixs])
+            distnorms.append(distnorm[hpixs])
+            distmus.append(distmu[hpixs])
+            distsigmas.append(distsigma[hpixs])
+        # cand_ds=np.concatenate((s_ds,b_ds))
+        # ncands=cand_hpixs.shape[0]
+        # cand_ds=np.zeros(ncands)
+        # for l in range(ncands):
+        #    cand_ds[l]=cosmo.luminosity_distance(cand_zs[l]).value
+
+        # Skip volume calculation if no candidates
+        if len(hpixs) == 0:
+            flares_per_agn.append([np.nan] * df_assoc_event.shape[0])
+            n_agn_coeffs.append([np.nan])
+            f_covers.append(np.nan)
+            continue
+
+        ### Set flares/AGN rate
+        # Iterate over flares
+        flares_per_agn_temp = []
+        for fn in df_assoc_event["flarename"]:
+            # Get fitparams
+            df_fitparams_flare = df_fitparams[df_fitparams["flarename"] == fn]
+
+            # Iterate over filters
+            rates = []
+            print("\n", fn)
+            for f in df_fitparams_flare["filter"]:
+                # Use only g and r band data
+                if f not in ["g", "r"]:
+                    continue
+
+                # Get row
+                params = df_fitparams_flare[df_fitparams_flare["filter"] == f]
+
+                # Calculate structure function prob
+                # 3σ = 3 * t_rise is a conservative estimate for the Δt of the Δm
+                delta_t = 3 * params["t_rise"].values[0]
+                prob = flaremodel.flare_rate(f, delta_t, -params["f_peak"].values[0])
+
+                # Scale to follow-up window
+                rate = prob * config["dt_followup"]
+                print(f, rate)
+
+                # Append to list
                 rates.append(rate)
 
-            print(f, rate)
+            # Save maximum rate
+            flares_per_agn_temp.append(np.nanmin(rates))
 
-        # Save maximum rate
-        flares_per_agn.append(max(rates))
+        # Cast as array
+        flares_per_agn_temp = np.array(flares_per_agn_temp)
+        flares_per_agn.append(flares_per_agn_temp)
 
-    # Cast as array
-    flares_per_agn = np.array(flares_per_agn)
+        ### Set AGN count model (polynomial as function of H0)
+        # Constant physical density
+        agn_per_mpc3 = 10**-4.75
 
-    # Load skymap, calculate expected number of background flares
-    hs = get_gwtc_skymap(mapdir, g23.DF_GW["gweventname"][i])
-    vol90 = crossmatch(hs, contours=[0.9]).contour_vols[0]
-    n_bg = vol90 * agn_per_mpc3 * flares_per_agn
-    B_expected_n.append(n_bg)
-    del hs
+        ### Model number of background flares
+        # Load skymap
+        sm = get_gwtc_skymap(mapdir, g23.DF_GW["gweventname"][i])
+        # Iterate over a sample of H0 values
+        n_agns = []
+        hs = np.linspace(20, 120, num=10)
+        for h in hs:
+            tempcosmo = FlatLambdaCDM(H0=h, Om0=config["Om0"])
+            vol90 = crossmatch(
+                sm, contours=[0.9], cosmology=True, cosmo=tempcosmo
+            ).contour_vols[0]
+            n_agns.append(vol90 * agn_per_mpc3)
+        # Calculate polynomial fit to model n_agn as a function of H0
+        fit = Polynomial.fit(hs, n_agns, 4)
+        coeffs = fit.convert().coef
+        n_agn_coeffs.append(coeffs)
+        del sm
 
+        # Append f_cover for GW event
+        f_covers.append(g23.DF_GW["f_cover"][i])
 
-##############################
-###          MCMC          ###
-##############################
+    ##############################
+    ###          MCMC          ###
+    ##############################
 
-# Initialize some random lambdas and H0s for MCMC (w/ gaussian perturbations)
-# np.random.randn(nwalkers, ndim=nparam)
-pos = [lamb, H0] + 1e-4 * np.random.randn(32, 2)
-nwalkers, ndim = pos.shape
-# Run the MCMC, in parallel or serial
-if nproc != 1:
-    with Pool(nproc) as pool:
-        # Initialize sampler + run MCMC
-        sampler = emcee.EnsembleSampler(
-            nwalkers,
-            ndim,
-            lnprob,
-            args=(
-                cand_hpixs,
-                cand_zs,
-                pbs,
-                distnorms,
-                distmus,
-                distsigmas,
-                frac_det,
-                N_GW_followups,
-                B_expected_n,
-                n_idx_sort_cut,
-            ),
-            pool=pool,
-        )
-        sampler.run_mcmc(pos, steps, progress=True)
-else:
-    # Initialize sampler + run MCMC
-    sampler = emcee.EnsembleSampler(
-        nwalkers,
-        ndim,
-        lnprob,
-        args=(
+    # Initialize some random lambdas and H0s for MCMC (w/ gaussian perturbations)
+    # np.random.randn(nwalkers, ndim=nparam)
+    pos = [config["lambda0"], config["H00"]] + 1e-4 * np.random.randn(
+        config["nwalkers"], 2
+    )
+    nwalkers, ndim = pos.shape
+    # Define sampler args
+    sampler_args = (nwalkers, ndim, lnprob)
+    # Define sampler kwargs
+    sampler_kwargs = {
+        "args": (
             cand_hpixs,
             cand_zs,
             pbs,
             distnorms,
             distmus,
             distsigmas,
-            frac_det,
             N_GW_followups,
-            B_expected_n,
+            flares_per_agn,
+            n_agn_coeffs,
+            f_covers,
             n_idx_sort_cut,
+            config["z_min_b"],
+            config["z_max_b"],
+            config["frac_det"],
         ),
+    }
+    # Define run_mcmc args
+    mcmc_args = (pos, config["nsteps"])
+    # Define run_mcmc kwargs
+    mcmc_kwargs = {
+        "progress": True,
+    }
+    # Run the MCMC, in parallel or serial
+    if config["nproc"] != 1:
+        with Pool(config["nproc"]) as pool:
+            sampler_kwargs["pool"] = pool
+            # Initialize sampler + run MCMC
+            sampler = emcee.EnsembleSampler(*sampler_args, **sampler_kwargs)
+            sampler.run_mcmc(*mcmc_args, **mcmc_kwargs)
+    else:
+        # Initialize sampler + run MCMC
+        sampler = emcee.EnsembleSampler(*sampler_args, **sampler_kwargs)
+        sampler.run_mcmc(*mcmc_args, **mcmc_kwargs)
+
+    # Reduce and retreive MCMC samples
+    flat_samples = sampler.get_chain(discard=100, thin=15, flat=True)
+    print(flat_samples.shape)
+
+    # Save data
+    np.savetxt(f"{config_dir}/O4_samples_graham23.dat", flat_samples)
+
+    # Make+save corner plot
+    labels = [r"$\lambda$", r"$H_0$ [km/s/Mpc]"]
+    fig = corner.corner(
+        flat_samples,
+        labels=labels,
+        # truths=[lamb, H0],
+        quantiles=[0.16, 0.5, 0.84],
+        show_titles=True,
+        title_kwargs={"fontsize": 12},
     )
-    sampler.run_mcmc(pos, steps, progress=True)
-
-# Reduce and retreive MCMC samples
-flat_samples = sampler.get_chain(discard=100, thin=15, flat=True)
-print(flat_samples.shape)
-
-# Save data
-np.savetxt("O4_samples_graham23.dat", flat_samples)
-
-# Make+save corner plot
-labels = [r"$\lambda$", r"$H_0$ [km/s/Mpc]"]
-fig = corner.corner(
-    flat_samples,
-    labels=labels,
-    truths=[lamb, H0],
-    quantiles=[0.16, 0.5, 0.84],
-    show_titles=True,
-    title_kwargs={"fontsize": 12},
-)
-fig.savefig("corner_O4_graham23.png", dpi=200)
+    fig.savefig(f"{config_dir}/corner_O4_graham23.png", dpi=200)
