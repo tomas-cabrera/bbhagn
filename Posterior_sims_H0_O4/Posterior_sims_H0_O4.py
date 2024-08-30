@@ -696,13 +696,15 @@ if __name__ == "__main__":
         ### Set flares/AGN rate
         # Iterate over flares
         flares_per_agn_temp = []
-        for fn in df_assoc_event["flarename"]:
+        for ri, r in df_assoc_event.iterrows():
             # Get fitparams
-            df_fitparams_flare = df_fitparams[df_fitparams["flarename"] == fn]
+            df_fitparams_flare = df_fitparams[
+                df_fitparams["flarename"] == r["flarename"]
+            ]
 
             # Iterate over filters
             rates = []
-            print("\n", fn)
+            print("\n", r["flarename"])
             for f in df_fitparams_flare["filter"]:
                 # Use only g and r band data
                 if f not in ["g", "r"]:
@@ -713,8 +715,14 @@ if __name__ == "__main__":
 
                 # Calculate structure function prob
                 # 3σ = 3 * t_rise is a conservative estimate for the Δt of the Δm
-                delta_t = 3 * params["t_rise"].values[0]
-                prob = flaremodel.flare_rate(f, delta_t, -params["f_peak"].values[0])
+                # / (1+z) converts to rest frame timescale
+                delta_t = 3 * params["t_rise"].values[0] / (1 + r["Redshift"])
+                prob = flaremodel.flare_rate(
+                    f,
+                    delta_t,
+                    -params["f_peak"].values[0],
+                    r["Redshift"],
+                )
 
                 # Scale to follow-up window
                 rate = prob * config["dt_followup"]
