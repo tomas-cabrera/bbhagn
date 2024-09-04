@@ -6,12 +6,13 @@ dt_followup: 200.0 # Length of follow-up campaign in days
 
 # AGN distribution
 agn_distribution:
-  model: "ConstantPhysicalDensity"
-  args:
-    - 1.77827941004e-5 # 10**-4.75 AGN/Mpc^3
+  model: "QLFHopkins"
+  args: []
   kwargs: {}
   density_args: []
-  density_kwargs: {}
+  density_kwargs: 
+    brightness_limits: [20.5, "-inf"]
+    band: "g"
 
 # Flare rate
 flare_rate:

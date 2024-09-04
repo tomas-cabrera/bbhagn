@@ -6,17 +6,19 @@ dt_followup: 200.0 # Length of follow-up campaign in days
 
 # AGN distribution
 agn_distribution:
-  model: "ConstantPhysicalDensity"
-  args:
-    - 1.77827941004e-5 # 10**-4.75 AGN/Mpc^3
+  model: "QLFHopkins"
+  args: []
   kwargs: {}
   density_args: []
-  density_kwargs: {}
+  density_kwargs: 
+    brightness_limits: [20.5, "-inf"]
+    band: "g"
 
 # Flare rate
 flare_rate:
-  model: "Kimura20"
-  args: []
+  model: "ConstantRate"
+  args:
+    - 1.06e-8 # Rate from Graham+23, Table 5, in flares/AGN/day (note p_flare is originally normalized to 200 days)
   kwargs: {}
 
 # MCMC parameters

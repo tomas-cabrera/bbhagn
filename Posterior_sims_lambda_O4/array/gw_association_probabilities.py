@@ -361,20 +361,15 @@ if __name__ == "__main__":
         b_grid_path = f"{d}/b_grid.csv"
 
         # Get posterior samples for lambda and H0
-        try:
-            samples_path = f"{d}/O4_samples_graham23.dat"
-            samples = np.loadtxt(samples_path)
-        except:
-            continue
+        samples_path = f"{d}/O4_samples_graham23.dat"
+        samples = np.loadtxt(samples_path)
 
-        # Calculate mode of lambda and H0
+        # Calculate mode of lambda
         kernel = gaussian_kde(samples.T)
         lmin, lmax = 0.0, 1.0
-        hmin, hmax = 20, 120
-        xgrid, ygrid = np.mgrid[lmin:lmax:101j, hmin:hmax:101j]
-        grid = np.vstack([xgrid.ravel(), ygrid.ravel()])
-        lambda_po, H0_po = grid[:, np.argmax(kernel(grid))]
-        print(f"lambda_po, H0_po:", lambda_po, H0_po)
+        grid = np.linspace(lmin, lmax, 101)
+        lambda_po = grid[np.argmax(kernel(grid))]
+        print(f"lambda_po:", lambda_po)
 
         # Calculate s_grid and b_grid if they don't exist, or if forced
         if args.force or not pa.exists(s_grid_path) or not pa.exists(b_grid_path):
@@ -519,7 +514,7 @@ if __name__ == "__main__":
                 # Load skymap
                 sm = get_gwtc_skymap(mapdir, g23.DF_GW["gweventname"][i])
                 # Calculate for H0 from mode
-                tempcosmo = FlatLambdaCDM(H0=H0_po, Om0=config["Om0"])
+                tempcosmo = FlatLambdaCDM(H0=config["H00"], Om0=config["Om0"])
                 vol90 = crossmatch(
                     sm, contours=[0.9], cosmology=True, cosmo=tempcosmo
                 ).contour_vols[0]
@@ -532,7 +527,7 @@ if __name__ == "__main__":
 
             # Calculate signal and background arrays
             s_arrs, b_arrs = calc_arrs(
-                (lambda_po, H0_po),
+                (lambda_po, config["H00"]),
                 cand_hpixs,
                 cand_zs,
                 pbs,

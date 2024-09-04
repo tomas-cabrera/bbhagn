@@ -150,9 +150,9 @@ def lnprior(theta):
 
     """
     # Extract values
-    lam_pr, H0_pr = theta
+    lam_pr = theta
     # If the values are in the uniform domain
-    if 0.0 < lam_pr < 1.0 and 20.0 < H0_pr < 120.0:
+    if 0.0 < lam_pr < 1.0:
         return 0.0
     # Otherwise
     return -np.inf
@@ -267,21 +267,9 @@ def calc_b_arr(
 
 def lnprob(
     theta,
-    cand_hpixs_arr,
-    cand_zs_arr,
-    pb,
-    distnorm,
-    distmu,
-    distsigma,
-    N_GW_followups,
-    flares_per_agn,
-    n_agn_coeffs,
-    f_covers,
-    n_idx_sort_cut,
-    z_min_b,
-    z_max_b,
+    s_arrs,
+    b_arrs,
     frac_det,
-    agndist_config,
 ):
     """! Calculates the log posterior probability, given some signal and background.
 
@@ -307,64 +295,14 @@ def lnprob(
         return -np.inf
 
     # Extract lambda and H0 values
-    lam_po, H0_po = theta
+    lam_po = theta
 
-    # Cosmo. params
-    omegam = 0.3
-    thiscosmo = FlatLambdaCDM(H0=H0_po, Om0=omegam)
-
-    # Iterate through followups
-    zs_arr = np.linspace(z_min_b, z_max_b, num=1000)
+    # Iterate over followups
     lnlike_arr = np.zeros(N_GW_followups)
     for i in range(N_GW_followups):
-        # Get/calculate candidate coordinates, number of candidates for this followup
-        followup_hpixs = cand_hpixs_arr[i]
-        followup_zs = cand_zs_arr[i]
-        ncands = followup_zs.shape[0]
-
-        # Skip if no candidates
-        if ncands == 0:
-            lnlike_arr[i] = -lam_po
-            continue
-
-        ####################
-        ###    Signal    ###
-        ####################
-
-        # Calculate GW counterpart probabilities
-        s_arr = calc_s_arr(
-            pb[i],
-            pb_frac,
-            distnorm[i],
-            distmu[i],
-            distsigma[i],
-            followup_zs,
-            thiscosmo,
-            zs_arr,
-        )
-
-        ####################
-        ###  Background  ###
-        ####################
-        # normaliz = np.trapezoid(ds_arr_norm**2,ds_arr_norm)
-        # b_arr = followup_ds**2/normaliz/len(idx_sort_cut)*B_expected_n
-
-        # Use coeffs to interpolate number of AGN in volume
-        n_agn = np.polynomial.Polynomial(n_agn_coeffs[i])(H0_po)
-
-        # Multiply by flare rate to get expected number of background flares
-        B_expected_n = n_agn * flares_per_agn[i]
-
-        # Calculate background probabilities
-        b_arr = calc_b_arr(
-            followup_zs,
-            f_covers[i],
-            n_idx_sort_cut[i],
-            B_expected_n,
-            thiscosmo,
-            zs_arr,
-            agndist_config,
-        )
+        # Get arrays
+        s_arr = s_arrs[i]
+        b_arr = b_arrs[i]
 
         ####################
         ###  Likelihood  ###
@@ -783,22 +721,81 @@ if __name__ == "__main__":
         # Load skymap
         sm = get_gwtc_skymap(mapdir, g23.DF_GW["gweventname"][i])
         # Iterate over a sample of H0 values
-        n_agns = []
-        hs = np.linspace(20, 120, num=10)
-        for h in hs:
-            tempcosmo = FlatLambdaCDM(H0=h, Om0=config["Om0"])
-            vol90 = crossmatch(
-                sm, contours=[0.9], cosmology=True, cosmo=tempcosmo
-            ).contour_vols[0]
-            n_agns.append(vol90 * agn_per_mpc3)
+        vol90 = crossmatch(
+            sm, contours=[0.9], cosmology=True, cosmo=cosmo
+        ).contour_vols[0]
+        n_agn = vol90 * agn_per_mpc3
         # Calculate polynomial fit to model n_agn as a function of H0
-        fit = Polynomial.fit(hs, n_agns, 4)
-        coeffs = fit.convert().coef
-        n_agn_coeffs.append(coeffs)
+        n_agn_coeffs.append([n_agn])
         del sm
 
         # Append f_cover for GW event
         f_covers.append(g23.DF_GW["f_cover"][i])
+
+    ##############################
+    ###       Calc. arrs       ###
+    ##############################
+
+    # Iterate through followups
+    zs_arr = np.linspace(config["z_min_b"], config["z_max_b"], num=1000)
+    s_arrs = []
+    b_arrs = []
+    for i in range(N_GW_followups):
+        # Get/calculate candidate coordinates, number of candidates for this followup
+        followup_hpixs = cand_hpixs[i]
+        followup_zs = cand_zs[i]
+        ncands = followup_zs.shape[0]
+
+        # Skip if no candidates
+        if ncands == 0:
+            s_arrs.append(np.array([]))
+            b_arrs.append(np.array([]))
+            continue
+
+        ####################
+        ###    Signal    ###
+        ####################
+
+        # Calculate GW counterpart probabilities
+        s_arr = calc_s_arr(
+            pbs[i],
+            pb_frac,
+            distnorms[i],
+            distmus[i],
+            distsigmas[i],
+            followup_zs,
+            cosmo,
+            zs_arr,
+        )
+
+        # Append to list
+        s_arrs.append(s_arr)
+
+        ####################
+        ###  Background  ###
+        ####################
+        # normaliz = np.trapezoid(ds_arr_norm**2,ds_arr_norm)
+        # b_arr = followup_ds**2/normaliz/len(idx_sort_cut)*B_expected_n
+
+        # Use coeffs to interpolate number of AGN in volume
+        n_agn = np.polynomial.Polynomial(n_agn_coeffs[i])(config["H00"])
+
+        # Multiply by flare rate to get expected number of background flares
+        B_expected_n = n_agn * flares_per_agn[i]
+
+        # Calculate background probabilities
+        b_arr = calc_b_arr(
+            followup_zs,
+            f_covers[i],
+            n_idx_sort_cut[i],
+            B_expected_n,
+            cosmo,
+            zs_arr,
+            config["agn_distribution"],
+        )
+
+        # Append to list
+        b_arrs.append(b_arr)
 
     ##############################
     ###          MCMC          ###
@@ -806,30 +803,16 @@ if __name__ == "__main__":
 
     # Initialize some random lambdas and H0s for MCMC (w/ gaussian perturbations)
     # np.random.randn(nwalkers, ndim=nparam)
-    pos = [config["lambda0"], config["H00"]] + 1e-4 * np.random.randn(
-        config["nwalkers"], 2
-    )
+    pos = [config["lambda0"]] + 1e-4 * np.random.randn(config["nwalkers"], 1)
     nwalkers, ndim = pos.shape
     # Define sampler args
     sampler_args = (nwalkers, ndim, lnprob)
     # Define sampler kwargs
     sampler_kwargs = {
         "args": (
-            cand_hpixs,
-            cand_zs,
-            pbs,
-            distnorms,
-            distmus,
-            distsigmas,
-            N_GW_followups,
-            flares_per_agn,
-            n_agn_coeffs,
-            f_covers,
-            n_idx_sort_cut,
-            config["z_min_b"],
-            config["z_max_b"],
+            s_arrs,
+            b_arrs,
             config["frac_det"],
-            config["agn_distribution"],
         ),
     }
     # Define run_mcmc args
