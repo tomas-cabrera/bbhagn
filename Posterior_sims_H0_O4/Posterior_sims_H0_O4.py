@@ -776,10 +776,20 @@ if __name__ == "__main__":
         flares_per_agn.append(flares_per_agn_temp)
 
         ### Set AGN count model (polynomial as function of H0)
-        # Constant physical density
-        agn_per_mpc3 = 10**-4.75
+        # Get AGN distribution
+        agndist = getattr(
+            myagndistributions,
+            config["agn_distribution"]["model"],
+        )(
+            *config["agn_distribution"]["args"],
+            **config["agn_distribution"]["kwargs"],
+        )
 
-        ### Model number of background flares
+        # Set density_kwargs as attributes
+        for k, v in config["agn_distribution"]["density_kwargs"].items():
+            setattr(agndist, k, v)
+
+        # Model number of AGNs
         # Load skymap
         sm = get_gwtc_skymap(mapdir, g23.DF_GW["gweventname"][i])
         # Iterate over a sample of H0 values
@@ -787,10 +797,14 @@ if __name__ == "__main__":
         hs = np.linspace(20, 120, num=10)
         for h in hs:
             tempcosmo = FlatLambdaCDM(H0=h, Om0=config["Om0"])
-            vol90 = crossmatch(
-                sm, contours=[0.9], cosmology=True, cosmo=tempcosmo
+            n_agn = crossmatch(
+                sm,
+                contours=[0.9],
+                cosmology=True,
+                cosmo=tempcosmo,
+                integrand=agndist.dn_d3Mpc_at_dL,
             ).contour_vols[0]
-            n_agns.append(vol90 * agn_per_mpc3)
+            n_agns.append(n_agn)
         # Calculate polynomial fit to model n_agn as a function of H0
         fit = Polynomial.fit(hs, n_agns, 4)
         coeffs = fit.convert().coef
