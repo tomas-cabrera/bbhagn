@@ -3,6 +3,7 @@ z_min_b: 0.01 # Minimum redshift for background
 z_max_b: 1.0 # Maximum redshift for background
 frac_det: 1.0 # Fraction of flares detected
 dt_followup: 200.0 # Length of follow-up campaign in days
+gwmapdir: "/hildafs/projects/phy220048p/share/skymaps"
 
 # AGN distribution
 agn_distribution:

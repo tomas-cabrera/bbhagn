@@ -619,7 +619,6 @@ if __name__ == "__main__":
 
     # Define constants
     N_GW_followups = g23.DF_GW.shape[0]  # [50,10]
-    mapdir = "/hildafs/projects/phy220048p/share/skymaps"
     lam_arr = np.linspace(0, 1.0, num=100)
 
     # Set flare model
@@ -657,7 +656,7 @@ if __name__ == "__main__":
         ##############################
 
         # Load skymap
-        hs_flat = get_flattened_skymap(mapdir, g23.DF_GW["gweventname"][i])
+        hs_flat = get_flattened_skymap(config["gwmapdir"], g23.DF_GW["gweventname"][i])
 
         # Get eventname, strip asterisk if needed
         gweventname = g23.DF_GW["gweventname"][i]
@@ -791,7 +790,7 @@ if __name__ == "__main__":
 
         # Model number of AGNs
         # Load skymap
-        sm = get_gwtc_skymap(mapdir, g23.DF_GW["gweventname"][i])
+        sm = get_gwtc_skymap(config["gwmapdir"], g23.DF_GW["gweventname"][i])
         # Iterate over a sample of H0 values
         n_agns = []
         hs = np.linspace(20, 120, num=10)
