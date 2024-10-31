@@ -801,7 +801,7 @@ if __name__ == "__main__":
                 contours=[0.9],
                 cosmology=True,
                 cosmo=tempcosmo,
-                integrand=agndist.dn_d3Mpc_at_dL,
+                volume_integrand=agndist.dn_d3Mpc_at_dL,
             ).contour_vols[0]
             n_agns.append(n_agn)
         # Calculate polynomial fit to model n_agn as a function of H0

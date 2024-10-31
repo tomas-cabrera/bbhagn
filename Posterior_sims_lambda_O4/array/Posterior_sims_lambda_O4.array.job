@@ -7,7 +7,7 @@
 #SBATCH -A phy220048p
 #SBATCH -p RITA
 #SBATCH --mail-type=ALL
-#SBATCH -a 4
+#SBATCH -a 1-4
 
 ### SETUP ###
 
