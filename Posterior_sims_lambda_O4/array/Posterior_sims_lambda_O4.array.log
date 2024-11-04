@@ -1,0 +1,287 @@
++ ask_conda='PS1='\''(bbhagn) '\''
+export PATH='\''/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin'\''
+export CONDA_PREFIX='\''/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn'\''
+export CONDA_SHLVL='\''1'\''
+export CONDA_DEFAULT_ENV='\''bbhagn'\''
+export CONDA_PROMPT_MODIFIER='\''(bbhagn) '\''
+export CONDA_EXE='\''/opt/packages/anaconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/opt/packages/anaconda3/bin/python'\'''
++ rc=0
++ PATH=/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
++ eval 'PS1='\''(bbhagn) '\''
+export PATH='\''/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin'\''
+export CONDA_PREFIX='\''/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn'\''
+export CONDA_SHLVL='\''1'\''
+export CONDA_DEFAULT_ENV='\''bbhagn'\''
+export CONDA_PROMPT_MODIFIER='\''(bbhagn) '\''
+export CONDA_EXE='\''/opt/packages/anaconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/opt/packages/anaconda3/bin/python'\'''
+++ PS1='(bbhagn) '
+++ export PATH=/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
+++ PATH=/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
+++ export CONDA_PREFIX=/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn
+++ CONDA_PREFIX=/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn
+++ export CONDA_SHLVL=1
+++ CONDA_SHLVL=1
+++ export CONDA_DEFAULT_ENV=bbhagn
+++ CONDA_DEFAULT_ENV=bbhagn
+++ export 'CONDA_PROMPT_MODIFIER=(bbhagn) '
+++ CONDA_PROMPT_MODIFIER='(bbhagn) '
+++ export CONDA_EXE=/opt/packages/anaconda3/bin/conda
+++ CONDA_EXE=/opt/packages/anaconda3/bin/conda
+++ export _CE_M=
+++ _CE_M=
+++ export _CE_CONDA=
+++ _CE_CONDA=
+++ export CONDA_PYTHON_EXE=/opt/packages/anaconda3/bin/python
+++ CONDA_PYTHON_EXE=/opt/packages/anaconda3/bin/python
++ '[' 0 '!=' 0 ']'
++ __conda_hashr
++ '[' -n '' ']'
++ '[' -n '' ']'
++ hash -r
++ scriptPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/Posterior_sims_lambda_O4.py
++ jobPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/3
++ configPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/3/config.yaml
++ logPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/3/Posterior_sims_lambda_O4.log
++ python -u /hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/Posterior_sims_lambda_O4.py /hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/3/config.yaml
++ date
+Fri Nov  1 15:03:07 EDT 2024
++ module purge
+++ /usr/share/lmod/lmod/libexec/lmod bash purge
++ eval unset 'CONDA_DEFAULT_ENV;' unset 'CONDA_EXE;' unset 'CONDA_PKGS_DIRS;' unset 'CONDA_PREFIX;' unset 'CONDA_PROMPT_MODIFIER;' unset 'CONDA_SHLVL;' unset '__LMOD_REF_COUNT_LOADEDMODULES;' unset 'LOADEDMODULES;' 'MODULEPATH=/etc/scl/modulefiles:/opt/modulefiles:/usr/share/modulefiles:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core;' export 'MODULEPATH;' '__LMOD_REF_COUNT_PATH=/opt/packages/anaconda3/bin:1\;/opt/packages/anaconda3/condabin:1\;/hildafs/home/tcabrera/.local/bin:1\;/hildafs/home/tcabrera/bin:1\;/usr/local/bin:1\;/usr/bin:1\;/usr/local/sbin:1\;/usr/sbin:1\;/opt/puppetlabs/bin:1;' export '__LMOD_REF_COUNT_PATH;' 'PATH=/opt/packages/anaconda3/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin;' export 'PATH;' unset '_CE_CONDA;' unset '_CE_M;' unset '__LMOD_REF_COUNT__LMFILES_;' unset '_LMFILES_;' '_ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXt9LG1UPXt9LG1wYXRoQT17Ii9ldGMvc2NsL21vZHVsZWZpbGVzIiwiL29wdC9tb2R1bGVmaWxlcyIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMiLCIvdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4IiwiL3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9Db3JlIiwiL3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfSxbInN5c3RlbUJhc2VNUEFUSCJdPSIvb3B0L21vZHVsZWZpbGVzOi91c3Ivc2hhcmUvbW9kdWxlZmlsZXM6L3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9MaW51eDovdXNyL3NoYXJlL21v;' export '_ModuleTable001_;' '_ModuleTable002_=ZHVsZWZpbGVzL0NvcmU6L3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfQ==;' export '_ModuleTable002_;' '_ModuleTable_Sz_=2;' export '_ModuleTable_Sz_;'
+++ unset CONDA_DEFAULT_ENV
+++ unset CONDA_EXE
+++ unset CONDA_PKGS_DIRS
+++ unset CONDA_PREFIX
+++ unset CONDA_PROMPT_MODIFIER
+++ unset CONDA_SHLVL
+++ unset __LMOD_REF_COUNT_LOADEDMODULES
+++ unset LOADEDMODULES
+++ MODULEPATH=/etc/scl/modulefiles:/opt/modulefiles:/usr/share/modulefiles:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core
+++ export MODULEPATH
+++ __LMOD_REF_COUNT_PATH='/opt/packages/anaconda3/bin:1;/opt/packages/anaconda3/condabin:1;/hildafs/home/tcabrera/.local/bin:1;/hildafs/home/tcabrera/bin:1;/usr/local/bin:1;/usr/bin:1;/usr/local/sbin:1;/usr/sbin:1;/opt/puppetlabs/bin:1'
+++ export __LMOD_REF_COUNT_PATH
+++ PATH=/opt/packages/anaconda3/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
+++ export PATH
+++ unset _CE_CONDA
+++ unset _CE_M
+++ unset __LMOD_REF_COUNT__LMFILES_
+++ unset _LMFILES_
+++ _ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXt9LG1UPXt9LG1wYXRoQT17Ii9ldGMvc2NsL21vZHVsZWZpbGVzIiwiL29wdC9tb2R1bGVmaWxlcyIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMiLCIvdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4IiwiL3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9Db3JlIiwiL3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfSxbInN5c3RlbUJhc2VNUEFUSCJdPSIvb3B0L21vZHVsZWZpbGVzOi91c3Ivc2hhcmUvbW9kdWxlZmlsZXM6L3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9MaW51eDovdXNyL3NoYXJlL21v
+++ export _ModuleTable001_
+++ _ModuleTable002_=ZHVsZWZpbGVzL0NvcmU6L3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfQ==
+++ export _ModuleTable002_
+++ _ModuleTable_Sz_=2
+++ export _ModuleTable_Sz_
+++ : -s sh
++ eval
++ ret=0
++ /usr/share/lmod/8.2.7/libexec/log_modules purge
++ return 0
++ module load anaconda3/2020.07
+++ /usr/share/lmod/lmod/libexec/lmod bash load anaconda3/2020.07
++ eval 'CONDA_DEFAULT_ENV=base;' export 'CONDA_DEFAULT_ENV;' 'CONDA_EXE=/opt/packages/anaconda3/bin/conda;' export 'CONDA_EXE;' 'CONDA_PKGS_DIRS=\~/.conda/pkgs;' export 'CONDA_PKGS_DIRS;' 'CONDA_PREFIX=/opt/packages/anaconda3;' export 'CONDA_PREFIX;' 'CONDA_PROMPT_MODIFIER=\(base\)\' ';' export 'CONDA_PROMPT_MODIFIER;' 'CONDA_SHLVL=1;' export 'CONDA_SHLVL;' '__LMOD_REF_COUNT_LOADEDMODULES=anaconda3/2020.07:1;' export '__LMOD_REF_COUNT_LOADEDMODULES;' 'LOADEDMODULES=anaconda3/2020.07;' export 'LOADEDMODULES;' 'MODULEPATH=/etc/scl/modulefiles:/opt/modulefiles:/usr/share/modulefiles:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core;' export 'MODULEPATH;' '__LMOD_REF_COUNT_PATH=/opt/packages/anaconda3/bin:2\;/opt/packages/anaconda3/condabin:2\;/hildafs/home/tcabrera/.local/bin:1\;/hildafs/home/tcabrera/bin:1\;/usr/local/bin:1\;/usr/bin:1\;/usr/local/sbin:1\;/usr/sbin:1\;/opt/puppetlabs/bin:1;' export '__LMOD_REF_COUNT_PATH;' 'PATH=/opt/packages/anaconda3/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin;' export 'PATH;' '_CE_CONDA=;' export '_CE_CONDA;' '_CE_M=;' export '_CE_M;' '__LMOD_REF_COUNT__LMFILES_=/opt/modulefiles/anaconda3/2020.07.lua:1;' export '__LMOD_REF_COUNT__LMFILES_;' '_LMFILES_=/opt/modulefiles/anaconda3/2020.07.lua;' export '_LMFILES_;' '_ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXt9LG1UPXthbmFjb25kYTM9e1siZm4iXT0iL29wdC9tb2R1bGVmaWxlcy9hbmFjb25kYTMvMjAyMC4wNy5sdWEiLFsiZnVsbE5hbWUiXT0iYW5hY29uZGEzLzIwMjAuMDciLFsibG9hZE9yZGVyIl09MSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJhbmFjb25kYTMvMjAyMC4wNyIsfSx9LG1wYXRoQT17Ii9ldGMvc2NsL21vZHVsZWZpbGVzIiwiL29wdC9tb2R1bGVmaWxlcyIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMiLCIvdXNyL3NoYXJlL21vZHVs;' export '_ModuleTable001_;' '_ModuleTable002_=ZWZpbGVzL0xpbnV4IiwiL3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9Db3JlIiwiL3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfSxbInN5c3RlbUJhc2VNUEFUSCJdPSIvb3B0L21vZHVsZWZpbGVzOi91c3Ivc2hhcmUvbW9kdWxlZmlsZXM6L3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9MaW51eDovdXNyL3NoYXJlL21vZHVsZWZpbGVzL0NvcmU6L3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfQ==;' export '_ModuleTable002_;' '_ModuleTable_Sz_=2;' export '_ModuleTable_Sz_;' mkdir -p '~/.conda/pkgs/cache;'
+++ CONDA_DEFAULT_ENV=base
+++ export CONDA_DEFAULT_ENV
+++ CONDA_EXE=/opt/packages/anaconda3/bin/conda
+++ export CONDA_EXE
+++ CONDA_PKGS_DIRS='~/.conda/pkgs'
+++ export CONDA_PKGS_DIRS
+++ CONDA_PREFIX=/opt/packages/anaconda3
+++ export CONDA_PREFIX
+++ CONDA_PROMPT_MODIFIER='(base) '
+++ export CONDA_PROMPT_MODIFIER
+++ CONDA_SHLVL=1
+++ export CONDA_SHLVL
+++ __LMOD_REF_COUNT_LOADEDMODULES=anaconda3/2020.07:1
+++ export __LMOD_REF_COUNT_LOADEDMODULES
+++ LOADEDMODULES=anaconda3/2020.07
+++ export LOADEDMODULES
+++ MODULEPATH=/etc/scl/modulefiles:/opt/modulefiles:/usr/share/modulefiles:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core
+++ export MODULEPATH
+++ __LMOD_REF_COUNT_PATH='/opt/packages/anaconda3/bin:2;/opt/packages/anaconda3/condabin:2;/hildafs/home/tcabrera/.local/bin:1;/hildafs/home/tcabrera/bin:1;/usr/local/bin:1;/usr/bin:1;/usr/local/sbin:1;/usr/sbin:1;/opt/puppetlabs/bin:1'
+++ export __LMOD_REF_COUNT_PATH
+++ PATH=/opt/packages/anaconda3/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
+++ export PATH
+++ _CE_CONDA=
+++ export _CE_CONDA
+++ _CE_M=
+++ export _CE_M
+++ __LMOD_REF_COUNT__LMFILES_=/opt/modulefiles/anaconda3/2020.07.lua:1
+++ export __LMOD_REF_COUNT__LMFILES_
+++ _LMFILES_=/opt/modulefiles/anaconda3/2020.07.lua
+++ export _LMFILES_
+++ _ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXt9LG1UPXthbmFjb25kYTM9e1siZm4iXT0iL29wdC9tb2R1bGVmaWxlcy9hbmFjb25kYTMvMjAyMC4wNy5sdWEiLFsiZnVsbE5hbWUiXT0iYW5hY29uZGEzLzIwMjAuMDciLFsibG9hZE9yZGVyIl09MSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJhbmFjb25kYTMvMjAyMC4wNyIsfSx9LG1wYXRoQT17Ii9ldGMvc2NsL21vZHVsZWZpbGVzIiwiL29wdC9tb2R1bGVmaWxlcyIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMiLCIvdXNyL3NoYXJlL21vZHVs
+++ export _ModuleTable001_
+++ _ModuleTable002_=ZWZpbGVzL0xpbnV4IiwiL3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9Db3JlIiwiL3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfSxbInN5c3RlbUJhc2VNUEFUSCJdPSIvb3B0L21vZHVsZWZpbGVzOi91c3Ivc2hhcmUvbW9kdWxlZmlsZXM6L3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9MaW51eDovdXNyL3NoYXJlL21vZHVsZWZpbGVzL0NvcmU6L3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfQ==
+++ export _ModuleTable002_
+++ _ModuleTable_Sz_=2
+++ export _ModuleTable_Sz_
+++ mkdir -p /hildafs/home/tcabrera/.conda/pkgs/cache
+++ : -s sh
++ eval
++ ret=0
++ /usr/share/lmod/8.2.7/libexec/log_modules load anaconda3/2020.07
++ return 0
++ source /opt/packages/anaconda3/etc/profile.d/conda.sh
+++ export CONDA_EXE=/opt/packages/anaconda3/bin/conda
+++ CONDA_EXE=/opt/packages/anaconda3/bin/conda
+++ export _CE_M=
+++ _CE_M=
+++ export _CE_CONDA=
+++ _CE_CONDA=
+++ export CONDA_PYTHON_EXE=/opt/packages/anaconda3/bin/python
+++ CONDA_PYTHON_EXE=/opt/packages/anaconda3/bin/python
+++ '[' -z x ']'
++ conda deactivate
++ '[' 1 -lt 1 ']'
++ local cmd=deactivate
++ shift
++ case "$cmd" in
++ __conda_activate deactivate
++ '[' -n '' ']'
++ local cmd=deactivate
++ shift
++ local ask_conda
++ CONDA_INTERNAL_OLDPATH=/opt/packages/anaconda3/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
++ __add_sys_prefix_to_path
++ '[' -n '' ']'
+++ dirname /opt/packages/anaconda3/bin/conda
++ SYSP=/opt/packages/anaconda3/bin
+++ dirname /opt/packages/anaconda3/bin
++ SYSP=/opt/packages/anaconda3
++ '[' -n '' ']'
++ PATH=/opt/packages/anaconda3/bin:/opt/packages/anaconda3/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
++ export PATH
+++ PS1=
+++ /opt/packages/anaconda3/bin/conda shell.posix deactivate
++ ask_conda='export PATH='\''/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin'\''
+unset CONDA_PREFIX
+unset CONDA_DEFAULT_ENV
+unset CONDA_PROMPT_MODIFIER
+PS1='\'''\''
+export CONDA_SHLVL='\''0'\''
+export CONDA_EXE='\''/opt/packages/anaconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/opt/packages/anaconda3/bin/python'\'''
++ rc=0
++ PATH=/opt/packages/anaconda3/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
++ eval 'export PATH='\''/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin'\''
+unset CONDA_PREFIX
+unset CONDA_DEFAULT_ENV
+unset CONDA_PROMPT_MODIFIER
+PS1='\'''\''
+export CONDA_SHLVL='\''0'\''
+export CONDA_EXE='\''/opt/packages/anaconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/opt/packages/anaconda3/bin/python'\'''
+++ export PATH=/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
+++ PATH=/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
+++ unset CONDA_PREFIX
+++ unset CONDA_DEFAULT_ENV
+++ unset CONDA_PROMPT_MODIFIER
+++ PS1=
+++ export CONDA_SHLVL=0
+++ CONDA_SHLVL=0
+++ export CONDA_EXE=/opt/packages/anaconda3/bin/conda
+++ CONDA_EXE=/opt/packages/anaconda3/bin/conda
+++ export _CE_M=
+++ _CE_M=
+++ export _CE_CONDA=
+++ _CE_CONDA=
+++ export CONDA_PYTHON_EXE=/opt/packages/anaconda3/bin/python
+++ CONDA_PYTHON_EXE=/opt/packages/anaconda3/bin/python
++ '[' 0 '!=' 0 ']'
++ __conda_hashr
++ '[' -n '' ']'
++ '[' -n '' ']'
++ hash -r
++ condaDIR=/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn
++ conda activate /hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn
++ '[' 2 -lt 1 ']'
++ local cmd=activate
++ shift
++ case "$cmd" in
++ __conda_activate activate /hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn
++ '[' -n '' ']'
++ local cmd=activate
++ shift
++ local ask_conda
++ CONDA_INTERNAL_OLDPATH=/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
++ __add_sys_prefix_to_path
++ '[' -n '' ']'
+++ dirname /opt/packages/anaconda3/bin/conda
++ SYSP=/opt/packages/anaconda3/bin
+++ dirname /opt/packages/anaconda3/bin
++ SYSP=/opt/packages/anaconda3
++ '[' -n '' ']'
++ PATH=/opt/packages/anaconda3/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
++ export PATH
+++ PS1=
+++ /opt/packages/anaconda3/bin/conda shell.posix activate /hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn
++ ask_conda='PS1='\''(bbhagn) '\''
+export PATH='\''/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin'\''
+export CONDA_PREFIX='\''/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn'\''
+export CONDA_SHLVL='\''1'\''
+export CONDA_DEFAULT_ENV='\''bbhagn'\''
+export CONDA_PROMPT_MODIFIER='\''(bbhagn) '\''
+export CONDA_EXE='\''/opt/packages/anaconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/opt/packages/anaconda3/bin/python'\'''
++ rc=0
++ PATH=/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
++ eval 'PS1='\''(bbhagn) '\''
+export PATH='\''/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin'\''
+export CONDA_PREFIX='\''/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn'\''
+export CONDA_SHLVL='\''1'\''
+export CONDA_DEFAULT_ENV='\''bbhagn'\''
+export CONDA_PROMPT_MODIFIER='\''(bbhagn) '\''
+export CONDA_EXE='\''/opt/packages/anaconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/opt/packages/anaconda3/bin/python'\'''
+++ PS1='(bbhagn) '
+++ export PATH=/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
+++ PATH=/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin
+++ export CONDA_PREFIX=/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn
+++ CONDA_PREFIX=/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn
+++ export CONDA_SHLVL=1
+++ CONDA_SHLVL=1
+++ export CONDA_DEFAULT_ENV=bbhagn
+++ CONDA_DEFAULT_ENV=bbhagn
+++ export 'CONDA_PROMPT_MODIFIER=(bbhagn) '
+++ CONDA_PROMPT_MODIFIER='(bbhagn) '
+++ export CONDA_EXE=/opt/packages/anaconda3/bin/conda
+++ CONDA_EXE=/opt/packages/anaconda3/bin/conda
+++ export _CE_M=
+++ _CE_M=
+++ export _CE_CONDA=
+++ _CE_CONDA=
+++ export CONDA_PYTHON_EXE=/opt/packages/anaconda3/bin/python
+++ CONDA_PYTHON_EXE=/opt/packages/anaconda3/bin/python
++ '[' 0 '!=' 0 ']'
++ __conda_hashr
++ '[' -n '' ']'
++ '[' -n '' ']'
++ hash -r
++ scriptPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/Posterior_sims_lambda_O4.py
++ jobPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/4
++ configPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/4/config.yaml
++ logPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/4/Posterior_sims_lambda_O4.log
++ python -u /hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/Posterior_sims_lambda_O4.py /hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/4/config.yaml
+
+real	14m6.124s
+user	21m51.586s
+sys	0m36.276s
+
+real	22m57.473s
+user	32m14.199s
+sys	1m21.593s

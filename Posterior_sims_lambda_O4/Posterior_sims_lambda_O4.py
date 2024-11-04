@@ -18,7 +18,6 @@ from ligo.skymap.postprocess.crossmatch import crossmatch
 from myagn import distributions as myagndistributions
 from myagn.flares import models as myflaremodels
 from numpy.polynomial.polynomial import Polynomial
-from scipy.integrate import simpson
 
 # Local imports
 sys.path.append(pa.dirname(pa.dirname(__file__)))
@@ -44,9 +43,9 @@ def lnprior(theta):
 
     """
     # Extract values
-    lam_pr, H0_pr = theta
+    lam_pr = theta
     # If the values are in the uniform domain
-    if 0.0 < lam_pr < 1.0 and 20.0 < H0_pr < 120.0:
+    if 0.0 < lam_pr < 1.0:
         return 0.0
     # Otherwise
     return -np.inf
@@ -54,20 +53,8 @@ def lnprior(theta):
 
 def lnprob(
     theta,
-    pb_frac,
-    f_covers,
-    distnorms,
-    distmus,
-    distsigmas,
-    pbs,
-    cand_hpixs_arr,
-    cand_zs_arr,
-    n_idx_sort_cut,
-    n_agn_coeffs,
-    flares_per_agn,
-    agndist_config,
-    z_min_b,
-    z_max_b,
+    s_arrs,
+    b_arrs,
     frac_det,
 ):
     """! Calculates the log posterior probability, given some signal and background.
@@ -94,30 +81,7 @@ def lnprob(
         return -np.inf
 
     # Extract lambda and H0 values
-    lam_po, H0_po = theta
-
-    # Cosmo. params
-    omegam = 0.3
-
-    # Calculate signal and background arrays
-    s_arrs, b_arrs = inference.calc_arrs(
-        H0_po,
-        omegam,
-        pb_frac,
-        f_covers,
-        distnorms,
-        distmus,
-        distsigmas,
-        pbs,
-        cand_hpixs_arr,
-        cand_zs_arr,
-        n_idx_sort_cut,
-        n_agn_coeffs,
-        flares_per_agn,
-        agndist_config,
-        z_min_b,
-        z_max_b,
-    )
+    lam_po = theta
 
     # Calculate lnlike
     lnlike = inference.lnlike_all(lam_po, s_arrs, b_arrs, frac_det)
@@ -171,26 +135,36 @@ if __name__ == "__main__":
     lnprob_args = inference.setup(config, df_fitparams)
 
     ##############################
+    ###       Calc. arrs       ###
+    ##############################
+    print("Calculating signal and background arrays...")
+
+    s_arrs, b_arrs = inference.calc_arrs(
+        config["H00"],
+        config["Om0"],
+        config["followup_prob"],
+        *lnprob_args,
+        config["agn_distribution"],
+        config["z_min_b"],
+        config["z_max_b"],
+    )
+
+    ##############################
     ###          MCMC          ###
     ##############################
     print("*" * 20, "MCMC", "*" * 20)
 
     # Initialize some random lambdas and H0s for MCMC (w/ gaussian perturbations)
     # np.random.randn(nwalkers, ndim=nparam)
-    pos = [config["lambda0"], config["H00"]] + 1e-4 * np.random.randn(
-        config["nwalkers"], 2
-    )
+    pos = [config["lambda0"]] + 1e-4 * np.random.randn(config["nwalkers"], 1)
     nwalkers, ndim = pos.shape
     # Define sampler args
     sampler_args = (nwalkers, ndim, lnprob)
     # Define sampler kwargs
     sampler_kwargs = {
         "args": (
-            config["followup_prob"],
-            *lnprob_args,
-            config["agn_distribution"],
-            config["z_min_b"],
-            config["z_max_b"],
+            s_arrs,
+            b_arrs,
             config["frac_det"],
         ),
     }
