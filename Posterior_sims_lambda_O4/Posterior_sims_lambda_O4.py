@@ -119,15 +119,6 @@ if __name__ == "__main__":
     N_GW_followups = g23.DF_GW.shape[0]  # [50,10]
     lam_arr = np.linspace(0, 1.0, num=100)
 
-    # Set flare model
-    flaremodel = getattr(
-        myflaremodels,
-        config["flare_rate"]["model"],
-    )(
-        *config["flare_rate"]["args"],
-        **config["flare_rate"]["kwargs"],
-    )
-
     # Load lightcurve fit parameters
     df_fitparams = pd.read_csv(f"{PROJDIR}/fit_lightcurves/fitparams.csv")
 
