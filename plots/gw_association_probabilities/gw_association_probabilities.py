@@ -17,7 +17,6 @@ from astropy.table import Table
 from ligo.skymap.io import read_sky_map
 from ligo.skymap.postprocess.crossmatch import crossmatch
 from scipy.stats import gaussian_kde, norm
-from tqdm import tqdm
 
 # Local imports
 sys.path.append(pa.dirname(pa.dirname(pa.dirname(__file__))))
@@ -359,7 +358,7 @@ if args.force or not pa.exists(s_grid_path) or not pa.exists(b_grid_path):
     pbs, distnorms, distmus, distsigmas = [], [], [], []
     B_expected_n = []
     n_idx_sort_cut = []
-    for i in tqdm(g23.DF_GW.index):
+    for i in g23.DF_GW.index:
         ##############################
         ###  Signals (BBH flares)  ###
         ##############################
@@ -513,7 +512,7 @@ if args.force or not pa.exists(s_grid_path) or not pa.exists(b_grid_path):
     b_grid = copy(s_grid)
     print(s_grid)
     print(b_grid)
-    for gii, gi in tqdm(enumerate(g23.DF_GW.index)):
+    for gii, gi in enumerate(g23.DF_GW.index):
         # Get eventname, strip asterisk if needed
         gweventname = g23.DF_GW["gweventname"][gi]
         if gweventname.endswith("*"):

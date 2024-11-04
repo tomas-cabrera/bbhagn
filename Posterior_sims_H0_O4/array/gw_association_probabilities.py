@@ -21,7 +21,6 @@ from ligo.skymap.postprocess.crossmatch import crossmatch
 from myagn.flares import models as myflaremodels
 from numpy.polynomial.polynomial import Polynomial
 from scipy.stats import gaussian_kde, norm
-from tqdm import tqdm
 
 # Local imports
 sys.path.append(pa.dirname(pa.dirname(pa.dirname(__file__))))
@@ -341,9 +340,11 @@ if __name__ == "__main__":
         if "brightness_limits" in config["agn_distribution"]["density_kwargs"]:
             config["agn_distribution"]["density_kwargs"]["brightness_limits"] = [
                 float(bl)
-                for bl in config["agn_distribution"]["density_kwargs"]["brightness_limits"]
+                for bl in config["agn_distribution"]["density_kwargs"][
+                    "brightness_limits"
+                ]
             ] * u.ABmag
-        
+
         # Get number of followups
         N_GW_followups = g23.DF_GW.shape[0]  # [50,10]
 
@@ -387,7 +388,7 @@ if __name__ == "__main__":
             n_agn_coeffs = []
             f_covers = []
             n_idx_sort_cut = []
-            for i in tqdm(g23.DF_GW.index):
+            for i in g23.DF_GW.index:
                 ##############################
                 ###  Signals (BBH flares)  ###
                 ##############################
@@ -561,7 +562,7 @@ if __name__ == "__main__":
             b_grid = copy(s_grid)
             print(s_grid)
             print(b_grid)
-            for gii, gi in tqdm(enumerate(g23.DF_GW.index)):
+            for gii, gi in enumerate(g23.DF_GW.index):
                 # Get eventname, strip asterisk if needed
                 gweventname = g23.DF_GW["gweventname"][gi]
                 if gweventname.endswith("*"):
