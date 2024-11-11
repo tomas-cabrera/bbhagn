@@ -5,6 +5,13 @@ import ligo.skymap.moc as lsm_moc
 from astropy.table import Table
 from ligo.skymap.io import read_sky_map
 
+###
+# This module reads LVK GWTC skymaps from a given directory.
+# The relevant directory is to be constructed by downloading the LVK GWTC3 skymaps, from the paths below:
+#   "GWTC2": "https://dcc.ligo.org/public/0169/P2000223/007/all_skymaps.tar"
+#   "GWTC2.1": "https://zenodo.org/records/6513631/files/IGWN-GWTC2p1-v2-PESkyMaps.tar.gz"
+#   "GWTC3": "https://zenodo.org/records/8177023/files/IGWN-GWTC3p0-v2-PESkyLocalizations.tar.gz"
+
 
 def get_gwtc_skymap(
     mapdir,

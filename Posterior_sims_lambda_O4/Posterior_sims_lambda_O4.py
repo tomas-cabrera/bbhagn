@@ -2,6 +2,7 @@
 
 ###############################################################################
 
+import os
 import os.path as pa
 import sys
 from multiprocessing import Pool
@@ -53,9 +54,12 @@ def lnprior(theta):
 
 def lnprob(
     theta,
+    H0,
+    omegam,
     s_arrs,
     b_arrs,
     frac_det,
+    n_flares_bgs,
 ):
     """! Calculates the log posterior probability, given some signal and background.
 
@@ -80,11 +84,14 @@ def lnprob(
     if not np.isfinite(lp):
         return -np.inf
 
-    # Extract lambda and H0 values
+    # Extract lambda values
     lam_po = theta
 
+    # Package parameters
+    theta_all = (lam_po, H0, omegam)
+
     # Calculate lnlike
-    lnlike = inference.lnlike_all(lam_po, s_arrs, b_arrs, frac_det)
+    lnlike = inference.lnlike_all(theta_all, s_arrs, b_arrs, frac_det, n_flares_bgs)
 
     return lp + lnlike
 
@@ -96,6 +103,7 @@ if __name__ == "__main__":
     ##############################
     ###       Constants        ###
     ##############################
+    print("*" * 20, "Initializing", "*" * 20)
 
     # Load yaml file
     config_file = sys.argv[
@@ -128,18 +136,23 @@ if __name__ == "__main__":
     ds_arr_norm = np.linspace(0, maxdist.value, num=1000)
 
     ##############################
-    ###         Science        ###
+    ###        Load/calc       ###
     ##############################
-    print("*" * 20, "Preparation", "*" * 20)
+    print("*" * 20, "Preparing inputs", "*" * 20)
 
-    lnprob_args = inference.setup(config, df_fitparams)
+    #########################
+    ###      Science      ###
+    #########################
+    print("Setting up science...")
 
-    ##############################
-    ###       Calc. arrs       ###
-    ##############################
+    lnprob_args = inference.setup(config, df_fitparams, nproc=config["nproc"])
+
+    #########################
+    ###    Calc. arrs     ###
+    #########################
     print("Calculating signal and background arrays...")
 
-    s_arrs, b_arrs = inference.calc_arrs(
+    s_arrs, b_arrs, n_flares_bgs = inference.calc_arrs(
         config["H00"],
         config["Om0"],
         config["followup_prob"],
@@ -163,9 +176,12 @@ if __name__ == "__main__":
     # Define sampler kwargs
     sampler_kwargs = {
         "args": (
+            config["H00"],
+            config["Om0"],
             s_arrs,
             b_arrs,
             config["frac_det"],
+            n_flares_bgs,
         ),
     }
     # Define run_mcmc args
