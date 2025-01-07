@@ -160,6 +160,10 @@ for flarename in tqdm(np.unique(g23.DF_ASSOC["flarename"])):
 
             # Fit lightcurve
             p0 = [t_peak, -1, 10, 20, 20]
+            bounds = (
+                [t_peak - 10, -np.inf, 0, 0, -np.inf],
+                [t_peak + 10, 0, np.inf, np.inf, np.inf],
+            )
             try:
                 popt, pcov = curve_fit(
                     graham23_flare_model,
@@ -167,6 +171,7 @@ for flarename in tqdm(np.unique(g23.DF_ASSOC["flarename"])):
                     y_train,
                     sigma=np.mean(y_err_train, axis=1),
                     p0=p0,
+                    bounds=bounds,
                 )
             except np.AxisError:
                 try:
@@ -176,6 +181,7 @@ for flarename in tqdm(np.unique(g23.DF_ASSOC["flarename"])):
                         y_train,
                         sigma=y_err_train,
                         p0=p0,
+                        bounds=bounds,
                     )
                 except RuntimeError:
                     popt = [np.nan] * len(p0)
