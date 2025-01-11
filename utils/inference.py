@@ -7,6 +7,7 @@ import astropy_healpix as ah
 import numpy as np
 from astropy.cosmology import FlatLambdaCDM
 from ligo.skymap.postprocess.crossmatch import crossmatch
+import ligo.skymap.moc as lsm_moc
 from myagn import distributions as myagndistributions
 from myagn.flares import models as myflaremodels
 from numpy.polynomial.polynomial import Polynomial
@@ -61,17 +62,23 @@ def lnlike_all(theta, s_arrs, b_arrs, frac_det, n_flares_bgs):
     lnlike_arr = np.zeros(len(s_arrs))
     for i in range(len(s_arrs)):
         # Get arrays
-        s_arr = s_arrs[i]
-        b_arr = b_arrs[i]
+        s_arr_i = s_arrs[i]
+        b_arr_i = b_arrs[i]
+        n_flares_bgs_i = n_flares_bgs[i]
+
+        # Get non-filled values
+        s_arr_i = s_arr_i[s_arr_i != 0]
+        b_arr_i = b_arr_i[b_arr_i != 1]
+        n_flares_bgs_i = n_flares_bgs_i[~np.isnan(n_flares_bgs_i)]
 
         ####################
         ###  Likelihood  ###
         ####################
         # If there are any candidates, calculate the log likelihood
-        if (s_arr.shape[0]) > 0:
+        if (s_arr_i.shape[0]) > 0:
             # lnlike_arr.append(lnlike(s_arr,b_arr,lam_arr,f))
             lnlike_arr[i] = lnlike(
-                theta, s_arr.value, b_arr, frac_det, np.nanmax(n_flares_bgs[i])
+                theta, s_arr_i, b_arr_i, frac_det, np.nanmax(n_flares_bgs_i)
             )
 
         else:
@@ -192,7 +199,6 @@ def calc_arrs(
     distmu,
     distsigma,
     cand_hpxprob_arr,
-    cand_hpixs_arr,
     cand_zs_arr,
     n_idx_sort_cut,
     n_agn_coeffs,
@@ -204,15 +210,24 @@ def calc_arrs(
     # Initialize cosmology
     thiscosmo = FlatLambdaCDM(H0=H0, Om0=omegam)
 
-    # Iterate through GW followups
+    # Initialize redshift grid
     zs_arr = np.linspace(z_min_b, z_max_b, num=1000)
-    s_arrs = []
-    b_arrs = []
-    B_expected_ns = []
-    for i in range(len(cand_hpixs_arr)):
+
+    # Iterate through true associations
+    s_arrs = np.zeros_like(cand_hpxprob_arr)
+    b_arrs = np.ones_like(cand_hpxprob_arr)
+    B_expected_ns = np.ones_like(cand_hpxprob_arr) * np.nan
+    # Iterate over GW followups
+    for gwi in range(cand_hpxprob_arr.shape[0]):
+        # Get flare indices
+        fis = list(np.where(~np.isnan(cand_hpxprob_arr[gwi]))[0])
+
+        # Skip remainder if no candidates
+        if len(fis) == 0:
+            continue
+
         # Get/calculate candidate coordinates, number of candidates for this followup
-        followup_hpixs = cand_hpixs_arr[i]
-        followup_zs = cand_zs_arr[i]
+        followup_zs = cand_zs_arr[fis]
         ncands = followup_zs.shape[0]
 
         ####################
@@ -220,20 +235,13 @@ def calc_arrs(
         ####################
 
         # Use coeffs to interpolate number of AGN in volume
-        n_agn = np.polynomial.Polynomial(n_agn_coeffs[i])(H0)
+        n_agn = np.polynomial.Polynomial(n_agn_coeffs[gwi])(H0)
 
         # Multiply by flare rate to get expected number of background flares
-        B_expected_n = n_agn * flares_per_agn[i]
+        B_expected_n = n_agn * flares_per_agn[fis]
 
-        B_expected_ns.append(B_expected_n)
-
-        ####################
-        # Skip remainder if no candidates
-        if ncands == 0:
-            s_arrs.append(np.array([]))
-            b_arrs.append(np.array([]))
-            continue
-        ####################
+        # Add to array
+        B_expected_ns[gwi, fis] = B_expected_n
 
         ####################
         ###    Signal    ###
@@ -241,11 +249,11 @@ def calc_arrs(
 
         # Calculate GW counterpart probabilities
         s_arr = calc_s_arr(
-            cand_hpxprob_arr[i],
+            cand_hpxprob_arr[gwi][fis],
             pb_frac,
-            distnorm[i],
-            distmu[i],
-            distsigma[i],
+            distnorm[gwi][fis],
+            distmu[gwi][fis],
+            distsigma[gwi][fis],
             followup_zs,
             thiscosmo,
             zs_arr,
@@ -258,8 +266,8 @@ def calc_arrs(
         # Calculate background probabilities
         b_arr = calc_b_arr(
             followup_zs,
-            f_covers[i],
-            n_idx_sort_cut[i],
+            f_covers[gwi],
+            n_idx_sort_cut[gwi],
             B_expected_n,
             thiscosmo,
             zs_arr,
@@ -267,11 +275,12 @@ def calc_arrs(
         )
 
         ####################
-        ###    Append    ###
+        ###    Add to arrs   ###
         ####################
 
-        s_arrs.append(s_arr)
-        b_arrs.append(b_arr)
+        # Add to arrays
+        s_arrs[gwi, fis] = s_arr
+        b_arrs[gwi, fis] = b_arr
 
     return s_arrs, b_arrs, B_expected_ns
 
@@ -297,14 +306,14 @@ def _setup_task(i, config, df_fitparams):
     print("Loading skymap...")
 
     # Load skymap
-    hs_flat = io.get_flattened_skymap(config["gwmapdir"], g23.DF_GW["gweventname"][i])
+    sm = io.get_gwtc_skymap(config["gwmapdir"], g23.DF_GW["gweventname"][i])
 
     # Get data from skymap
-    pb = np.array(hs_flat["PROB"])
-    distnorm = np.array(hs_flat["DISTNORM"])
-    distmu = np.array(hs_flat["DISTMU"])
-    distsigma = np.array(hs_flat["DISTSIGMA"])
-    NSIDE = ah.npix_to_nside(len(hs_flat))
+    sm["PROB"] = sm["PROBDENSITY"] * lsm_moc.uniq2pixarea(sm["UNIQ"])
+    pb = np.array(sm["PROB"])
+    distnorm = np.array(sm["DISTNORM"])
+    distmu = np.array(sm["DISTMU"])
+    distsigma = np.array(sm["DISTSIGMA"])
 
     # Make idx_sort_up (array of pb indices, from highest to lowest pb)
     idx_sort = np.argsort(pb)
@@ -327,93 +336,49 @@ def _setup_task(i, config, df_fitparams):
 
     # Get flares for this followup
     assoc_mask = g23.DF_ASSOC["gweventname"] == gweventname
-    df_assoc_event = g23.DF_ASSOC[assoc_mask]
+    followup_flares = g23.DF_ASSOC["flarename"][assoc_mask]
 
-    # Get hpxs for the flares
-    hpixs = np.array(
-        ah.lonlat_to_healpix(
-            df_assoc_event["flare_ra"].values * u.deg,
-            df_assoc_event["flare_dec"].values * u.deg,
-            NSIDE,
-            order="nested",
+    # Iterate over flares
+    pbs = []
+    distnorms = []
+    distmus = []
+    distsigmas = []
+    for _, fr in g23.DF_FLARE.iterrows():
+        # Check if flare in followup
+        if fr["flarename"] not in followup_flares.values:
+            pbs.append(np.nan)
+            distnorms.append(np.nan)
+            distmus.append(np.nan)
+            distsigmas.append(np.nan)
+            continue
+
+        # Get uniqs for the flare
+        lon = fr["flare_ra"] * u.deg
+        lat = fr["flare_dec"] * u.deg
+        uniq = io.lonlat_to_uniq(
+            lon,
+            lat,
+            sm["UNIQ"],
         )
-    )
+        ind_sm = np.where(sm["UNIQ"] == uniq)[0][0]
 
-    # Get redshifts for the flares
-    zs = df_assoc_event["Redshift"].values
+        # Get data for flare
+        pbs.append(pb[ind_sm])
+        distnorms.append(distnorm[ind_sm])
+        distmus.append(distmu[ind_sm])
+        distsigmas.append(distsigma[ind_sm])
 
-    # Compile positions and z for all candidates in this follow up
-    return_dict["cand_hpixs"] = np.array(hpixs)
-    return_dict["cand_zs"] = np.array(zs)
-    if len(hpixs) == 0:
-        return_dict["pbs"] = np.array([])
-        return_dict["distnorms"] = np.array([])
-        return_dict["distmus"] = np.array([])
-        return_dict["distsigmas"] = np.array([])
-    else:
-        return_dict["pbs"] = pb[hpixs]
-        return_dict["distnorms"] = distnorm[hpixs]
-        return_dict["distmus"] = distmu[hpixs]
-        return_dict["distsigmas"] = distsigma[hpixs]
+    # Add to return_dict
+    return_dict["pbs"] = pbs
+    return_dict["distnorms"] = distnorms
+    return_dict["distmus"] = distmus
+    return_dict["distsigmas"] = distsigmas
 
     ##############################
     ###    Background rate     ###
     ##############################
 
     print("Calculating background rate...")
-
-    ### Set flares/AGN rate
-
-    # Set flare model
-    flaremodel = getattr(
-        myflaremodels,
-        config["flare_rate"]["model"],
-    )(
-        *config["flare_rate"]["args"],
-        **config["flare_rate"]["kwargs"],
-    )
-
-    # Iterate over flares
-    flares_per_agn_temp = []
-    for ri, r in df_assoc_event.iterrows():
-        # Get fitparams
-        df_fitparams_flare = df_fitparams[df_fitparams["flarename"] == r["flarename"]]
-
-        # Iterate over filters
-        rates = []
-        print("\n", r["flarename"])
-        for f in df_fitparams_flare["filter"]:
-            # Use only g and r band data
-            if f not in ["g", "r"]:
-                continue
-
-            # Get row
-            params = df_fitparams_flare[df_fitparams_flare["filter"] == f]
-
-            # Calculate structure function prob
-            # 3σ = 3 * t_rise is a conservative estimate for the Δt of the Δm
-            # / (1+z) converts to rest frame timescale
-            delta_t = 3 * params["t_rise"].values[0] / (1 + r["Redshift"])
-            prob = flaremodel.flare_rate(
-                f,
-                delta_t,
-                -params["f_peak"].values[0],
-                r["Redshift"],
-            )
-
-            # Scale to follow-up window
-            rate = prob * config["dt_followup"]
-            print(f, rate)
-
-            # Append to list
-            rates.append(rate)
-
-        # Save maximum rate
-        flares_per_agn_temp.append(np.nanmin(rates))
-
-    # Cast as array
-    flares_per_agn_temp = np.array(flares_per_agn_temp)
-    return_dict["flares_per_agn"] = flares_per_agn_temp
 
     ### Set AGN count model (polynomial as function of H0)
     # Get AGN distribution
@@ -474,6 +439,65 @@ def _setup_task(i, config, df_fitparams):
 
 
 def setup(config, df_fitparams, nproc=1):
+    ##############################
+    ###    Flares  ###
+    ##############################
+
+    # Set cand_zs
+    cand_zs = g23.DF_FLARE["Redshift"].values
+
+    # flares_per_agn rates
+    # Set flare model
+    flaremodel = getattr(
+        myflaremodels,
+        config["flare_rate"]["model"],
+    )(
+        *config["flare_rate"]["args"],
+        **config["flare_rate"]["kwargs"],
+    )
+
+    # Iterate over flares
+    flares_per_agn = []
+    for _, fr in g23.DF_FLARE.iterrows():
+        # Get fitparams
+        df_fitparams_flare = df_fitparams[df_fitparams["flarename"] == fr["flarename"]]
+
+        # Iterate over filters
+        rates = []
+        print("\n", fr["flarename"])
+        for f in df_fitparams_flare["filter"]:
+            # Use only g and r band data
+            if f not in ["g", "r"]:
+                continue
+
+            # Get row
+            params = df_fitparams_flare[df_fitparams_flare["filter"] == f]
+
+            # Calculate structure function prob
+            # 3σ = 3 * t_rise is a conservative estimate for the Δt of the Δm
+            # / (1+z) converts to rest frame timescale
+            delta_t = 3 * params["t_rise"].values[0] / (1 + fr["Redshift"])
+            prob = flaremodel.flare_rate(
+                f,
+                delta_t,
+                -params["f_peak"].values[0],
+                fr["Redshift"],
+            )
+
+            # Scale to follow-up window
+            rate = prob * config["dt_followup"]
+            print(f, rate)
+
+            # Append to list
+            rates.append(rate)
+
+        # Save lowest rate
+        flares_per_agn.append(np.nanmin(rates))
+
+    ##############################
+    ###    GWs + flares        ###
+    ##############################
+
     # Iterate over followups
     if nproc > 1:
         from multiprocessing import Pool
@@ -487,16 +511,14 @@ def setup(config, df_fitparams, nproc=1):
         results = [_setup_task(i, config, df_fitparams) for i in g23.DF_GW.index]
 
     # Unpack results
-    f_covers = [r["f_covers"] for r in results]
-    distnorms = [r["distnorms"] for r in results]
-    distmus = [r["distmus"] for r in results]
-    distsigmas = [r["distsigmas"] for r in results]
-    pbs = [r["pbs"] for r in results]
-    cand_hpixs = [r["cand_hpixs"] for r in results]
-    cand_zs = [r["cand_zs"] for r in results]
+    f_covers = np.array([r["f_covers"] for r in results])
+    distnorms = np.array([r["distnorms"] for r in results])
+    distmus = np.array([r["distmus"] for r in results])
+    distsigmas = np.array([r["distsigmas"] for r in results])
+    pbs = np.array([r["pbs"] for r in results])
     n_idx_sort_cut = [r["n_idx_sort_cut"] for r in results]
     n_agn_coeffs = [r["n_agn_coeffs"] for r in results]
-    flares_per_agn = [r["flares_per_agn"] for r in results]
+    flares_per_agn = np.array(flares_per_agn)
 
     return (
         f_covers,
@@ -504,7 +526,6 @@ def setup(config, df_fitparams, nproc=1):
         distmus,
         distsigmas,
         pbs,
-        cand_hpixs,
         cand_zs,
         n_idx_sort_cut,
         n_agn_coeffs,

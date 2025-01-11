@@ -1,5 +1,6 @@
 import glob
 
+import numpy as np
 import astropy_healpix as ah
 import ligo.skymap.moc as lsm_moc
 from astropy.table import Table
@@ -174,3 +175,76 @@ def get_flattened_skymap(mapdir, gweventname):
     )
 
     return hs_flat
+
+
+def _lonlat_to_uniq_single(lon, lat, uniqs_test, max_level=12):
+    """Find uniq pixel for lon, lat in list of uniqs.
+
+    Parameters
+    ----------
+    lon : _type_
+        _description_
+    lat : _type_
+        _description_
+    uniqs_test : _type_
+        _description_
+    """
+    # Initialize levels, nsides
+    levels = np.arange(max_level)
+    nsides = ah.level_to_nside(levels)
+
+    # Get uniqs for lon, lat for all nsides
+    # lon_arr = [lon.value] * max_level * lon.unit
+    # lat_arr = [lat.value] * max_level * lat.unit
+    ipixs = ah.lonlat_to_healpix(lon, lat, nsides, order="nested")
+    uniqs_lonlat = ah.level_ipix_to_uniq(levels, ipixs)
+
+    # Find matching uniqs
+    match = np.isin(uniqs_lonlat, uniqs_test)
+    if not np.any(match):
+        print(uniqs_lonlat)
+        print(uniqs_test)
+        print(match)
+        print(np.sum(match))
+        raise ValueError("No matching uniq found")
+    elif np.sum(match) > 1:
+        print(uniqs_lonlat)
+        print(uniqs_test)
+        print(match)
+        print(np.sum(match))
+        raise ValueError("Multiple matching uniqs found")
+    else:
+        return uniqs_lonlat[match][0]
+
+
+def lonlat_to_uniq(lon_arr, lat_arr, uniqs_test, max_level=12):
+    """Find uniq pixel for lon, lat in list of uniqs.
+
+    Parameters
+    ----------
+    lon : _type_
+        _description_
+    lat : _type_
+        _description_
+    uniqs_test : _type_
+        _description_
+    """
+    if np.isscalar(lon_arr.value):
+        return _lonlat_to_uniq_single(
+            lon_arr,
+            lat_arr,
+            uniqs_test,
+            max_level,
+        )
+    else:
+        return np.array(
+            [
+                _lonlat_to_uniq_single(
+                    lon_i,
+                    lat_i,
+                    uniqs_test,
+                    max_level,
+                )
+                for lon_i, lat_i in zip(lon_arr, lat_arr)
+            ]
+        )

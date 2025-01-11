@@ -215,6 +215,11 @@ if __name__ == "__main__":
     print("Saving data...")
     np.savetxt(f"{config_dir}/O4_samples_graham23.dat", flat_samples)
 
+    ##############################
+    ###       Corner plot      ###
+    ##############################
+    print("*" * 20, "Corner plot", "*" * 20)
+
     # Make+save corner plot
     print("Making corner plot...")
     labels = [r"$\lambda$", r"$H_0$ [km/s/Mpc]"]

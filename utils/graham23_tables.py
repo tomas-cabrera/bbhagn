@@ -29,8 +29,14 @@ for f in DF_ASSOC["flarename"]:
 DF_ASSOC["flare_ra"] = flareras
 DF_ASSOC["flare_dec"] = flaredecs
 
+# Get flare information
+# Columns not identical across GW events are dropped
+DF_FLARE = DF_ASSOC.drop_duplicates(subset=["flarename"]).drop(
+    columns=["gweventname", "ConfLimit", "vk_max"]
+)
+
 # Get bright? GW information
 DF_GWBRIGHT = pd.read_csv(f"{TABLEDIR}/graham23_table4.plus.dat", sep="\s+")
 
 # Get background flare information
-DF_FLAREPARAMS = pd.read_csv(f"{TABLEDIR}/graham23_table5.plus.dat", sep="\s+")
+DF_ASSOCPARAMS = pd.read_csv(f"{TABLEDIR}/graham23_table5.plus.dat", sep="\s+")
