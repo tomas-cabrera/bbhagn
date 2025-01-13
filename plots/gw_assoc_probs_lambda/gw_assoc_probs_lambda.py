@@ -4,6 +4,7 @@ import sys
 
 import astropy.units as u
 import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 import numpy as np
 import pandas as pd
 import yaml
@@ -96,35 +97,79 @@ def plot_association_pdf(directory, signal, background, ax=None):
     # Convert the samples to the association samples
     assoc_samples = samples * signal / (samples * signal + background)
 
-    # Calculate kernel
-    # kernel = gaussian_kde(assoc_samples)
-    # x_kernel = np.linspace(0, 1, 1000)
-    # y_kernel = kernel(x_kernel)
-
-    # Calculate quantiles
-    # TODO: calculate as horizontal slice containing sigma intervals
-
     # Plot
     savefig = False
     if ax is None:
         savefig = True
         fig, ax = plt.subplots()
-    ax.hist(assoc_samples, bins=np.linspace(0, 1, 30), histtype="step", density=True)
-    # ax.plot(x_kernel, y_kernel)
+    n, bins, patches = ax.hist(
+        assoc_samples,
+        bins=np.linspace(0, 1, 30),
+        histtype="step",
+        density=True,
+        rasterized=True,
+    )
+    # Quantiles
+    if signal != 0:
+        quants = np.quantile(assoc_samples, [0.16, 0.5, 0.84])
+        med = quants[1]
+        lo = quants[1] - quants[0]
+        hi = quants[2] - quants[1]
+        ax.text(
+            0.95,
+            1.05 - float(pa.basename(directory)) / 8,
+            f"${med:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$",
+            ha="right",
+            va="top",
+            transform=ax.transAxes,
+            fontsize=10,
+            bbox=dict(
+                facecolor=patches[0].get_facecolor(),
+                edgecolor=patches[0].get_edgecolor(),
+                pad=0.2,
+            ),
+            rasterized=True,
+        )
+
+        # Shade hist between lo and hi
+        def hist_at_x(x):
+            inds = np.digitize(x, bins) - 1
+            inds = np.clip(inds, 0, len(n) - 1)
+            return n[inds]
+
+        x = np.linspace(0, 1, 1000)
+        ax.fill_between(
+            x,
+            0,
+            hist_at_x(x),
+            where=(x >= quants[0]) & (x <= quants[2]),
+            color=patches[0].get_facecolor(),
+            alpha=0.5,
+            rasterized=True,
+        )
+        # Plot line for median
+        ax.vlines(
+            med,
+            0,
+            n[np.digitize(med, bins) - 1],
+            color=patches[0].get_edgecolor(),
+            rasterized=True,
+        )
+
     if savefig:
         ax.set_xlabel("Association Probability")
         ax.set_ylabel("PDF")
         plt.savefig(pa.join(directory, "association_pdf.png"))
 
 
-def plot_association_pdfs(directory, s_arr, b_arr):
-    # Trim s_arr and b_arr to rows with associations
-    assoc_rows = np.unique(np.where(s_arr > 0)[0])
-    s_arr_assoc = s_arr.iloc[assoc_rows, :]
-    b_arr_assoc = b_arr.iloc[assoc_rows, :]
-    # Get GW and flare names
-    gweventnames = g23.DF_GWBRIGHT.sort_values("dataset")["gweventname"].values
-    flarenames = g23.DF_FLARE["flarename"].values
+def initialize_mosaic_axes(
+    gweventnames,
+    flarenames,
+    subplot_mosaic_kwargs={
+        "figsize": (11, 7.5),
+        "gridspec_kw": {"wspace": 0.0, "hspace": 0.0},
+    },
+):
     # Initialize figure
     mosaic_arr = []
     for fn in flarenames:
@@ -132,14 +177,22 @@ def plot_association_pdfs(directory, s_arr, b_arr):
         for gwn in gweventnames:
             mosaic_row.append(f"{fn}|{gwn}")
         mosaic_arr.append(mosaic_row)
+    # Initialize axes
     fig, axs = plt.subplot_mosaic(
         mosaic_arr,
-        figsize=(7, 5),
-        gridspec_kw={
-            "wspace": 0.0,
-            "hspace": 0.0,
-        },
+        **subplot_mosaic_kwargs,
     )
+    return fig, axs
+
+
+def plot_association_pdf_grid(
+    directory,
+    gweventnames,
+    flarenames,
+    s_arr_assoc,
+    b_arr_assoc,
+    axs,
+):
     # Plot; iterate over flares + gws
     for fi, fn in enumerate(flarenames):
         for gi, gn in enumerate(gweventnames):
@@ -152,39 +205,174 @@ def plot_association_pdfs(directory, s_arr, b_arr):
                 b_arr_assoc.loc[gn, fn],
                 ax=ax,
             )
-            # If non-assoc, set background to gray
-            if s_arr_assoc.loc[gn, fn] == 0:
-                ax.set_facecolor("lightgray")
             # Formatting
             ax.set_xlim(0, 1)
-            ax.set_xticks([])
-            ax.set_yticks([])
+            ax.set_ylim(0, 7)
+            # Define flags
+            bottom = fi == len(flarenames) - 1
+            top = fi == 0
+            left = gi == 0
+            right = gi == len(gweventnames) - 1
+            assoc = s_arr_assoc.loc[gn, fn] != 0
+            # General labels
+            ax.set_xticks(np.arange(0, 1, 0.25))
+            ax.set_yticks(np.arange(0, 8, 2))
+            ax.tick_params(
+                "both",
+                direction="in",
+                length=2,
+                bottom=True,
+                top=True,
+                left=True,
+                right=True,
+            )
+            # Ticks
+            if not assoc:
+                ax.set_facecolor("lightgray")
+                tps = ax.tick_params()
+                ax.tick_params(
+                    "both",
+                    length=1,
+                )
             # Label axes
-            if gi == 0:
-                ax.set_ylabel(fn, rotation=45, ha="right")
-            if fi == len(flarenames) - 1:
-                ax.set_xlabel(gn, rotation=45, ha="right")
+            if top:
+                ax.annotate(
+                    gn,
+                    xy=(0.5, 1.1),
+                    xycoords="axes fraction",
+                    ha="left",
+                    # va="center",
+                    rotation=45,
+                    rasterized=True,
+                )
+            if bottom:
+                ax.set_xlabel(r"$p^{\rm GW-AGN}_{ij}$")
+                xtl = ax.get_xticklabels()
+                xtl[0] = ""
+                xtl[2] = ""
+                ax.set_xticklabels(xtl)
+            else:
+                ax.set_xticklabels([])
+            if right:
+                ax.annotate(
+                    fn,
+                    xy=(1.1, 0.5),
+                    xycoords="axes fraction",
+                    ha="left",
+                    # va="center",
+                    rotation=45,
+                    rasterized=True,
+                )
+            if left:
+                ax.set_ylabel("PDF")
+                ytl = ax.get_yticklabels()
+                ytl[0] = ""
+                ax.set_yticklabels(ytl)
+            else:
+                ax.set_yticklabels([])
+    # # Save
+    # plt.tight_layout()
+    # figpath = pa.join(
+    #     pa.dirname(__file__),
+    #     f"association_pdf_grid_{pa.basename(directory)}.pdf",
+    # )
+    # os.makedirs(pa.dirname(figpath), exist_ok=True)
+    # plt.savefig(
+    #     figpath,
+    #     dpi=300,
+    # )
+    # plt.savefig(
+    #     figpath.replace(".pdf", ".png"),
+    #     dpi=300,
+    # )
+
+
+def plot_association_pdfs(
+    directories,
+    gweventnames,
+    flarenames,
+    s_arrs,
+    b_arrs,
+    axs=None,
+):
+    # Initialize figure if needed
+    if axs is None:
+        fig, axs = initialize_mosaic_axes(gweventnames, flarenames)
+    # Plot
+    for d, s, b in zip(directories, s_arrs, b_arrs):
+        # Trim s_arr and b_arr to rows with associations
+        assoc_rows = np.unique(np.where(s > 0)[0])
+        s_arr_assoc = s.iloc[assoc_rows, :]
+        b_arr_assoc = b.iloc[assoc_rows, :]
+        plot_association_pdf_grid(
+            d,
+            gweventnames,
+            flarenames,
+            s_arr_assoc,
+            b_arr_assoc,
+            axs,
+        )
+    # Add legend
+    ax = axs[f"{flarenames[-1]}|{gweventnames[0]}"]
+    legend_elements = [
+        Patch(
+            facecolor="none",
+            edgecolor=plt.rcParams["axes.prop_cycle"].by_key()["color"][0],
+            label="Volumetric",
+        ),
+        Patch(
+            facecolor="none",
+            edgecolor=plt.rcParams["axes.prop_cycle"].by_key()["color"][1],
+            label="QLF",
+        ),
+    ]
+    ax.set_zorder(100)
+    ax.legend(
+        handles=legend_elements,
+        title="AGN Distribution",
+        facecolor="white",
+        edgecolor="black",
+        framealpha=1,
+    )
     # Save
     plt.tight_layout()
     figpath = pa.join(
         pa.dirname(__file__),
-        f"association_pdf_grid_{pa.basename(directory)}.png",
+        "association_pdf_grid.pdf",
     )
     os.makedirs(pa.dirname(figpath), exist_ok=True)
-    plt.savefig(figpath)
+    plt.savefig(
+        figpath,
+        dpi=300,
+    )
+    plt.savefig(
+        figpath.replace(".pdf", ".png"),
+        dpi=300,
+    )
 
 
 ################################################################################
 
 # Get the directory path from the command line
 try:
-    path = sys.argv[1]
+    paths = sys.argv[1:]
 except IndexError:
     print("Usage: python gw_association_probabilities.py <path_to_directory>")
     raise
 
 # Calc the association probabilities
-s_arr, b_arr, n_flares_bgs = calc_arrs_for_directory(path, force=False)
+s_arrs = []
+b_arrs = []
+n_flares_bgs = []
+for p in paths:
+    s_arr, b_arr, n_flares_bg = calc_arrs_for_directory(p, force=False)
+    s_arrs.append(s_arr)
+    b_arrs.append(b_arr)
+    n_flares_bgs.append(n_flares_bg)
+
+# Get GW and flare names
+gweventnames = g23.DF_GWBRIGHT.sort_values("dataset")["gweventname"].values
+flarenames = g23.DF_FLARE["flarename"].values
 
 # Plot the association probabilities
-plot_association_pdfs(path, s_arr, b_arr)
+plot_association_pdfs(paths, gweventnames, flarenames, s_arrs, b_arrs)

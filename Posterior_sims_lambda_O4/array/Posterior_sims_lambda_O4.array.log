@@ -1,5 +1,5 @@
 + date
-Sat Nov  9 07:38:35 EST 2024
+Fri Jan 10 12:17:58 EST 2025
 + module purge
 ++ /usr/share/lmod/lmod/libexec/lmod bash purge
 + eval unset 'CONDA_DEFAULT_ENV;' unset 'CONDA_EXE;' unset 'CONDA_PKGS_DIRS;' unset 'CONDA_PREFIX;' unset 'CONDA_PROMPT_MODIFIER;' unset 'CONDA_SHLVL;' unset '__LMOD_REF_COUNT_LOADEDMODULES;' unset 'LOADEDMODULES;' 'MODULEPATH=/etc/scl/modulefiles:/opt/modulefiles:/usr/share/modulefiles:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core;' export 'MODULEPATH;' '__LMOD_REF_COUNT_PATH=/opt/packages/anaconda3/bin:1\;/opt/packages/anaconda3/condabin:1\;/hildafs/home/tcabrera/.local/bin:1\;/hildafs/home/tcabrera/bin:1\;/usr/local/bin:1\;/usr/bin:1\;/usr/local/sbin:1\;/usr/sbin:1\;/opt/puppetlabs/bin:1;' export '__LMOD_REF_COUNT_PATH;' 'PATH=/opt/packages/anaconda3/bin:/opt/packages/anaconda3/condabin:/hildafs/home/tcabrera/.local/bin:/hildafs/home/tcabrera/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin;' export 'PATH;' unset '_CE_CONDA;' unset '_CE_M;' unset '__LMOD_REF_COUNT__LMFILES_;' unset '_LMFILES_;' '_ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXt9LG1UPXt9LG1wYXRoQT17Ii9ldGMvc2NsL21vZHVsZWZpbGVzIiwiL29wdC9tb2R1bGVmaWxlcyIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMiLCIvdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4IiwiL3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9Db3JlIiwiL3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfSxbInN5c3RlbUJhc2VNUEFUSCJdPSIvb3B0L21vZHVsZWZpbGVzOi91c3Ivc2hhcmUvbW9kdWxlZmlsZXM6L3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9MaW51eDovdXNyL3NoYXJlL21v;' export '_ModuleTable001_;' '_ModuleTable002_=ZHVsZWZpbGVzL0NvcmU6L3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsfQ==;' export '_ModuleTable002_;' '_ModuleTable_Sz_=2;' export '_ModuleTable_Sz_;'
@@ -222,23 +222,23 @@ export CONDA_PYTHON_EXE='\''/opt/packages/anaconda3/bin/python'\'''
 + '[' -n '' ']'
 + hash -r
 + scriptPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/Posterior_sims_lambda_O4.py
-+ jobPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/2
-+ configPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/2/config.yaml
-+ logPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/2/Posterior_sims_lambda_O4.log
-+ python -u /hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/Posterior_sims_lambda_O4.py /hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/2/config.yaml
++ jobPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/1
++ configPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/1/config.yaml
++ logPATH=/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/1/Posterior_sims_lambda_O4.log
++ python -u /hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/Posterior_sims_lambda_O4.py /hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_sims_lambda_O4/array/1/config.yaml
 
-real	10m57.923s
-user	252m55.208s
-sys	6m11.562s
+real	16m16.866s
+user	341m58.161s
+sys	6m11.344s
 
-real	10m55.122s
-user	252m22.208s
-sys	5m59.484s
+real	16m23.954s
+user	346m27.550s
+sys	6m14.780s
 
-real	13m46.864s
-user	257m45.860s
-sys	11m38.810s
+real	18m31.292s
+user	391m45.442s
+sys	10m15.883s
 
-real	13m50.224s
-user	258m29.485s
-sys	11m33.574s
+real	18m39.747s
+user	395m34.621s
+sys	10m21.721s
