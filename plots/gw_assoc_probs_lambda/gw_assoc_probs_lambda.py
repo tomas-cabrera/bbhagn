@@ -354,11 +354,12 @@ def plot_association_pdfs(
 ################################################################################
 
 # Get the directory path from the command line
-try:
-    paths = sys.argv[1:]
-except IndexError:
+if len(sys.argv) == 1:
     print("Usage: python gw_association_probabilities.py <path_to_directory>")
-    raise
+    print("Defaulting to array jobs 1 and 3.")
+    paths = [pa.join(PROJDIR, f"Posterior_sims_lambda_O4/array/{i}") for i in [1, 3]]
+else:
+    paths = sys.argv[1:]
 
 # Calc the association probabilities
 s_arrs = []
