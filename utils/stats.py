@@ -5,6 +5,20 @@ from scipy.integrate import simpson
 
 
 def cl_around_mode(edg, myprob):
+    """_summary_
+
+    Parameters
+    ----------
+    edg : _type_
+        x-values that the function is evaluated at
+    myprob : _type_
+        values of the function at the x-values
+
+    Returns
+    -------
+    _type_
+        _description_
+    """
 
     peak = edg[np.argmax(myprob)]
     idx_sort_up = np.argsort(myprob)[::-1]
@@ -33,7 +47,7 @@ def cl_around_mode(edg, myprob):
             bmin = bmin - 1
             bmax = bmax
             bins.append(bmin - 1)
-        integr = simpson(myprob[bmin:bmax], edg[bmin:bmax])
-    print(integr, edg[bmin], edg[bmax])
+        integr = simpson(y=myprob[bmin:bmax], x=edg[bmin:bmax])
+    # print("cl_around_mode cl, min, max:", integr, edg[bmin], edg[bmax])
 
     return peak, edg[bmin], edg[bmax]

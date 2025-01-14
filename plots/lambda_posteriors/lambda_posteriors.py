@@ -15,6 +15,7 @@ sys.path.append(pa.dirname(pa.dirname(pa.dirname(__file__))))
 import utils.graham23_tables as g23
 from utils import inference
 from utils.paths import PROJDIR
+from utils.stats import cl_around_mode
 
 # Style file
 plt.style.use(f"{PROJDIR}/plots/matplotlibrc.mplstyle")
@@ -27,63 +28,40 @@ DF_FITPARAMS = pd.read_csv(f"{PROJDIR}/fit_lightcurves/fitparams.csv")
 def plot_lambda_posterior(path, plot_kwargs={}, ax=None):
     # Load samples
     samples = np.loadtxt(pa.join(path, "O4_samples_graham23.dat"))
+    # Gaussian kde
+    kernel = gaussian_kde(samples)
+    x = np.linspace(0, 0.3, 1001)
+    pdf = kernel(x)
     # Quantiles
-    quants = np.quantile(samples, [0.16, 0.5, 0.84])
-    med = quants[1]
-    lo = quants[1] - quants[0]
-    hi = quants[2] - quants[1]
-    quantstr = f"${med:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$"
-    # ax.text(
-    #     0.5,
-    #     0.5 - float(pa.basename(path)) / 16,
-    #     quantstr,
-    #     ha="center",
-    #     va="center",
-    #     transform=ax.transAxes,
-    #     fontsize=10,
-    #     bbox=dict(
-    #         facecolor=patches[0].get_facecolor(),
-    #         edgecolor=patches[0].get_edgecolor(),
-    #         pad=0.2,
-    #     ),
-    #     rasterized=True,
-    # )
+    quants = cl_around_mode(x, pdf)
+    peak = quants[0]
+    lo = peak - quants[1]
+    hi = quants[2] - peak
+    quantstr = f"${peak:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$"
     # Plot
     plot_kwargs["label"] += f": $\lambda$={quantstr}"
-    n, bins, patches = ax.hist(
-        samples,
-        bins=np.linspace(0, 0.3, 30),
-        histtype="step",
-        density=True,
-        lw=2,
-        rasterized=True,
-        **plot_kwargs,
-    )
-
-    # Shade hist between lo and hi
-    def hist_at_x(x):
-        inds = np.digitize(x, bins) - 1
-        inds = np.clip(inds, 0, len(n) - 1)
-        return n[inds]
-
-    x = np.linspace(0, 1, 1000)
+    lines = ax.plot(x, pdf, rasterized=True, **plot_kwargs)
     ax.fill_between(
         x,
         0,
-        hist_at_x(x),
-        where=(x >= quants[0]) & (x <= quants[2]),
-        color=patches[0].get_facecolor(),
+        pdf,
+        where=(x >= quants[1]) & (x <= quants[2]),
+        color=lines[0].get_color(),
         alpha=0.5,
         rasterized=True,
     )
     # Plot line for median
     ax.vlines(
-        med,
+        peak,
         0,
-        n[np.digitize(med, bins) - 1],
-        color=patches[0].get_edgecolor(),
+        pdf[np.digitize(peak, x) - 1],
+        color=lines[0].get_color(),
         rasterized=True,
     )
+    # Print quantiles
+    for q in [0.1, 0.16, 0.5, 0.84, 0.9]:
+        v = np.quantile(samples, q)
+        print(f"Quantiles {q}: {v:6.3f}")
 
 
 def plot_lambda_posteriors(paths):

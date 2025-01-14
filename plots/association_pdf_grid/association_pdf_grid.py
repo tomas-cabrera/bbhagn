@@ -15,6 +15,7 @@ sys.path.append(pa.dirname(pa.dirname(pa.dirname(__file__))))
 import utils.graham23_tables as g23
 from utils import inference
 from utils.paths import PROJDIR
+from utils.stats import cl_around_mode
 
 # Style file
 plt.style.use(f"{PROJDIR}/plots/matplotlibrc.mplstyle")
@@ -37,7 +38,7 @@ def calc_arrs_for_directory(directory, force=False):
         n_flares_bgs = pd.read_csv(n_flares_bgs_path, index_col=0)
     else:
         # Config
-        config = yaml.safe_load(open(pa.join(path, "config.yaml")))
+        config = yaml.safe_load(open(pa.join(directory, "config.yaml")))
         if config["agn_distribution"]["model"] == "ConstantPhysicalDensity":
             config["agn_distribution"]["args"] = (
                 config["agn_distribution"]["args"] * u.Mpc**-3
@@ -97,64 +98,98 @@ def plot_association_pdf(directory, signal, background, ax=None):
     # Convert the samples to the association samples
     assoc_samples = samples * signal / (samples * signal + background)
 
-    # Plot
+    # Gaussian kde
     savefig = False
-    if ax is None:
-        savefig = True
-        fig, ax = plt.subplots()
-    n, bins, patches = ax.hist(
-        assoc_samples,
-        bins=np.linspace(0, 1, 30),
-        histtype="step",
-        density=True,
-        rasterized=True,
-    )
-    # Quantiles
-    if signal != 0:
-        quants = np.quantile(assoc_samples, [0.16, 0.5, 0.84])
-        med = quants[1]
-        lo = quants[1] - quants[0]
-        hi = quants[2] - quants[1]
+    if np.nanmin(assoc_samples) != np.nanmax(assoc_samples):
+        kernel = gaussian_kde(assoc_samples)
+        try:
+            x = np.linspace(0, 1, 1001)
+            pdf = kernel(x)
+            quants = cl_around_mode(x, pdf)
+        except ValueError:
+            x = np.linspace(0, 1, 10001)
+            pdf = kernel(x)
+            quants = cl_around_mode(x, pdf)
+        lines = ax.plot(x, pdf, rasterized=True)
+        # Quantiles
+        peak = quants[0]
+        lo = peak - quants[1]
+        hi = quants[2] - peak
+        quantstr = f"${peak:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$"
+        ax.fill_between(
+            x,
+            0,
+            pdf,
+            where=(x >= quants[1]) & (x <= quants[2]),
+            color=lines[0].get_color(),
+            alpha=0.5,
+            rasterized=True,
+        )
         ax.text(
             0.95,
             1.05 - float(pa.basename(directory)) / 8,
-            f"${med:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$",
+            f"${peak:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$",
             ha="right",
             va="top",
             transform=ax.transAxes,
             fontsize=10,
             bbox=dict(
-                facecolor=patches[0].get_facecolor(),
-                edgecolor=patches[0].get_edgecolor(),
+                facecolor="none",
+                edgecolor=lines[0].get_color(),
                 pad=0.2,
             ),
             rasterized=True,
         )
-
-        # Shade hist between lo and hi
-        def hist_at_x(x):
-            inds = np.digitize(x, bins) - 1
-            inds = np.clip(inds, 0, len(n) - 1)
-            return n[inds]
-
-        x = np.linspace(0, 1, 1000)
-        ax.fill_between(
-            x,
-            0,
-            hist_at_x(x),
-            where=(x >= quants[0]) & (x <= quants[2]),
-            color=patches[0].get_facecolor(),
-            alpha=0.5,
-            rasterized=True,
-        )
         # Plot line for median
         ax.vlines(
-            med,
+            peak,
             0,
-            n[np.digitize(med, bins) - 1],
-            color=patches[0].get_edgecolor(),
+            pdf[np.digitize(peak, x) - 1],
+            color=lines[0].get_color(),
             rasterized=True,
         )
+    # # Plot
+    # if ax is None:
+    #     savefig = True
+    #     fig, ax = plt.subplots()
+    # n, bins, patches = ax.hist(
+    #     assoc_samples,
+    #     bins=np.linspace(0, 1, 30),
+    #     histtype="step",
+    #     density=True,
+    #     rasterized=True,
+    # )
+    # # Quantiles
+    # if signal != 0:
+    #     quants = np.quantile(assoc_samples, [0.16, 0.5, 0.84])
+    #     med = quants[1]
+    #     lo = quants[1] - quants[0]
+    #     hi = quants[2] - quants[1]
+
+    #     # Shade hist between lo and hi
+    #     def hist_at_x(x):
+    #         inds = np.digitize(x, bins) - 1
+    #         inds = np.clip(inds, 0, len(n) - 1)
+    #         return n[inds]
+
+    #     x = np.linspace(0, 1, 1000)
+    #     ax.fill_between(
+    #         x,
+    #         0,
+    #         hist_at_x(x),
+    #         where=(x >= quants[0]) & (x <= quants[2]),
+    #         color=patches[0].get_facecolor(),
+    #         alpha=0.5,
+    #         rasterized=True,
+    #     )
+    #     # Plot line for median
+    #     ax.vlines(
+    #         med,
+    #         0,
+    #         n[np.digitize(med, bins) - 1],
+    #         color=patches[0].get_edgecolor(),
+    #         rasterized=True,
+    #     )
 
     if savefig:
         ax.set_xlabel("Association Probability")
@@ -333,6 +368,7 @@ def plot_association_pdfs(
         facecolor="white",
         edgecolor="black",
         framealpha=1,
+        loc="lower left",
     )
     # Save
     plt.tight_layout()
