@@ -127,7 +127,7 @@ def plot_association_pdf(directory, signal, background, ax=None):
         )
         ax.text(
             0.95,
-            1.05 - float(pa.basename(directory)) / 8,
+            1.05 - float(pa.basename(directory)) / 16,
             f"${peak:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$",
             ha="right",
             va="top",
@@ -353,18 +353,18 @@ def plot_association_pdfs(
         Patch(
             facecolor="none",
             edgecolor=plt.rcParams["axes.prop_cycle"].by_key()["color"][0],
-            label="Volumetric",
+            label="1.06e-8",
         ),
         Patch(
             facecolor="none",
             edgecolor=plt.rcParams["axes.prop_cycle"].by_key()["color"][1],
-            label="QLF",
+            label="4.79e-8",
         ),
     ]
     ax.set_zorder(100)
     ax.legend(
         handles=legend_elements,
-        title="AGN Distribution",
+        title="Flares/AGN/day",
         facecolor="white",
         edgecolor="black",
         framealpha=1,
@@ -392,8 +392,8 @@ def plot_association_pdfs(
 # Get the directory path from the command line
 if len(sys.argv) == 1:
     print("Usage: python gw_association_probabilities.py <path_to_directory>")
-    print("Defaulting to array jobs 1 and 3.")
-    paths = [pa.join(PROJDIR, f"Posterior_sims_lambda_O4/array/{i}") for i in [1, 3]]
+    print("Defaulting to array jobs 3 and 7.")
+    paths = [pa.join(PROJDIR, f"Posterior_sims_lambda_O4/array/{i}") for i in [3, 7]]
 else:
     paths = sys.argv[1:]
 
@@ -410,6 +410,11 @@ for p in paths:
 # Get GW and flare names
 gweventnames = g23.DF_GWBRIGHT.sort_values("dataset")["gweventname"].values
 flarenames = g23.DF_FLARE["flarename"].values
+selected_flarenames = np.unique(g23.DF_ASSOC["flarename"].values)
+selected_gws = np.unique(g23.DF_ASSOC["gweventname"].values)
+gweventnames = np.array([gn for gn in gweventnames if gn in selected_gws])
+flarenames = np.array([fn for fn in flarenames if fn in selected_flarenames])
+
 
 # Plot the association probabilities
 plot_association_pdfs(paths, gweventnames, flarenames, s_arrs, b_arrs)
