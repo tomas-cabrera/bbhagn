@@ -38,7 +38,7 @@ def plot_lambda_posterior(path, plot_kwargs={}, ax=None):
     peak = quants[0]
     lo = peak - quants[1]
     hi = quants[2] - peak
-    quantstr = f"${peak:.4f}_{{- {lo:.4f}}}^{{+ {hi:.4f}}}$"
+    quantstr = f"${peak:.3f}_{{- {lo:.3f}}}^{{+ {hi:.3f}}}$"
     # Plot
     plot_kwargs["label"] += f": $\lambda$={quantstr}"
     lines = ax.plot(x, pdf, rasterized=True, **plot_kwargs)
