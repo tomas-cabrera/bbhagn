@@ -28,10 +28,11 @@ DF_FITPARAMS = pd.read_csv(f"{PROJDIR}/fit_lightcurves/fitparams.csv")
 def plot_lambda_posterior(path, plot_kwargs={}, ax=None):
     # Load samples
     samples = np.loadtxt(pa.join(path, "O4_samples_graham23.dat"))
+    samples_kde = np.concatenate([samples, -samples])
     # Gaussian kde
-    kernel = gaussian_kde(samples)
+    kernel = gaussian_kde(samples_kde)
     x = np.linspace(0, 0.2, 1001)
-    pdf = kernel(x)
+    pdf = 2 * kernel(x) # "2 *" because the KDE is normalized over [-samples_max, samples_max]
     # Quantiles
     quants = cl_around_mode(x, pdf)
     peak = quants[0]
@@ -63,7 +64,20 @@ def plot_lambda_posterior(path, plot_kwargs={}, ax=None):
         v = np.quantile(samples, q)
         print(f"Quantiles {q}: {v:6.3f}")
     print(f"Bayes factor [peak={peak:.3f}]/0: {(kernel(peak) / kernel(0))[0]}")
-    calc_zero_cl(x, pdf)
+    # calc_zero_cl(x, pdf)
+
+
+def plot_lambda_posterior_hist(path, plot_kwargs={}, ax=None):
+    # Load samples
+    samples = np.loadtxt(pa.join(path, "O4_samples_graham23.dat"))
+    # Plot
+    ax.hist(
+        samples,
+        bins=50,
+        density=True,
+        histtype="step",
+        **plot_kwargs,
+    )
 
 
 def plot_lambda_posteriors(paths):
@@ -74,8 +88,9 @@ def plot_lambda_posteriors(paths):
         figsize=(4, 3),
     )
     # Plot
-    for path, label in zip(paths, ["1.06e-8", "4.79e-8"]):
+    for path, label in zip(paths, [r"1.06 $\times$ 10$^{-8}$", r"4.79 $\times$ 10$^{-8}$"]):
         plot_lambda_posterior(
+        # plot_lambda_posterior_hist(
             path,
             ax=ax,
             plot_kwargs={"label": label},
@@ -93,12 +108,15 @@ def plot_lambda_posteriors(paths):
     plt.tight_layout()
     plt.savefig(
         __file__.replace(".py", ".pdf"),
+        # __file__.replace(".py", "_hist.pdf"),
         dpi=300,
     )
     plt.savefig(
         __file__.replace(".py", ".png"),
+        # __file__.replace(".py", "_hist.png"),
         dpi=300,
     )
+    plt.close()
 
 
 ################################################################################

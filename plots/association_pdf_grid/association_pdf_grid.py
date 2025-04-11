@@ -101,14 +101,15 @@ def plot_association_pdf(directory, signal, background, ax=None):
     # Gaussian kde
     savefig = False
     if np.nanmin(assoc_samples) != np.nanmax(assoc_samples):
-        kernel = gaussian_kde(assoc_samples)
+        assoc_samples_kde = np.concatenate([assoc_samples, -assoc_samples])
+        kernel = gaussian_kde(assoc_samples_kde)
         try:
             x = np.linspace(0, 1, 1001)
-            pdf = kernel(x)
+            pdf = 2 * kernel(x)
             quants = cl_around_mode(x, pdf)
         except ValueError:
             x = np.linspace(0, 1, 10001)
-            pdf = kernel(x)
+            pdf = 2 * kernel(x)
             quants = cl_around_mode(x, pdf)
         lines = ax.plot(x, pdf, rasterized=True)
         # Quantiles
