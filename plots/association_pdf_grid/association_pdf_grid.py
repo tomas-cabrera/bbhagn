@@ -354,12 +354,12 @@ def plot_association_pdfs(
         Patch(
             facecolor="none",
             edgecolor=plt.rcParams["axes.prop_cycle"].by_key()["color"][0],
-            label="1.06e-8",
+            label=r"$1.06 \times 10^{-8}$",
         ),
         Patch(
             facecolor="none",
             edgecolor=plt.rcParams["axes.prop_cycle"].by_key()["color"][1],
-            label="4.79e-8",
+            label=r"$4.79 \times 10^{-8}$",
         ),
     ]
     ax.set_zorder(100)
