@@ -1,16 +1,16 @@
 Usage: python gw_association_probabilities.py <path_to_directory>
-Defaulting to array jobs 3, 7.
-Quantiles 0.1:  0.005
-Quantiles 0.16:  0.008
-Quantiles 0.5:  0.027
-Quantiles 0.84:  0.057
-Quantiles 0.9:  0.069
-Bayes factor [peak=0.010]/0: 1.8916308630635907
-calc_zero_cl cl, cl_sigma, peak, min, max: 0.6961869835735864 1.0282908871003016 0.009600000000000001 0.0 0.0444
-Quantiles 0.1:  0.002
-Quantiles 0.16:  0.003
-Quantiles 0.5:  0.011
-Quantiles 0.84:  0.029
-Quantiles 0.9:  0.036
-Bayes factor [peak=0.004]/0: 1.5742311885106648
-calc_zero_cl cl, cl_sigma, peak, min, max: 0.47739875547402344 0.639340811274596 0.0036000000000000003 0.0 0.012400000000000001
+Defaulting to array jobs 9, 10.
+Quantiles 0.1:  0.044
+Quantiles 0.16:  0.051
+Quantiles 0.5:  0.083
+Quantiles 0.84:  0.123
+Quantiles 0.9:  0.136
+Bayes factor [peak=0.077]/0: 40.331739671822874
+calc_zero_cl cl, cl_sigma, peak, min, max: 0.9928652867919653 2.6904901928123532 0.077 0.0 0.2
+Quantiles 0.1:  0.007
+Quantiles 0.16:  0.011
+Quantiles 0.5:  0.034
+Quantiles 0.84:  0.069
+Quantiles 0.9:  0.080
+Bayes factor [peak=0.018]/0: 1.046743441753883
+calc_zero_cl cl, cl_sigma, peak, min, max: 0.4182594491547488 0.5508440990597027 0.0176 0.0 0.0292

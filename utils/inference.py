@@ -164,6 +164,14 @@ def calc_b_arr(
         **agndist_config["kwargs"],
     )
 
+    # If Milliquas, add Graham+23 cuts
+    # z <= 1.2 cut not included, because Graham+23 already does the 3D crossmatch and the z_grid we use here extends to 2.0
+    if agndist_config["model"] == "Milliquas":
+        mask = np.array(
+            ["q" not in t for t in agndist._catalog["Type"]]
+        )  # & (agndist._catalog["z"] <= 1.2)
+        agndist._catalog = agndist._catalog[mask]
+
     # Calculate normalization for background probabilities
     pb_Vunif = agndist.dn_dOmega_dz(
         z_grid,

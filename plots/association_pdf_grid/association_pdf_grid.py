@@ -101,15 +101,17 @@ def plot_association_pdf(directory, signal, background, ax=None):
     # Gaussian kde
     savefig = False
     if np.nanmin(assoc_samples) != np.nanmax(assoc_samples):
-        assoc_samples_kde = np.concatenate([assoc_samples, -assoc_samples])
-        kernel = gaussian_kde(assoc_samples_kde)
+        assoc_samples_kde = np.concatenate(
+            [assoc_samples, -assoc_samples, 2 - assoc_samples]
+        )
+        kernel = gaussian_kde(assoc_samples_kde, bw_method=0.05)
         try:
             x = np.linspace(0, 1, 1001)
-            pdf = 2 * kernel(x)
+            pdf = 3 * kernel(x)
             quants = cl_around_mode(x, pdf)
         except ValueError:
             x = np.linspace(0, 1, 10001)
-            pdf = 2 * kernel(x)
+            pdf = 3 * kernel(x)
             quants = cl_around_mode(x, pdf)
         lines = ax.plot(x, pdf, rasterized=True)
         # Quantiles
@@ -127,10 +129,10 @@ def plot_association_pdf(directory, signal, background, ax=None):
             rasterized=True,
         )
         ax.text(
-            0.95,
-            1.05 - float(pa.basename(directory)) / 16,
+            0.5,
+            3.15 - float(pa.basename(directory)) / 4,
             f"${peak:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$",
-            ha="right",
+            ha="center",
             va="top",
             transform=ax.transAxes,
             fontsize=10,
@@ -393,8 +395,8 @@ def plot_association_pdfs(
 # Get the directory path from the command line
 if len(sys.argv) == 1:
     print("Usage: python gw_association_probabilities.py <path_to_directory>")
-    print("Defaulting to array jobs 3 and 7.")
-    paths = [pa.join(PROJDIR, f"Posterior_sims_lambda_O4/array/{i}") for i in [3, 7]]
+    print("Defaulting to array jobs 9 and 10.")
+    paths = [pa.join(PROJDIR, f"Posterior_sims_lambda_O4/array/{i}") for i in [9, 10]]
 else:
     paths = sys.argv[1:]
 

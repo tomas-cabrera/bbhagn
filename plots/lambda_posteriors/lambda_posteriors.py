@@ -28,11 +28,13 @@ DF_FITPARAMS = pd.read_csv(f"{PROJDIR}/fit_lightcurves/fitparams.csv")
 def plot_lambda_posterior(path, plot_kwargs={}, ax=None):
     # Load samples
     samples = np.loadtxt(pa.join(path, "O4_samples_graham23.dat"))
-    samples_kde = np.concatenate([samples, -samples])
+    samples_kde = np.concatenate([samples, -samples, 2 - samples])
     # Gaussian kde
-    kernel = gaussian_kde(samples_kde)
+    kernel = gaussian_kde(samples_kde, bw_method=0.01)
     x = np.linspace(0, 0.2, 1001)
-    pdf = 2 * kernel(x) # "2 *" because the KDE is normalized over [-samples_max, samples_max]
+    pdf = 3 * kernel(
+        x
+    )  # "3 *" because the KDE is normalized over [-samples_max, samples_max]
     # Quantiles
     quants = cl_around_mode(x, pdf)
     peak = quants[0]
@@ -64,7 +66,7 @@ def plot_lambda_posterior(path, plot_kwargs={}, ax=None):
         v = np.quantile(samples, q)
         print(f"Quantiles {q}: {v:6.3f}")
     print(f"Bayes factor [peak={peak:.3f}]/0: {(kernel(peak) / kernel(0))[0]}")
-    # calc_zero_cl(x, pdf)
+    calc_zero_cl(x, pdf)
 
 
 def plot_lambda_posterior_hist(path, plot_kwargs={}, ax=None):
@@ -88,9 +90,11 @@ def plot_lambda_posteriors(paths):
         figsize=(4, 3),
     )
     # Plot
-    for path, label in zip(paths, [r"1.06 $\times$ 10$^{-8}$", r"4.79 $\times$ 10$^{-8}$"]):
+    for path, label in zip(
+        paths, [r"1.06 $\times$ 10$^{-8}$", r"4.79 $\times$ 10$^{-8}$"]
+    ):
         plot_lambda_posterior(
-        # plot_lambda_posterior_hist(
+            # plot_lambda_posterior_hist(
             path,
             ax=ax,
             plot_kwargs={"label": label},
@@ -124,8 +128,8 @@ def plot_lambda_posteriors(paths):
 # Get the directory path from the command line
 if len(sys.argv) == 1:
     print("Usage: python gw_association_probabilities.py <path_to_directory>")
-    print("Defaulting to array jobs 3, 7.")
-    paths = [pa.join(PROJDIR, f"Posterior_sims_lambda_O4/array/{i}") for i in [3, 7]]
+    print("Defaulting to array jobs 9, 10.")
+    paths = [pa.join(PROJDIR, f"Posterior_sims_lambda_O4/array/{i}") for i in [9, 10]]
 else:
     paths = sys.argv[1:]
 
