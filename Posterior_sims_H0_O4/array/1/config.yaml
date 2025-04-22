@@ -1,4 +1,5 @@
 ---
+use_cache: True # Use cache
 followup_prob: 0.9 # Probabilty coverage of follow-up
 z_min_b: 0.01 # Minimum redshift for background
 z_max_b: 1.0 # Maximum redshift for background

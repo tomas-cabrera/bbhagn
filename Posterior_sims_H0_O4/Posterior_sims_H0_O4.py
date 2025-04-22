@@ -54,6 +54,7 @@ def lnprior(theta):
 
 def lnprob(
     theta,
+    omegam,
     pb_frac,
     f_covers,
     distnorms,
@@ -96,11 +97,8 @@ def lnprob(
     # Extract lambda and H0 values
     lam_po, H0_po = theta
 
-    # Cosmo. params
-    omegam = 0.3
-
     # Calculate signal and background arrays
-    s_arrs, b_arrs = inference.calc_arrs(
+    s_arrs, b_arrs, n_flares_bgs = inference.calc_arrs(
         H0_po,
         omegam,
         pb_frac,
@@ -119,8 +117,11 @@ def lnprob(
         z_max_b,
     )
 
+    # Package parameters
+    theta_all = (lam_po, H0_po, omegam)
+
     # Calculate lnlike
-    lnlike = inference.lnlike_all(lam_po, s_arrs, b_arrs, frac_det)
+    lnlike = inference.lnlike_all(theta_all, s_arrs, b_arrs, frac_det, n_flares_bgs)
 
     return lp + lnlike
 
@@ -168,7 +169,7 @@ if __name__ == "__main__":
     ##############################
     print("*" * 20, "Preparation", "*" * 20)
 
-    lnprob_args = inference.setup(config, df_fitparams)
+    lnprob_args = inference.setup(config, df_fitparams, nproc=config["nproc"])
 
     ##############################
     ###          MCMC          ###
@@ -186,6 +187,7 @@ if __name__ == "__main__":
     # Define sampler kwargs
     sampler_kwargs = {
         "args": (
+            config["Om0"],
             config["followup_prob"],
             *lnprob_args,
             config["agn_distribution"],

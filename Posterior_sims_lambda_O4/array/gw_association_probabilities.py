@@ -420,8 +420,8 @@ if __name__ == "__main__":
                 n_idx_sort_cut.append(len(idx_sort_cut))
 
                 # Get flares for this followup
-                assoc_mask = g23.DF_ASSOC["gweventname"] == gweventname
-                df_assoc_event = g23.DF_ASSOC[assoc_mask]
+                assoc_mask = g23.DF_FLARE["gweventname"] == gweventname
+                df_assoc_event = g23.DF_FLARE[assoc_mask]
 
                 # Get hpxs for the flares
                 hpixs = np.array(
@@ -548,7 +548,7 @@ if __name__ == "__main__":
 
             # Iterate over followups
             gweventnames = g23.DF_GW["gweventname"]
-            flarenames = np.unique(g23.DF_ASSOC["flarename"])
+            flarenames = np.unique(g23.DF_FLARE["flarename"])
             s_grid = pd.DataFrame(
                 np.zeros((gweventnames.shape[0], flarenames.shape[0])),
                 index=gweventnames,
@@ -564,8 +564,8 @@ if __name__ == "__main__":
                     gweventname = gweventname[:-1]
 
                 # Get flares for this followup
-                assoc_mask = g23.DF_ASSOC["gweventname"] == gweventname
-                df_assoc_event = g23.DF_ASSOC[assoc_mask]
+                assoc_mask = g23.DF_FLARE["gweventname"] == gweventname
+                df_assoc_event = g23.DF_FLARE[assoc_mask]
 
                 # Iterate over flares for event
                 for fi, fn in enumerate(df_assoc_event["flarename"]):

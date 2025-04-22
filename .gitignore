@@ -1,2 +1,18 @@
 # pycache
 **/__pycache__/
+
+# scratchwork
+**/scratch.py
+
+# array_prev
+**/array_prev
+
+# caches
+**/.cache
+
+# zipped
+**/*.zip
+**/*.tar.gz
+**/*.tar.xz
+**/*.tar.bz2
+**/*.tar

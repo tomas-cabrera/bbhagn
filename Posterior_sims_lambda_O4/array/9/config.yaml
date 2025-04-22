@@ -1,0 +1,31 @@
+---
+use_cache: False # Use cache
+followup_prob: 0.9 # Probabilty coverage of follow-up
+z_min_b: 0.01 # Minimum redshift for background
+z_max_b: 1.0 # Maximum redshift for background
+frac_det: 1.0 # Fraction of flares detected
+dt_followup: 200.0 # Length of follow-up campaign in days
+gwmapdir: "/hildafs/projects/phy220048p/share/skymaps"
+
+# AGN distribution
+agn_distribution:
+  model: "Milliquas"
+  args: []
+  kwargs: {}
+  density_args: []
+  density_kwargs: {}
+
+# Flare rate
+flare_rate:
+  model: "ConstantRate"
+  args:
+    - 1.06e-8 # Rate from Graham+23, Table 5, in flares/AGN/day (note p_flare is originally normalized to 200 days)
+  kwargs: {}
+
+# MCMC parameters
+lambda0: 0.2 # Initial lambda for MCMC
+H00: 70.0 # Initial H0 for MCMC
+Om0: 0.3 # Initial Omega_m for MCMC
+nwalkers: 32 # Number of walkers
+nsteps: 5000 # Number of steps
+nproc: 32 # Number of processes
