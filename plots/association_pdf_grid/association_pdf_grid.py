@@ -55,8 +55,7 @@ def calc_arrs_for_directory(directory, force=False):
         s_arrs, b_arrs, n_flares_bgs = inference.calc_arrs(
             config["H00"],
             config["Om0"],
-            config["followup_prob"],
-            *lnprob_args,
+            *lnprob_args[:-1],
             config["agn_distribution"],
             config["z_min_b"],
             config["z_max_b"],
@@ -70,8 +69,10 @@ def calc_arrs_for_directory(directory, force=False):
             index=gweventnames,
             columns=flarenames,
         )
+        print(f"lnprob_args[-1] = {lnprob_args[-1]}")
+        # NOTE: b_arr here includes the conversion to flare number density, unlike inference; the average flare rate is assumed
         b_arrs = pd.DataFrame(
-            b_arrs,
+            b_arrs * lnprob_args[-1],
             index=gweventnames,
             columns=flarenames,
         )
@@ -88,7 +89,7 @@ def calc_arrs_for_directory(directory, force=False):
     return s_arrs, b_arrs, n_flares_bgs
 
 
-def plot_association_pdf(directory, signal, background, ax=None):
+def plot_association_pdf(directory, signal, signals, background, ax=None):
     """
     Plot the association probabilities for the given directory.
     """
@@ -96,7 +97,8 @@ def plot_association_pdf(directory, signal, background, ax=None):
     samples = np.loadtxt(pa.join(directory, "O4_samples_graham23.dat"))
 
     # Convert the samples to the association samples
-    assoc_samples = samples * signal / (samples * signal + background)
+    assoc_samples = samples * signal / (samples * np.sum(signals) + background)
+    assoc_colocation = signal / (np.sum(signals) + background)
 
     # Gaussian kde
     savefig = False
@@ -118,7 +120,10 @@ def plot_association_pdf(directory, signal, background, ax=None):
         peak = quants[0]
         lo = peak - quants[1]
         hi = quants[2] - peak
-        quantstr = f"${peak:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$"
+        if f"{peak:.2f}" == "0.00":
+            quantstr = f"$p < {hi:.2f}$"
+        else:
+            quantstr = f"${peak:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$"
         ax.fill_between(
             x,
             0,
@@ -126,20 +131,41 @@ def plot_association_pdf(directory, signal, background, ax=None):
             where=(x >= quants[1]) & (x <= quants[2]),
             color=lines[0].get_color(),
             alpha=0.5,
+            lw=0,
             rasterized=True,
         )
         ax.text(
-            0.5,
-            3.15 - float(pa.basename(directory)) / 4,
-            f"${peak:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$",
-            ha="center",
+            0.95,
+            # 3.15 - float(pa.basename(directory)) / 4, # for jobs 9, 10
+            0.95,
+            quantstr,
+            ha="right",
             va="top",
             transform=ax.transAxes,
             fontsize=10,
             bbox=dict(
                 facecolor="none",
                 edgecolor=lines[0].get_color(),
-                pad=0.2,
+                lw=1,
+                pad=1,
+            ),
+            rasterized=True,
+        )
+        ax.text(
+            0.95,
+            # 3.15 - float(pa.basename(directory)) / 4, # for jobs 9, 10
+            0.74,
+            f"$p_{{\lambda = 1}} = {assoc_colocation:.2f}$",
+            ha="right",
+            va="top",
+            transform=ax.transAxes,
+            fontsize=10,
+            bbox=dict(
+                facecolor="none",
+                edgecolor=lines[0].get_color(),
+                ls="--",
+                lw=1,
+                pad=1,
             ),
             rasterized=True,
         )
@@ -151,48 +177,15 @@ def plot_association_pdf(directory, signal, background, ax=None):
             color=lines[0].get_color(),
             rasterized=True,
         )
-    # # Plot
-    # if ax is None:
-    #     savefig = True
-    #     fig, ax = plt.subplots()
-    # n, bins, patches = ax.hist(
-    #     assoc_samples,
-    #     bins=np.linspace(0, 1, 30),
-    #     histtype="step",
-    #     density=True,
-    #     rasterized=True,
-    # )
-    # # Quantiles
-    # if signal != 0:
-    #     quants = np.quantile(assoc_samples, [0.16, 0.5, 0.84])
-    #     med = quants[1]
-    #     lo = quants[1] - quants[0]
-    #     hi = quants[2] - quants[1]
-
-    #     # Shade hist between lo and hi
-    #     def hist_at_x(x):
-    #         inds = np.digitize(x, bins) - 1
-    #         inds = np.clip(inds, 0, len(n) - 1)
-    #         return n[inds]
-
-    #     x = np.linspace(0, 1, 1000)
-    #     ax.fill_between(
-    #         x,
-    #         0,
-    #         hist_at_x(x),
-    #         where=(x >= quants[0]) & (x <= quants[2]),
-    #         color=patches[0].get_facecolor(),
-    #         alpha=0.5,
-    #         rasterized=True,
-    #     )
-    #     # Plot line for median
-    #     ax.vlines(
-    #         med,
-    #         0,
-    #         n[np.digitize(med, bins) - 1],
-    #         color=patches[0].get_edgecolor(),
-    #         rasterized=True,
-    #     )
+        # Plot line for colocation (prob GW occured at location of flare, sans lambda posterior)
+        ax.vlines(
+            assoc_colocation,
+            0,
+            3,
+            color=lines[0].get_color(),
+            ls="--",
+            rasterized=True,
+        )
 
     if savefig:
         ax.set_xlabel("Association Probability")
@@ -204,8 +197,11 @@ def initialize_mosaic_axes(
     gweventnames,
     flarenames,
     subplot_mosaic_kwargs={
-        "figsize": (11, 7.5),
-        "gridspec_kw": {"wspace": 0.0, "hspace": 0.0},
+        "figsize": (11, 8.5),
+        "gridspec_kw": {
+            "wspace": 0.0,
+            "hspace": 0.1,
+        },
     },
 ):
     # Initialize figure
@@ -240,6 +236,7 @@ def plot_association_pdf_grid(
             plot_association_pdf(
                 directory,
                 s_arr_assoc.loc[gn, fn],
+                s_arr_assoc.loc[:, fn][~np.isnan(s_arr_assoc.loc[:, fn])],
                 b_arr_assoc.loc[gn, fn],
                 ax=ax,
             )
@@ -365,16 +362,21 @@ def plot_association_pdfs(
         ),
     ]
     ax.set_zorder(100)
-    ax.legend(
-        handles=legend_elements,
-        title="Flares/AGN/day",
-        facecolor="white",
-        edgecolor="black",
-        framealpha=1,
-        loc="lower left",
-    )
+    # ax.legend(
+    #     handles=legend_elements,
+    #     title="Flares/AGN/day",
+    #     facecolor="white",
+    #     edgecolor="black",
+    #     framealpha=1,
+    #     loc="lower left",
+    # )
     # Save
     plt.tight_layout()
+    plt.subplots_adjust(
+        top=0.85,
+        left=0.05,
+        right=0.85,
+    )
     figpath = pa.join(
         pa.dirname(__file__),
         "association_pdf_grid.pdf",
@@ -394,21 +396,23 @@ def plot_association_pdfs(
 
 # Get the directory path from the command line
 if len(sys.argv) == 1:
-    print("Usage: python gw_association_probabilities.py <path_to_directory>")
-    print("Defaulting to array jobs 9 and 10.")
-    paths = [pa.join(PROJDIR, f"Posterior_sims_lambda_O4/array/{i}") for i in [9, 10]]
+    _default_array_jobs = [11]
+    print(f"Usage: python {pa.basename(__file__)} <path_to_directory>")
+    print(f"Defaulting to array jobs {_default_array_jobs}.")
+    paths = [
+        pa.join(PROJDIR, f"Posterior_sims_lambda_O4/array/{i}")
+        for i in _default_array_jobs
+    ]
 else:
     paths = sys.argv[1:]
 
 # Calc the association probabilities
 s_arrs = []
 b_arrs = []
-n_flares_bgs = []
 for p in paths:
-    s_arr, b_arr, n_flares_bg = calc_arrs_for_directory(p, force=False)
+    s_arr, b_arr, _ = calc_arrs_for_directory(p, force=False)
     s_arrs.append(s_arr)
     b_arrs.append(b_arr)
-    n_flares_bgs.append(n_flares_bg)
 
 # Get GW and flare names
 gweventnames = g23.DF_GWBRIGHT.sort_values("dataset")["gweventname"].values

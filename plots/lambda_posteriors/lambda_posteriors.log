@@ -1,16 +1,9 @@
-Usage: python gw_association_probabilities.py <path_to_directory>
-Defaulting to array jobs 9, 10.
-Quantiles 0.1:  0.044
-Quantiles 0.16:  0.051
-Quantiles 0.5:  0.083
-Quantiles 0.84:  0.123
+Usage: python lambda_posteriors.py <path_to_directory>
+Defaulting to array jobs [11].
+Quantiles 0.1:  0.045
+Quantiles 0.16:  0.053
+Quantiles 0.5:  0.084
+Quantiles 0.84:  0.124
 Quantiles 0.9:  0.136
-Bayes factor [peak=0.077]/0: 40.331739671822874
-calc_zero_cl cl, cl_sigma, peak, min, max: 0.9928652867919653 2.6904901928123532 0.077 0.0 0.2
-Quantiles 0.1:  0.007
-Quantiles 0.16:  0.011
-Quantiles 0.5:  0.034
-Quantiles 0.84:  0.069
-Quantiles 0.9:  0.080
-Bayes factor [peak=0.018]/0: 1.046743441753883
-calc_zero_cl cl, cl_sigma, peak, min, max: 0.4182594491547488 0.5508440990597027 0.0176 0.0 0.0292
+Bayes factor [peak=0.076]/0: 45.369997087144576
+calc_zero_cl cl, cl_sigma, peak, min, max: 0.9943197812110139 2.7656918160038706 0.0758 0.0 0.2

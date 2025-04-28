@@ -12,6 +12,7 @@ from myagn import distributions as myagndistributions
 from myagn.flares import models as myflaremodels
 from numpy.polynomial.polynomial import Polynomial
 from scipy.stats import norm
+from multiprocessing import current_process
 
 # Local imports
 PROJDIR = pa.dirname(pa.dirname(__file__))
@@ -51,12 +52,38 @@ def lnlike(theta, s_arr, b_arr, frac_det, n_flares_bg):
     )
 
 
-def lnlike_all(theta, s_arrs, b_arrs, frac_det, n_flares_bgs):
+def lnlike_all(
+    theta,
+    s_arrs,
+    b_arrs,
+    frac_det,
+    n_agns,
+    flares_per_agn_average,
+    flare_rate_distribution,
+):
     # Extract values
     lam_po, H0_po, omega_po = theta
 
     # Calculate maximum in n_flares_bgs
-    max_n_flares_bg = np.nanmax([np.nanmax(f) for f in n_flares_bgs if len(f) > 0])
+    max_n_flares_bg = np.nanmax([np.nanmax(f) for f in n_agns if len(f) > 0])
+
+    # Sample flare rate
+    # Currently using process id as seed
+    # Note that the pid does not index the processes spawned by emcee but appears to be the python process id;
+    # in this case the numbers are ~70-80
+    # Not sure if this ensures that the rng is different for each process
+    rng = np.random.default_rng(int(current_process().name.split("-")[-1]))
+    dist = getattr(rng, flare_rate_distribution["type"])
+    flare_rate = np.nan * np.ones_like(flares_per_agn_average)
+    for i, f in enumerate(flares_per_agn_average):
+        if np.isnan(f):
+            continue
+        if ~np.isnan(flare_rate[i]):
+            continue
+        fr = -1
+        while fr < 0:
+            fr = dist(f, **flare_rate_distribution["kwargs"])
+        flare_rate[flares_per_agn_average == f] = fr
 
     # Iterate over GW followups
     lnlike_arr = np.zeros(len(s_arrs))
@@ -64,21 +91,27 @@ def lnlike_all(theta, s_arrs, b_arrs, frac_det, n_flares_bgs):
         # Get arrays
         s_arr_i = s_arrs[i]
         b_arr_i = b_arrs[i]
-        n_flares_bgs_i = n_flares_bgs[i]
+        n_agns_i = n_agns[i]
 
         # Get non-filled values
         s_arr_i = s_arr_i[s_arr_i != 0]
         b_arr_i = b_arr_i[b_arr_i != 1]
-        n_flares_bgs_i = n_flares_bgs_i[~np.isnan(n_flares_bgs_i)]
-
         ####################
         ###  Likelihood  ###
         ####################
         # If there are any candidates, calculate the log likelihood
         if (s_arr_i.shape[0]) > 0:
+            # n_agns_i = n_agns_i[~np.isnan(n_agns_i)]
+            n_flares_bgs_i = n_agns_i * flare_rate
+            n_flares_bgs_i = n_flares_bgs_i[~np.isnan(n_flares_bgs_i)]
+
             # lnlike_arr.append(lnlike(s_arr,b_arr,lam_arr,f))
             lnlike_arr[i] = lnlike(
-                theta, s_arr_i, b_arr_i, frac_det, np.nanmax(n_flares_bgs_i)
+                theta,
+                s_arr_i,
+                b_arr_i * n_flares_bgs_i,
+                frac_det,
+                np.nanmax(n_flares_bgs_i),
             )
 
         else:
@@ -98,14 +131,12 @@ def lnlike_all(theta, s_arrs, b_arrs, frac_det, n_flares_bgs):
 
 
 def calc_s_arr(
-    pb,
-    pb_frac,
+    pbden,
     distnorm,
     distmu,
     distsigma,
     z_flares,
     cosmo,
-    z_grid,
 ):
     ncands = z_flares.shape[0]
     dL_flares = cosmo.luminosity_distance(z_flares)
@@ -114,33 +145,12 @@ def calc_s_arr(
         cosmo.comoving_distance(z_flares).value
         + (1.0 + z_flares) / cosmo.H(z_flares).value
     )
-    # Renormalize candidate posteriors along los to same z range as the background
-    # (the original skymaps normalize the posteriors over z=[0,inf))
-    new_normaliz = np.ones(ncands)
-    ds_arr = cosmo.luminosity_distance(z_grid).value
-    jacobian_arr = (
-        cosmo.comoving_distance(z_grid).value + (1.0 + z_grid) / cosmo.H(z_grid).value
-    )
-    for l in range(ncands):
-        this_post = (
-            gauss(
-                distmu[l],
-                distsigma[l],
-                ds_arr,
-            )
-            * ds_arr**2
-            * jacobian_arr
-        )
-        # Calculate normalization constant by ~integrating posterior
-        new_normaliz[l] = distnorm[l] * np.trapezoid(this_post, z_grid)
-    # Calculate signal probabilities, multiplying HEALPix and redshift probabilities
+    # Calculate signal probability densities, multiplying HEALPix and redshift contributions
     s_arr = (
-        pb  # HEALPix probability
-        / pb_frac  # This isn't in the function's namespace; needed to normalize over credible region
-        * distnorm  # redshift probability
+        pbden  # HEALPix probability density
+        * distnorm  # redshift probability density
         * norm(distmu, distsigma).pdf(dL_flares)
         * dL_flares**2
-        / new_normaliz
         * jacobian
     )
     return s_arr
@@ -148,13 +158,12 @@ def calc_s_arr(
 
 def calc_b_arr(
     z_flares,
-    f_cover,
-    n_idx_sort_cut,
-    B_expected_n,
     cosmo,
-    z_grid,
     agndist_config,
 ):
+    # NOTE: Since implementing the flares_per_agn sampling, b_arr is the number density of AGN,
+    # i.e. it still needs to be multiplied by [n_flares_per_agn] to get the background AGN flare number density
+
     # Get AGN distribution
     agndist = getattr(
         myagndistributions,
@@ -172,27 +181,12 @@ def calc_b_arr(
         )  # & (agndist._catalog["z"] <= 1.2)
         agndist._catalog = agndist._catalog[mask]
 
-    # Calculate normalization for background probabilities
-    pb_Vunif = agndist.dn_dOmega_dz(
-        z_grid,
+    # Calculate background probability densities
+    b_arr = agndist.dn_dOmega_dz(
+        z_flares,
         *agndist_config["density_args"],
         cosmo=cosmo,
         **agndist_config["density_kwargs"],
-    )
-    normaliz = np.trapezoid(pb_Vunif, z_grid)
-
-    # Calculate background probabilities
-    b_arr = (
-        agndist.dn_dOmega_dz(
-            z_flares,
-            *agndist_config["density_args"],
-            cosmo=cosmo,
-            **agndist_config["density_kwargs"],
-        )
-        / normaliz
-        / n_idx_sort_cut
-        * B_expected_n
-        * f_cover
     )
 
     return b_arr
@@ -201,16 +195,13 @@ def calc_b_arr(
 def calc_arrs(
     H0,
     omegam,
-    pb_frac,
     f_covers,
     distnorm,
     distmu,
     distsigma,
-    cand_hpxprob_arr,
+    cand_hpxprobden_arr,
     cand_zs_arr,
-    n_idx_sort_cut,
     n_agn_coeffs,
-    flares_per_agn,
     agndist_config,
     z_min_b,
     z_max_b,
@@ -218,17 +209,15 @@ def calc_arrs(
     # Initialize cosmology
     thiscosmo = FlatLambdaCDM(H0=H0, Om0=omegam)
 
-    # Initialize redshift grid
-    zs_arr = np.linspace(z_min_b, z_max_b, num=1000)
-
     # Iterate through true associations
-    s_arrs = np.zeros_like(cand_hpxprob_arr)
-    b_arrs = np.ones_like(cand_hpxprob_arr)
-    B_expected_ns = np.ones_like(cand_hpxprob_arr) * np.nan
+    # NOTE: np.<>_like(u.Quantity) returns a Quantity with the same unit as the input
+    s_arrs = np.zeros_like(cand_hpxprobden_arr)
+    b_arrs = np.ones_like(cand_hpxprobden_arr)
+    n_agns = np.ones_like(cand_hpxprobden_arr).value * np.nan
     # Iterate over GW followups
-    for gwi in range(cand_hpxprob_arr.shape[0]):
+    for gwi in range(cand_hpxprobden_arr.shape[0]):
         # Get flare indices
-        fis = list(np.where(~np.isnan(cand_hpxprob_arr[gwi]))[0])
+        fis = list(np.where(~np.isnan(cand_hpxprobden_arr[gwi]))[0])
 
         # Skip remainder if no candidates
         if len(fis) == 0:
@@ -245,11 +234,8 @@ def calc_arrs(
         # Use coeffs to interpolate number of AGN in volume
         n_agn = np.polynomial.Polynomial(n_agn_coeffs[gwi])(H0)
 
-        # Multiply by flare rate to get expected number of background flares
-        B_expected_n = n_agn * flares_per_agn[fis]
-
         # Add to array
-        B_expected_ns[gwi, fis] = B_expected_n
+        n_agns[gwi, fis] = n_agn
 
         ####################
         ###    Signal    ###
@@ -257,28 +243,22 @@ def calc_arrs(
 
         # Calculate GW counterpart probabilities
         s_arr = calc_s_arr(
-            cand_hpxprob_arr[gwi][fis],
-            pb_frac,
+            cand_hpxprobden_arr[gwi][fis],
             distnorm[gwi][fis],
             distmu[gwi][fis],
             distsigma[gwi][fis],
             followup_zs,
             thiscosmo,
-            zs_arr,
         )
 
         ####################
         ###  Background  ###
         ####################
 
-        # Calculate background probabilities
+        # Calculate background AGN probabilities
         b_arr = calc_b_arr(
             followup_zs,
-            f_covers[gwi],
-            n_idx_sort_cut[gwi],
-            B_expected_n,
             thiscosmo,
-            zs_arr,
             agndist_config,
         )
 
@@ -290,7 +270,7 @@ def calc_arrs(
         s_arrs[gwi, fis] = s_arr
         b_arrs[gwi, fis] = b_arr
 
-    return s_arrs, b_arrs, B_expected_ns
+    return s_arrs.to(1 / u.sr).value, b_arrs.to(1 / u.sr).value, n_agns
 
 
 def _setup_task(i, config, df_fitparams):
@@ -317,25 +297,27 @@ def _setup_task(i, config, df_fitparams):
     sm = io.get_gwtc_skymap(config["gwmapdir"], g23.DF_GW["gweventname"][i])
 
     # Get data from skymap
-    sm["PROB"] = sm["PROBDENSITY"] * lsm_moc.uniq2pixarea(sm["UNIQ"])
-    pb = np.array(sm["PROB"])
-    distnorm = np.array(sm["DISTNORM"])
-    distmu = np.array(sm["DISTMU"])
-    distsigma = np.array(sm["DISTSIGMA"])
+    pbden = sm["PROBDENSITY"]
+    distnorm = sm["DISTNORM"]
+    distmu = sm["DISTMU"]
+    distsigma = sm["DISTSIGMA"]
 
-    # Make idx_sort_up (array of pb indices, from highest to lowest pb)
-    idx_sort = np.argsort(pb)
-    idx_sort_up = list(reversed(idx_sort))
-    # Add pbs until pb_frac is reached
-    sum = 0.0
-    id = 0
-    while sum < config["followup_prob"]:
-        this_idx = idx_sort_up[id]
-        sum = sum + pb[this_idx]
-        id = id + 1
-    # Cut indices to <pb_frac> credible region
-    idx_sort_cut = idx_sort_up[:id]
-    return_dict["n_idx_sort_cut"] = len(idx_sort_cut)
+    # # Make idx_sort_up (array of pb indices, from highest to lowest pb)
+    # sm["AREA"] = lsm_moc.uniq2pixarea(sm["UNIQ"]) * u.sr
+    # sm["PROB"] = sm["PROBDENSITY"] * sm["AREA"]
+    # pb = sm["PROB"]
+    # idx_sort = np.argsort(pb)
+    # idx_sort_up = list(reversed(idx_sort))
+    # # Add pbs until pb_frac is reached
+    # sum = 0.0
+    # id = 0
+    # while sum < config["followup_prob"]:
+    #     this_idx = idx_sort_up[id]
+    #     sum = sum + pb[this_idx]
+    #     id = id + 1
+    # # Cut indices to <pb_frac> credible region
+    # idx_sort_cut = idx_sort_up[:id]
+    # return_dict["n_idx_sort_cut"] = len(idx_sort_cut)
 
     ##############################
     ###         Flares         ###
@@ -347,14 +329,14 @@ def _setup_task(i, config, df_fitparams):
     followup_flares = g23.DF_ASSOC["flarename"][assoc_mask]
 
     # Iterate over flares
-    pbs = []
+    pbdens = []
     distnorms = []
     distmus = []
     distsigmas = []
     for _, fr in g23.DF_FLARE.iterrows():
         # Check if flare in followup
         if fr["flarename"] not in followup_flares.values:
-            pbs.append(np.nan)
+            pbdens.append(np.nan)
             distnorms.append(np.nan)
             distmus.append(np.nan)
             distsigmas.append(np.nan)
@@ -371,16 +353,16 @@ def _setup_task(i, config, df_fitparams):
         ind_sm = np.where(sm["UNIQ"] == uniq)[0][0]
 
         # Get data for flare
-        pbs.append(pb[ind_sm])
+        pbdens.append(pbden[ind_sm])
         distnorms.append(distnorm[ind_sm])
         distmus.append(distmu[ind_sm])
         distsigmas.append(distsigma[ind_sm])
 
     # Add to return_dict
-    return_dict["pbs"] = pbs
-    return_dict["distnorms"] = distnorms
-    return_dict["distmus"] = distmus
-    return_dict["distsigmas"] = distsigmas
+    return_dict["pbdens"] = pbdens * pbden.unit
+    return_dict["distnorms"] = distnorms * distnorm.unit
+    return_dict["distmus"] = distmus * distmu.unit
+    return_dict["distsigmas"] = distsigmas * distsigma.unit
 
     ##############################
     ###    Background rate     ###
@@ -465,7 +447,7 @@ def setup(config, df_fitparams, nproc=1):
     )
 
     # Iterate over flares
-    flares_per_agn = []
+    flares_per_agn_average = []
     for _, fr in g23.DF_FLARE.iterrows():
         # Get fitparams
         df_fitparams_flare = df_fitparams[df_fitparams["flarename"] == fr["flarename"]]
@@ -500,7 +482,7 @@ def setup(config, df_fitparams, nproc=1):
             rates.append(rate)
 
         # Save lowest rate
-        flares_per_agn.append(np.nanmin(rates))
+        flares_per_agn_average.append(np.nanmin(rates))
 
     ##############################
     ###    GWs + flares        ###
@@ -520,22 +502,20 @@ def setup(config, df_fitparams, nproc=1):
 
     # Unpack results
     f_covers = np.array([r["f_covers"] for r in results])
-    distnorms = np.array([r["distnorms"] for r in results])
-    distmus = np.array([r["distmus"] for r in results])
-    distsigmas = np.array([r["distsigmas"] for r in results])
-    pbs = np.array([r["pbs"] for r in results])
-    n_idx_sort_cut = [r["n_idx_sort_cut"] for r in results]
+    distnorms = u.Quantity([r["distnorms"] for r in results])
+    distmus = u.Quantity([r["distmus"] for r in results])
+    distsigmas = u.Quantity([r["distsigmas"] for r in results])
+    pbdens = u.Quantity([r["pbdens"] for r in results])
     n_agn_coeffs = [r["n_agn_coeffs"] for r in results]
-    flares_per_agn = np.array(flares_per_agn)
+    flares_per_agn_average = np.array(flares_per_agn_average)
 
     return (
         f_covers,
         distnorms,
         distmus,
         distsigmas,
-        pbs,
+        pbdens,
         cand_zs,
-        n_idx_sort_cut,
         n_agn_coeffs,
-        flares_per_agn,
+        flares_per_agn_average,
     )

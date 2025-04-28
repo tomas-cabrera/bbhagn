@@ -7,8 +7,7 @@
 #SBATCH -o %x.log
 #SBATCH -A phy220048p
 #SBATCH -p HENON
-#SBATCH --mail-type=ALL
-#SBATCH -a 9,10 
+#SBATCH -a 1-4,5,7,9-11 
 
 ### SETUP ###
 
