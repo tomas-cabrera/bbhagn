@@ -150,9 +150,9 @@ def get_gwtc_skymap(
 
     # If multiple skymaps are found
     if len(mappaths) > 1:
-        raise ValueError(f"Multiple skymaps found for {gweventname}")
+        raise ValueError(f"Multiple skymaps found for {gweventname} [globstr: {globstr}]")
     elif len(mappaths) == 0:
-        raise ValueError(f"No skymaps found for {gweventname}")
+        raise ValueError(f"No skymaps found for {gweventname} [globstr: {globstr}]")
     else:
         # Load skymap
         hs = read_sky_map(mappaths[0], moc=True)

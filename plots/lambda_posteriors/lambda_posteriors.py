@@ -30,7 +30,7 @@ def plot_lambda_posterior(path, plot_kwargs={}, ax=None):
     samples = np.loadtxt(pa.join(path, "O4_samples_graham23.dat"))
     samples_kde = np.concatenate([samples, -samples, 2 - samples])
     # Gaussian kde
-    kernel = gaussian_kde(samples_kde, bw_method=0.01)
+    kernel = gaussian_kde(samples_kde, bw_method=0.0005)
     x = np.linspace(0, 0.1, 1001)
     pdf = 3 * kernel(
         x
