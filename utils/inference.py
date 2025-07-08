@@ -165,17 +165,22 @@ def calc_b_arr(
     # i.e. it still needs to be multiplied by [n_flares_per_agn] to get the background AGN flare number density
 
     # Get AGN distribution
+    # Hardcoded values use QLFHopkins for all
     agndist = getattr(
         myagndistributions,
-        agndist_config["model"],
+        # agndist_config["model"],
+        "QLFHopkins",
     )(
-        *agndist_config["args"],
-        **agndist_config["kwargs"],
+        # *agndist_config["args"],
+        *[] * u.Mpc**-3,
+        # **agndist_config["kwargs"],
+        **{},
     )
 
     # If Milliquas, add Graham+23 cuts
     # z <= 1.2 cut not included, because Graham+23 already does the 3D crossmatch and the z_grid we use here extends to 2.0
-    if agndist_config["model"] == "Milliquas":
+    # if agndist_config["model"] == "Milliquas":
+    if False:
         mask = np.array(
             ["q" not in t for t in agndist._catalog["Type"]]
         )  # & (agndist._catalog["z"] <= 1.2)
@@ -184,9 +189,14 @@ def calc_b_arr(
     # Calculate background probability densities
     b_arr = agndist.dn_dOmega_dz(
         z_flares,
-        *agndist_config["density_args"],
+        # *agndist_config["density_args"],
+        *[],
         cosmo=cosmo,
-        **agndist_config["density_kwargs"],
+        # **agndist_config["density_kwargs"],
+        **{
+            "brightness_limits": [float(b) for b in [20.5, "-inf"]] * u.ABmag,
+            "band": "g",
+        },
     )
 
     return b_arr
