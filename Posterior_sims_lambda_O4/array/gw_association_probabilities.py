@@ -125,10 +125,10 @@ def calc_arrs(
             followup_zs,
             f_covers[i],
             n_idx_sort_cut[i],
-            B_expected_n,
             thiscosmo,
             zs_arr,
             agndist_config,
+            B_expected_n=B_expected_n,
         )
 
         # Append to lists

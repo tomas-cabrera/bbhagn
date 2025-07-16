@@ -1,0 +1,19 @@
+WARNING: UnitsWarning: 'pct' did not parse as fits unit: At col 0, Unit 'pct' not supported by the FITS standard. Did you mean PC, PT, cT, ct, pC, pT or pc? If this is meant to be a custom unit, define it with 'u.def_unit'. To have it recognized inside a file reader or other code, enable it with 'u.add_enabled_units'. For details, see https://docs.astropy.org/en/latest/units/combining_and_defining.html [astropy.units.core]
+Usage: python graham23_flarerate_obs_to_rest.py <path_to_directory>...
+Defaulting to array jobs [1, 2, 3, 4, 5, 7, 9, 10].
+{'model': 'ConstantPhysicalDensity', 'args': <Quantity [1.77827941e-05] 1 / Mpc3>, 'kwargs': {}, 'density_args': [], 'density_kwargs': {}}
+Conversion factor: 1.792619178808012
+{'model': 'ConstantPhysicalDensity', 'args': <Quantity [1.77827941e-05] 1 / Mpc3>, 'kwargs': {}, 'density_args': [], 'density_kwargs': {}}
+Conversion factor: 1.792619178808012
+{'model': 'QLFHopkins', 'args': [], 'kwargs': {}, 'density_args': [], 'density_kwargs': {'brightness_limits': <Magnitude [20.5, -inf] mag(AB)>, 'band': 'g'}}
+Conversion factor: 1.75161149771255
+{'model': 'QLFHopkins', 'args': [], 'kwargs': {}, 'density_args': [], 'density_kwargs': {'brightness_limits': <Magnitude [20.5, -inf] mag(AB)>, 'band': 'g'}}
+Conversion factor: 1.75161149771255
+{'model': 'ConstantPhysicalDensity', 'args': <Quantity [1.77827941e-05] 1 / Mpc3>, 'kwargs': {}, 'density_args': [], 'density_kwargs': {}}
+Conversion factor: 1.792619178808012
+{'model': 'QLFHopkins', 'args': [], 'kwargs': {}, 'density_args': [], 'density_kwargs': {'brightness_limits': <Magnitude [20.5, -inf] mag(AB)>, 'band': 'g'}}
+Conversion factor: 1.75161149771255
+{'model': 'Milliquas', 'args': [], 'kwargs': {}, 'density_args': [], 'density_kwargs': {}}
+Conversion factor: 1.4565480692362018
+{'model': 'Milliquas', 'args': [], 'kwargs': {}, 'density_args': [], 'density_kwargs': {}}
+Conversion factor: 1.4565480692362018

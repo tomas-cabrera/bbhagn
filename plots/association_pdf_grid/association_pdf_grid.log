@@ -1,2 +1,4 @@
-Usage: python gw_association_probabilities.py <path_to_directory>
-Defaulting to array jobs 9 and 10.
+/home/tcabrera/data/academia/projects/bbhagn/bbhagn/plots/association_pdf_grid/association_pdf_grid.py:495: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  plt.tight_layout()
+Usage: python association_pdf_grid.py <path_to_directory>
+Defaulting to array jobs [11].

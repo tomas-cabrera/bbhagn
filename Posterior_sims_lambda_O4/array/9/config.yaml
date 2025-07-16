@@ -21,6 +21,10 @@ flare_rate:
   args:
     - 1.06e-8 # Rate from Graham+23, Table 5, in flares/AGN/day (note p_flare is originally normalized to 200 days)
   kwargs: {}
+  distribution:
+    type: "normal"
+    kwargs:
+      scale: 0
 
 # MCMC parameters
 lambda0: 0.2 # Initial lambda for MCMC
