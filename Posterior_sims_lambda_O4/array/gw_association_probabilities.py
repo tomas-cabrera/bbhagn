@@ -18,12 +18,12 @@ from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
 from ligo.skymap.io import read_sky_map
 from ligo.skymap.postprocess.crossmatch import crossmatch
-from myagn.flares import models as myflaremodels
 from numpy.polynomial.polynomial import Polynomial
 from scipy.stats import gaussian_kde, norm
 
 # Local imports
 sys.path.append(pa.dirname(pa.dirname(pa.dirname(__file__))))
+from myagn.flares import models as myflaremodels
 import utils.graham23_tables as g23
 from utils.paths import DATADIR, PROJDIR
 from Posterior_sims_H0_O4.Posterior_sims_H0_O4 import calc_s_arr, calc_b_arr

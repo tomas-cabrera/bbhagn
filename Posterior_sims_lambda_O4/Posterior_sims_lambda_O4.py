@@ -16,12 +16,12 @@ import pandas as pd
 import yaml
 from astropy.cosmology import FlatLambdaCDM
 from ligo.skymap.postprocess.crossmatch import crossmatch
-from myagn import distributions as myagndistributions
-from myagn.flares import models as myflaremodels
 from numpy.polynomial.polynomial import Polynomial
 
 # Local imports
 sys.path.append(pa.dirname(pa.dirname(__file__)))
+from myagn import distributions as myagndistributions
+from myagn.flares import models as myflaremodels
 import utils.graham23_tables as g23
 import utils.inference as inference
 import utils.io as io

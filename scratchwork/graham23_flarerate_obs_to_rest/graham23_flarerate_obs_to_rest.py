@@ -10,10 +10,10 @@ import sys
 import astropy.units as u
 import numpy as np
 import yaml
-from myagn import distributions as myagndistributions
 
 # Local imports
 sys.path.append(pa.dirname(pa.dirname(pa.dirname(__file__))))
+from myagn import distributions as myagndistributions
 from utils.paths import PROJDIR
 
 ################################################################################

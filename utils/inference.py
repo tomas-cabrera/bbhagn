@@ -8,8 +8,6 @@ import numpy as np
 from astropy.cosmology import FlatLambdaCDM
 from ligo.skymap.postprocess.crossmatch import crossmatch
 import ligo.skymap.moc as lsm_moc
-from myagn import distributions as myagndistributions
-from myagn.flares import models as myflaremodels
 from numpy.polynomial.polynomial import Polynomial
 from scipy.stats import norm
 from multiprocessing import current_process
@@ -17,6 +15,8 @@ from multiprocessing import current_process
 # Local imports
 PROJDIR = pa.dirname(pa.dirname(__file__))
 sys.path.append(PROJDIR)
+from myagn import distributions as myagndistributions
+from myagn.flares import models as myflaremodels
 import utils.graham23_tables as g23
 import utils.io as io
 from utils.gwselection import selection_beta
