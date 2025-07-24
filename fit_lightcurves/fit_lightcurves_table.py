@@ -2,8 +2,8 @@ import os.path as pa
 
 import numpy as np
 import pandas as pd
-from myagn.flares import models as myflaremodels
 
+from myagn.flares import models as myflaremodels
 import utils.graham23_tables as g23
 
 ################################################################################

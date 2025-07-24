@@ -16,12 +16,12 @@ import pandas as pd
 import yaml
 from astropy.cosmology import FlatLambdaCDM
 from ligo.skymap.postprocess.crossmatch import crossmatch
-from myagn import distributions as myagndistributions
-from myagn.flares import models as myflaremodels
 from numpy.polynomial.polynomial import Polynomial
 
 # Local imports
 sys.path.append(pa.dirname(pa.dirname(__file__)))
+from myagn import distributions as myagndistributions
+from myagn.flares import models as myflaremodels
 import utils.graham23_tables as g23
 import utils.inference as inference
 import utils.io as io
@@ -59,7 +59,9 @@ def lnprob(
     s_arrs,
     b_arrs,
     frac_det,
-    n_flares_bgs,
+    n_agns,
+    flares_per_agn_average,
+    flare_rate_distribution,
 ):
     """! Calculates the log posterior probability, given some signal and background.
 
@@ -91,7 +93,15 @@ def lnprob(
     theta_all = (lam_po, H0, omegam)
 
     # Calculate lnlike
-    lnlike = inference.lnlike_all(theta_all, s_arrs, b_arrs, frac_det, n_flares_bgs)
+    lnlike = inference.lnlike_all(
+        theta_all,
+        s_arrs,
+        b_arrs,
+        frac_det,
+        n_agns,
+        flares_per_agn_average,
+        flare_rate_distribution,
+    )
 
     return lp + lnlike
 
@@ -152,11 +162,10 @@ if __name__ == "__main__":
     #########################
     print("Calculating signal and background arrays...")
 
-    s_arrs, b_arrs, n_flares_bgs = inference.calc_arrs(
+    s_arrs, b_arrs, n_agns = inference.calc_arrs(
         config["H00"],
         config["Om0"],
-        config["followup_prob"],
-        *lnprob_args,
+        *lnprob_args[:-1],  # last is flares_per_agn_average
         config["agn_distribution"],
         config["z_min_b"],
         config["z_max_b"],
@@ -181,7 +190,9 @@ if __name__ == "__main__":
             s_arrs,
             b_arrs,
             config["frac_det"],
-            n_flares_bgs,
+            n_agns,
+            lnprob_args[-1],  # flares_per_agn_average
+            config["flare_rate"]["distribution"],
         ),
     }
     # Define run_mcmc args

@@ -7,11 +7,11 @@ import numpy as np
 import yaml
 from astropy.cosmology import FlatLambdaCDM
 from ligo.skymap.postprocess.crossmatch import crossmatch
-from myagn import distributions as myagndistributions
 from numpy.polynomial.polynomial import Polynomial
 
 # Local imports
 sys.path.append(pa.dirname(pa.dirname(pa.dirname(__file__))))
+from myagn import distributions as myagndistributions
 import utils.graham23_tables as g23
 from Posterior_sims_H0_O4 import get_gwtc_skymap
 from utils.paths import DATADIR, PROJDIR
