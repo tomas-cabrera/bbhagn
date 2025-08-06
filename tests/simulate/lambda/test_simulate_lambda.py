@@ -7,10 +7,10 @@ import numpy as np
 import pandas as pd
 from astropy.cosmology import FlatLambdaCDM
 from astropy.io import fits
-from myagn import distributions as myagndistributions
 
 GDIR = pa.dirname(pa.dirname(pa.dirname(pa.dirname(pa.abspath(__file__)))))
 sys.path.insert(1, GDIR)
+from myagn import distributions as myagndistributions
 from utils.simulate import simulate_flares
 
 ################################################################################

@@ -1,13 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from myagn.flares import models as myflaremodels
 import sys
 import os.path as pa
 from scipy.special import erfc
 
 # Local imports
 sys.path.append(pa.dirname(pa.dirname(pa.dirname(__file__))))
+from myagn.flares import models as myflaremodels
 import utils.graham23_tables as g23
 from utils.paths import DATADIR, PROJDIR
 
