@@ -46,16 +46,16 @@ def plot_lambda_posterior(path, offset=0, plot_kwargs={}, ax=None):
         quantstr = f"$\lambda = {peak:.3f}_{{- {lo:.3f}}}^{{+ {hi:.3f}}}$"
     # Scale to figure
     y_lo = offset - 0.45 * pdf / np.nanmax(pdf)
-    y_hi = offset + 0.45 * pdf / np.nanmax(pdf)
+    y_hi = offset + 0.85 * pdf / 60
     # Plot
     # plot_kwargs["label"] += f": {quantstr}"
     lines = ax.plot(x, [offset] * len(x), rasterized=True, lw=0.5, **plot_kwargs)
     color = lines[0].get_color()
-    ax.plot(x, y_lo, rasterized=True, color=color, lw=0.5, **plot_kwargs)
+    # ax.plot(x, y_lo, rasterized=True, color=color, lw=0.5, **plot_kwargs)
     ax.plot(x, y_hi, rasterized=True, color=color, lw=0.5, **plot_kwargs)
     ax.fill_between(
         x,
-        y_lo,
+        offset,
         y_hi,
         where=(x >= quants[1]) & (x <= quants[2]),
         color=color,
@@ -65,7 +65,7 @@ def plot_lambda_posterior(path, offset=0, plot_kwargs={}, ax=None):
     )
     ax.fill_between(
         x,
-        y_lo,
+        offset,
         y_hi,
         where=(x >= 0) & (x <= np.quantile(samples, 0.9)),
         color=color,
