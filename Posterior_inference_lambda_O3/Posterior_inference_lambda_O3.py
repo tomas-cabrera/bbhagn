@@ -120,6 +120,7 @@ if __name__ == "__main__":
     ]  # "/hildafs/home/tcabrera/HIPAL/bbhagn/bbhagn/config.yaml"
     config_dir = pa.dirname(config_file)
     config = yaml.safe_load(open(config_file))
+    config["config_file"] = config_file
 
     # Parse AGN distribution config
     for k, v in config["agn_distribution"].items():

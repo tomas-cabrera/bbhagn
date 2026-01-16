@@ -30,7 +30,7 @@ def calc_arrs_for_directory(directory, force=False):
     # Check if cached
     # cache_dir = pa.join(pa.dirname(__file__), ".cache", pa.basename(directory))
     # This is for displaying jobs 11 and 18; should have identical s/b_arrs, but the lambda samples will change
-    cache_dir = pa.join(pa.dirname(__file__), ".cache", "11")
+    cache_dir = pa.join(pa.dirname(__file__), ".cache", pa.basename(directory))
     s_arr_path = pa.join(cache_dir, "s_arrs.npy")
     b_arr_path = pa.join(cache_dir, "b_arrs.npy")
     n_flares_bgs_path = pa.join(cache_dir, "n_flares_bgs.npy")
@@ -66,7 +66,7 @@ def calc_arrs_for_directory(directory, force=False):
         s_arrs, b_arrs, n_agns = inference.calc_arrs(
             config["H00"],
             config["Om0"],
-            *lnprob_args[:-1],
+            *lnprob_args[:-2],
             config["agn_distribution"]["astrophysical"],
             config["z_min_b"],
             config["z_max_b"],
@@ -360,13 +360,13 @@ def plot_association_pdf_grid(
                     ax=ax,
                 )
             else:
-                # Find background terms, skip GW190620_030421
+                # Find background terms
                 mask = (
                     b_arr_assoc.loc[
-                        [n for n in b_arr_assoc.index if n != "GW190620_030421"], fn
+                        [n for n in b_arr_assoc.index], fn
                     ]
                     != 2.12e-6
-                )
+                ).values
                 if not np.any(mask):
                     gn = gweventnames[0]
                 else:
@@ -464,21 +464,31 @@ def plot_association_pdf_grid(
 
 def plot_association_pdfs(
     directories,
-    gweventnames,
-    flarenames,
     s_arrs,
     b_arrs,
     axs=None,
 ):
+    # Config; select gwevents with associations
+    d = directories[0]
+    config_file = pa.join(d, "config.yaml")
+    config = yaml.safe_load(open(config_file))
+    assoc_path = config["assoc_csv"]
+    if assoc_path == "None":
+        assoc_path = pa.join(pa.dirname(config_file), "assoc.csv")
+    df_assoc = pd.read_csv(assoc_path, index_col="gweventname")
+    assoc_rows = np.any(df_assoc, axis=1)
+    assoc_cols = np.any(df_assoc, axis=0)
+    # Get gweventnames, flarenames
+    gweventnames = np.array(df_assoc.index[assoc_rows])
+    flarenames = np.array(df_assoc.columns[assoc_cols])
     # Initialize figure if needed
     if axs is None:
         fig, axs = initialize_mosaic_axes(gweventnames, flarenames)
     # Plot
     for d, s, b in zip(directories, s_arrs, b_arrs):
         # Trim s_arr and b_arr to rows with associations
-        assoc_rows = np.unique(np.where(s > 0)[0])
-        s_arr_assoc = s.iloc[assoc_rows, :]
-        b_arr_assoc = b.iloc[assoc_rows, :]
+        s_arr_assoc = s[assoc_rows]
+        b_arr_assoc = b[assoc_rows]
         plot_association_pdf_grid(
             d,
             gweventnames,
@@ -554,34 +564,5 @@ for p in paths:
     s_arrs.append(s_arr)
     b_arrs.append(b_arr)
 
-# Get GW and flare names
-gweventnames = g23.DF_GWBRIGHT.sort_values("dataset")["gweventname"].values
-# Remove GW190731_140936, GW200216_220804, and GW200220_124850
-gweventnames = np.array(
-    [
-        gn
-        for gn in gweventnames
-        if gn
-        not in [
-            "GW190731_140936",
-            "GW200216_220804",
-            "GW200220_124850",
-        ]
-    ]
-)
-flarenames = g23.DF_FLARE["flarename"].values
-selected_flarenames = np.unique(g23.DF_ASSOC["flarename"].values)
-selected_flarenames = np.array(
-    [
-        fn
-        for fn in flarenames
-        if fn not in ["J183412.42+365655.3", "J154342.46+461233.4"]
-    ]
-)
-selected_gws = np.unique(g23.DF_ASSOC["gweventname"].values)
-gweventnames = np.array([gn for gn in gweventnames if gn in selected_gws])
-flarenames = np.array([fn for fn in flarenames if fn in selected_flarenames])
-
-
 # Plot the association probabilities
-plot_association_pdfs(paths, gweventnames, flarenames, s_arrs, b_arrs)
+plot_association_pdfs(paths, s_arrs, b_arrs)
