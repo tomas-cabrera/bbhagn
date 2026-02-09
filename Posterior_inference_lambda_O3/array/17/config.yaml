@@ -7,7 +7,7 @@ frac_det: 1.0 # Fraction of flares detected
 dt_followup: 200.0 # Length of follow-up campaign in days
 gwmapdir: "/hildafs/projects/phy220048p/share/skymaps"
 gw_csv: "/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/data/graham23_tables/gw.csv"
-flare_csv: "/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/data/graham23_tables/flare.csv"
+flare_csv: "/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/data/graham23_tables/flare20.csv"
 assoc_csv: "None"
 force_assoc_calc: False
 
