@@ -591,7 +591,7 @@ def setup(config, nproc=1):
         # Make df
         df_assoc = pd.DataFrame(
             [r["flare_mask"] for r in results],
-            index=df_gw["gweventname"],
+            index=df_gw.loc[idxs]["gweventname"],
             columns=df_flare["flarename"],
         )
         if config["assoc_csv"] == "None":
