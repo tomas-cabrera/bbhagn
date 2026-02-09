@@ -1,0 +1,6 @@
+This event was excluded because it is most likely a BNS merger, although other progenitors are possible.
+GW190425,0.377,/hildafs/projects/phy220048p/share/skymaps/all_skymaps/GW190425_C01:SEOBNRv4T_surrogate_HS.fits,GW190425,GW190425_081805-v3,1240215503.0,3.0,GWTC-2.1-confident,https://doi.org/10.7935/qf3a-3z67,https://gwosc.org/api/v2/event-versions/GW190425-v3,2.1,-0.4,0.5,1.3,-0.2,0.3,12.4,-0.4,0.4,150.0,-60.0,80.0,0.07,-0.05,0.07,3.4,-0.1,0.3,1.44,-0.02,0.02,,,,0.03,-0.01,0.02,0.034,,,0.78349,,,,,
+The following events are excluded because they have dropped out of significance during the GWTC-2.1 reanalysis (See https://gwosc.org/GWTC-2.1/).
+GW190424_180648,0.563,/hildafs/projects/phy220048p/share/skymaps/all_skymaps/GW190424_180648_C01:NRSur7dq4.fits,GW190424_180648,GW190424_180648-v2,1240164426.1,2.0,GWTC-2.1-auxiliary,,https://gwosc.org/api/v2/event-versions/GW190424_180648-v2,,,,,,,10.0939769744873,,,,,,,,,,,,,,,,,,,,,9.03878554692412,,,0.1211015151946331,,,,,
+GW190909_114149,0.57,/hildafs/projects/phy220048p/share/skymaps/all_skymaps/GW190909_114149_C01:SEOBNRv4PHM.fits,GW190909_114149,GW190909_114149-v2,1252064527.7,2.0,GWTC-2.1-auxiliary,,https://gwosc.org/api/v2/event-versions/GW190909_114149-v2,,,,,,,9.047895,,,,,,,,,,,,,,,,,,,,,26.1830194416,,,0.1525430959725358,,,,,
+
