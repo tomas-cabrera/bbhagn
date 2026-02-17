@@ -1,3 +1,6 @@
+## NBe:
+# The GW190521-J124942.30+344928.9 and GW190803_022701-J120437.98+500024.0 association posteriors are similar because s_arr/b_arr is similar for the two distributions, and the lambda samples are identical
+
 import os
 import os.path as pa
 import sys
@@ -41,7 +44,9 @@ def calc_arrs_for_directory(directory, force=False):
         n_agns = pd.read_csv(n_flares_bgs_path, index_col=0)
     else:
         # Config
-        config = yaml.safe_load(open(pa.join(directory, "config.yaml")))
+        config_path = pa.join(directory, "config.yaml")
+        config = yaml.safe_load(open(config_path))
+        config["config_file"] = config_path
         # Parse AGN distribution config
         for k, v in config["agn_distribution"].items():
             if v["model"] == "ConstantPhysicalDensity":
@@ -66,15 +71,15 @@ def calc_arrs_for_directory(directory, force=False):
         s_arrs, b_arrs, n_agns = inference.calc_arrs(
             config["H00"],
             config["Om0"],
-            *lnprob_args[:-2],
+            *lnprob_args[:-1],
             config["agn_distribution"]["astrophysical"],
             config["z_min_b"],
             config["z_max_b"],
         )
         # Cast as pd.DataFrames
-        gweventnames = g23.DF_GW_G23["gweventname"].values
-        gweventnames = np.array([gn.replace("*", "") for gn in gweventnames])
-        flarenames = g23.DF_FLARE["flarename"].values
+        gweventnames = pd.read_csv(config["gw_csv"])["gweventname"].values
+        gweventnames = np.array([gn.strip("*") for gn in gweventnames])
+        flarenames = pd.read_csv(config["flare_csv"])["flarename"].values
         s_arrs = pd.DataFrame(
             s_arrs,
             index=gweventnames,
@@ -314,7 +319,7 @@ def initialize_mosaic_axes(
     gweventnames,
     flarenames,
     subplot_mosaic_kwargs={
-        "figsize": (10, 7),
+        "figsize": (10, 10),
         "gridspec_kw": {
             "wspace": 0.0,
             "hspace": 0.1,
@@ -323,9 +328,9 @@ def initialize_mosaic_axes(
 ):
     # Initialize figure
     mosaic_arr = []
-    for fn in flarenames:
+    for fn in sorted(flarenames):
         mosaic_row = []
-        for gwn in gweventnames:
+        for gwn in sorted(gweventnames):
             mosaic_row.append(f"{fn}|{gwn}")
         mosaic_row.append(f"{fn}|Background")
         mosaic_arr.append(mosaic_row)
@@ -359,6 +364,7 @@ def plot_association_pdf_grid(
                     b_arr_assoc.loc[gn, fn],
                     ax=ax,
                 )
+                assoc = s_arr_assoc.loc[gn, fn] != 0
             else:
                 # Find background terms
                 mask = (
@@ -368,24 +374,27 @@ def plot_association_pdf_grid(
                     != 2.12e-6
                 ).values
                 if not np.any(mask):
-                    gn = gweventnames[0]
+                    gn_temp = gweventnames[0]
                 else:
-                    gn = gweventnames[mask][0]
+                    gn_temp = gweventnames[mask][0]
                 plot_background_pdf(
                     directory,
                     s_arr_assoc.loc[:, fn][~np.isnan(s_arr_assoc.loc[:, fn])],
-                    b_arr_assoc.loc[gn, fn],
+                    b_arr_assoc.loc[gn_temp, fn],
                     ax=ax,
                 )
+                assoc = True
             # Formatting
             ax.set_xlim(0, 1)
             ax.set_ylim(0, 7)
             # Define flags
-            bottom = fi == len(flarenames) - 1
-            top = fi == 0
-            left = gi == 0
-            right = gi == len(gweventnames)
-            assoc = s_arr_assoc.loc[gn, fn] != 0
+            bottom = fn == sorted(flarenames)[-1]
+            top = fn == sorted(flarenames)[0]
+            left = gn == sorted(gweventnames)[0]
+            right = gn == "Background"
+            print(
+                f"{gn:20s} {fn} bottom {bottom}, top {top}, left {left}, right {right}"
+            )
             # General labels
             ax.set_xticks(np.arange(0, 1, 0.25))
             ax.set_yticks(np.arange(0, 8, 2))

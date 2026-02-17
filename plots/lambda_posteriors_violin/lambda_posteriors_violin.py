@@ -134,12 +134,12 @@ def plot_lambda_posteriors(paths):
         zip(
             paths,
             [
-                "GWTC-3.0 (83 BBHs)",
-                "BBHs with flares (6 BBHs)",
-                r"$m_1 < 40~M_\odot$ (51 BBHs, 2 flares)",
-                r"$m_1 \geq 40~M_\odot$ (29 BBHs, 4 flares)",
-                r"$m_{\rm fin} < 40~M_\odot$ (27 BBHs, 0 flares)",
-                r"$m_{\rm fin} \geq 40~M_\odot$ (52 BBHs, 4 flares)",
+                "GWTC-3.0 (76 BBHs)",
+                "BBHs with flares (7 BBHs)",
+                r"$m_1 < 40~M_\odot$ (47 BBHs, 3 flares)",
+                r"$m_1 \geq 40~M_\odot$ (29 BBHs, 5 flares)",
+                r"$m_{\rm fin} < 40~M_\odot$ (24 BBHs, 1 flares)",
+                r"$m_{\rm fin} \geq 40~M_\odot$ (52 BBHs, 6 flares)",
                 r"$L_{\rm bol} \geq$ 3e42 erg/s",
                 # "^same, only coincidences",
                 r"$L_{\rm bol} \geq$ 5e41 erg/s",
