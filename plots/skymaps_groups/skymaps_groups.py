@@ -165,7 +165,7 @@ mosaic = """0000
 """
 fig, axd = plt.subplot_mosaic(
     mosaic,
-    figsize=(10, 10),
+    figsize=(8, 8),
     subplot_kw={"projection": "astro hours mollweide"},
 )
 
