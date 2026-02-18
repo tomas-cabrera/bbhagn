@@ -126,12 +126,18 @@ def plot_skymap_with_contours(skymap_flat, contours, ax=None, label=None, cmap="
 
 # Groups
 gwlists = [
-    ["GW190424_180648", "GW190403_051519", "GW190514_065416", "GW190521"],
-    ["GW190803_022701", "GW190909_114149*"],
+    ["GW190403_051519", "GW190514_065416", "GW190521"],
+    ["GW190620_030421", "GW190803_022701"],
+    ["GW190426_190642"],
+    ["GW190708_232457*"],
+    ["GW190719_215514"],
 ]
 flarelists = [
-    ["J124942.30+344928.9", "J181719.94+541910.0", "J224333.95+760619.2"],
-    ["J120437.98+500024.0"],
+    ["J124942.30+344928.9", "J143157.51+451544.0", "J224333.95+760619.2"],
+    ["J120437.98+500024.0", "J160822.16+401217.8"],
+    ["J154806.31+291216.3"],
+    ["J233746.08-013116.3"],
+    ["J181719.95+541910.0"],
 ]
 # Create colormaps from matplotlib color cycle
 prop_cycle = plt.rcParams["axes.prop_cycle"]
@@ -152,10 +158,14 @@ for color in colors:
     )
 
 # Initialize figure
-mosaic = np.arange(len(gwlists)).reshape((1, 2))
+mosaic = """0000
+0000
+1122
+3344
+"""
 fig, axd = plt.subplot_mosaic(
     mosaic,
-    figsize=(10, 3),
+    figsize=(10, 10),
     subplot_kw={"projection": "astro hours mollweide"},
 )
 
