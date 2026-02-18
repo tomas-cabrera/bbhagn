@@ -136,7 +136,7 @@ def plot_association_pdf(directory, signal, signals, background, ax=None):
         peak = quants[0]
         lo = peak - quants[1]
         hi = quants[2] - peak
-        if f"{peak:.2f}" == "0.00":
+        if quants[1] < 0.01:
             quantstr = f"$p < {hi:.2f}$"
         else:
             quantstr = f"${peak:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$"
@@ -240,9 +240,9 @@ def plot_background_pdf(directory, signals, background, ax=None):
         peak = quants[0]
         lo = peak - quants[1]
         hi = quants[2] - peak
-        if f"{peak:.2f}" == "0.00":
+        if quants[1] < 0.01:
             quantstr = f"$p < {quants[2]:.2f}$"
-        elif f"{peak:.2f}" == "1.00":
+        elif quants[2] > 0.99:
             quantstr = f"$p > {quants[1]:.2f}$"
         else:
             quantstr = f"${peak:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$"
@@ -392,9 +392,9 @@ def plot_association_pdf_grid(
             top = fn == sorted(flarenames)[0]
             left = gn == sorted(gweventnames)[0]
             right = gn == "Background"
-            print(
-                f"{gn:20s} {fn} bottom {bottom}, top {top}, left {left}, right {right}"
-            )
+            # print(
+            #     f"{gn:20s} {fn} bottom {bottom}, top {top}, left {left}, right {right}"
+            # )
             # General labels
             ax.set_xticks(np.arange(0, 1, 0.25))
             ax.set_yticks(np.arange(0, 8, 2))
