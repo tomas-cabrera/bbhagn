@@ -29,6 +29,8 @@ df_flares = pd.read_csv(flare_path)
 # Iterate over flarenames
 fitparams = []
 mjds = []
+mjds_peak = []
+tgs = []
 ras = []
 decs = []
 force = False
@@ -238,6 +240,8 @@ for i, row in df_flares.iterrows():
 
             # Save g-band mjds
             if f == "zg":
+                mjds_peak.append(popt[0])
+                tgs.append(popt[2])
                 mjds.append(
                     popt[0] - 3 * popt[2]
                 )  # Cabrera+ cutoffs (3 gaussrise sigma before peak)
@@ -299,6 +303,8 @@ fitparams.to_csv(f"{pa.dirname(__file__)}/fitparams.csv", index=False)
 
 # Save fit params to flare20
 df_flares["mjd"] = mjds
+df_flares["mjd_peak_fit"] = mjds_peak
+df_flares["tg_rise_fit"] = tgs
 df_flares["ra"] = ras
 df_flares["dec"] = decs
 df_flares.to_csv(flare_path, index=False)
