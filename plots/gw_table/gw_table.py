@@ -38,11 +38,14 @@ area90s = np.load("gw_table_area90s.npy")
 df["area90"] = area90s
 
 # Header
-tabstr = r"""\startlongtable
+tabstr = (
+    r"""\startlongtable
 \begin{deluxetable*}{ccccccc}
     \label{tab:gws}
     \tablecaption{
-        Parameters for the gravitational wave events with counterpart candidates in this study, reproduced from \citealt{abbott_gwtc-2_2021, abbott_gwtc-3_2023}.
+        Parameters for the """
+    + str(len(df))
+    + r""" gravitational wave events used in this study, reproduced from \citealt{abbott_gwtc-2_2021, abbott_gwtc-3_2023}.
         \response{Waveforms are selected as described in the notes of Table 1 in \citealt{graham_light_2023}.}
     }
     \tablehead{
@@ -51,6 +54,7 @@ tabstr = r"""\startlongtable
     }
     \startdata
 """
+)
 
 # Data
 for i, row in df.iterrows():
