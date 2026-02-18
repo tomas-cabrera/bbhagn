@@ -25,660 +25,34 @@ r 0.001176532795184178
  J154342.46+461233.4
 g 0.5976986732816975
 r 0.4466683800840303
-Using 83/83 GWs with 0.0 <= mass_1_source < 200.0...
-******************************
-Index 0
-******************************
-Index 2
-******************************
-Index 3
-******************************
-Index 1
-******************************
-Index 4
-******************************
-Index 5
-******************************
-Index 7
-******************************
-Index 6
-******************************
-Index 8
-******************************
-Index 9
-******************************
-Index 10
-******************************
-Index 11
-******************************
-Index 12
-******************************
-Index 13
-******************************
-Index 14
-******************************
-Index 15
-******************************
-Index 16
-******************************
-Index 17
-******************************
-Index 19
-******************************
-Index 20
-******************************
-Index 21
-******************************
-Index 22
-******************************
-Index 24
-******************************
-Index 25
-******************************
-Index 26
-******************************
-Index 27
-******************************
-Index 28
-GW190413_134308
-Loading skymap...
-GW190408_181802
-Loading skymap...
-GW190519_153544GW190517_055101
+Using 76/76 GWs with 0.0 <= mass_1_source < 200.0...
+multiprocessing.pool.RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/lib/python3.11/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+                    ^^^^^^^^^^^^^^^^^^^
+  File "/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/lib/python3.11/multiprocessing/pool.py", line 51, in starmapstar
+    return list(itertools.starmap(args[0], args[1]))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py", line 369, in _setup_task
+    assoc_path = config["assoc_csv"]
+                 ~~~~~~^^^^^^^^^^^^^
+KeyError: 'assoc_csv'
+"""
 
-Loading skymap...Loading skymap...
+The above exception was the direct cause of the following exception:
 
-GW190521_074359
-Loading skymap...
-GW190413_052954
-Loading skymap...
-GW190425
-Loading skymap...
-GW190426_152155
-Loading skymap...
-GW190503_185404
-Loading skymap...
-GW190424_180648
-Loading skymap...
-GW190421_213856GW190412
-
-Loading skymap...Loading skymap...
-
-GW190514_065416
-Loading skymap...
-GW190521
-Loading skymap...
-GW190527_092055
-Loading skymap...
-******************************
-Index 18
-******************************
-Index 23
-******************************
-Index 29
-************************************************************
-
-Index 30
-Index 31
-GW190513_205428
-Loading skymap...
-GW190707_093326GW190701_203306GW190706_222641
-
-
-Loading skymap...Loading skymap...Loading skymap...
-
-
-GW190728_064510
-Loading skymap...
-GW190512_180714
-Loading skymap...
-GW190719_215514GW190727_060333
-
-Loading skymap...Loading skymap...
-
-GW190731_140936
-Loading skymap...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-GW190814
-Loading skymap...
-Loading flares...
-Loading flares...Loading flares...
-
-Loading flares...Loading flares...
-
-GW190708_232457
-Loading skymap...
-GW190828_063405
-Loading skymap...
-GW190803_022701
-Loading skymap...
-GW190630_185205
-Loading skymap...
-Loading flares...
-Loading flares...
-Loading flares...
-GW190720_000836
-Loading skymap...
-Loading flares...
-GW190620_030421
-Loading skymap...
-Loading flares...
-GW190602_175927
-Loading skymap...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Loading flares...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-******************************
-Index 32
-GW190828_065509
-Loading skymap...
-Loading flares...
-******************************
-Index 33
-GW190909_114149
-Loading skymap...
-Loading flares...
-******************************
-Index 34
-GW190910_112807
-Loading skymap...
-Loading flares...
-******************************
-Index 35
-GW190915_235702
-Loading skymap...
-Loading flares...
-******************************
-Index 36
-GW190924_021846
-Loading skymap...
-Loading flares...
-******************************
-Index 37
-GW190929_012149
-Loading skymap...
-Loading flares...
-******************************
-Index 38
-GW190930_133541
-Loading skymap...
-Loading flares...
-******************************
-Index 39
-GW190403_051519
-Loading skymap...
-Loading flares...
-******************************
-Index 40
-GW190426_190642
-Loading skymap...
-Loading flares...
-******************************
-Index 41
-GW190725_174728
-Loading skymap...
-Loading flares...
-******************************
-Index 42
-GW190805_211137
-Loading skymap...
-Loading flares...
-******************************
-Index 43
-GW190916_200658
-Loading skymap...
-Loading flares...
-******************************
-Index 44
-GW190917_114630
-Loading skymap...
-Loading flares...
-******************************
-Index 45
-GW190925_232845
-Loading skymap...
-Loading flares...
-******************************
-Index 46
-GW190926_050336
-Loading skymap...
-Loading flares...
-******************************
-Index 47
-GW191103_012549
-Loading skymap...
-Loading flares...
-******************************
-Index 48
-GW191105_143521
-Loading skymap...
-Loading flares...
-******************************
-Index 49
-GW191109_010717
-Loading skymap...
-******************************
-Index 50
-GW191113_071753
-Loading skymap...
-Loading flares...
-Loading flares...
-******************************
-Index 51
-GW191126_115259
-Loading skymap...
-Loading flares...
-******************************
-Index 52
-GW191127_050227
-Loading skymap...
-Loading flares...
-******************************
-Index 53
-GW191129_134029
-Loading skymap...
-Loading flares...
-******************************
-Index 54
-GW191204_110529
-Loading skymap...
-Loading flares...
-******************************
-Index 55
-GW191204_171526
-Loading skymap...
-Loading flares...
-******************************
-Index 56
-GW191215_223052
-Loading skymap...
-Loading flares...
-Calculating background rate...
-Calculating background rate...
-******************************
-Index 57
-GW191216_213338
-Loading skymap...
-Loading flares...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-******************************
-Index 58
-GW191219_163120
-Loading skymap...
-Loading flares...
-******************************
-Index 59
-GW191222_033537
-Loading skymap...
-Loading flares...
-******************************
-Index 60
-GW191230_180458
-Loading skymap...
-Loading flares...
-Calculating background rate...
-******************************
-Index 61
-GW200105_162426
-Loading skymap...
-Loading flares...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-******************************
-Index 62
-GW200112_155838
-Loading skymap...
-Calculating background rate...
-Loading flares...
-Calculating background rate...
-Calculating background rate...
-******************************
-Index 63
-GW200115_042309
-Loading skymap...
-Loading flares...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-******************************
-Index 64
-GW200128_022011
-Loading skymap...
-Loading flares...
-******************************
-Index 65
-GW200129_065458
-Loading skymap...
-Loading flares...
-******************************
-Index 66
-GW200202_154313
-Loading skymap...
-Loading flares...
-******************************
-Index 67
-GW200208_130117
-Loading skymap...
-Loading flares...
-******************************
-Index 68
-GW200208_222617
-Loading skymap...
-Loading flares...
-******************************
-Index 69
-GW200209_085452
-Loading skymap...
-Loading flares...
-******************************
-Index 70
-GW200210_092254
-Loading skymap...
-Loading flares...
-******************************
-Index 71
-GW200216_220804
-Loading skymap...
-Loading flares...
-******************************
-Index 72
-GW200219_094415
-Loading skymap...
-Loading flares...
-******************************
-Index 73
-GW200220_061928
-Loading skymap...
-******************************
-Index 74
-GW200220_124850
-Loading skymap...
-Loading flares...
-Loading flares...
-******************************
-Index 75
-GW200224_222234
-Loading skymap...
-Loading flares...
-******************************
-Index 76
-GW200225_060421
-Loading skymap...
-Loading flares...
-******************************
-Index 77
-GW200302_015811
-Loading skymap...
-Loading flares...
-******************************
-Index 78
-GW200306_093714
-Loading skymap...
-Loading flares...
-******************************
-Index 79
-GW200308_173609
-Loading skymap...
-Loading flares...
-Calculating background rate...
-******************************
-Index 80
-GW200311_115853
-Loading skymap...
-******************************
-Index 81
-Loading flares...
-GW200316_215756
-Loading skymap...
-Loading flares...
-******************************
-Index 82
-GW200322_091133
-Loading skymap...
-Loading flares...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-Calculating background rate...
-/hildafs/projects/phy220048p/tcabrera/bbhagn/mycode/ligo.skymap/ligo/skymap/postprocess/crossmatch.py:459: RuntimeWarning: invalid value encountered in subtract
-  contour_dists = (hi - lo).tolist()
-Calculating background rate...
-Calculating signal and background arrays...
-GW 0 has 0 coincident flares
-GW 1 has 0 coincident flares
-GW 2 has 0 coincident flares
-GW 3 has 0 coincident flares
-GW 4 has 0 coincident flares
-GW 5 has 2 coincident flares
-GW 6 has 0 coincident flares
-GW 7 has 0 coincident flares
-GW 8 has 0 coincident flares
-GW 9 has 0 coincident flares
-GW 10 has 0 coincident flares
-GW 11 has 2 coincident flares
-GW 12 has 0 coincident flares
-GW 13 has 0 coincident flares
-GW 14 has 1 coincident flares
-GW 15 has 0 coincident flares
-GW 16 has 0 coincident flares
-GW 17 has 0 coincident flares
-GW 18 has 1 coincident flares
-GW 19 has 0 coincident flares
-GW 20 has 0 coincident flares
-GW 21 has 0 coincident flares
-GW 22 has 0 coincident flares
-GW 23 has 0 coincident flares
-GW 24 has 0 coincident flares
-GW 25 has 0 coincident flares
-GW 26 has 0 coincident flares
-GW 27 has 0 coincident flares
-GW 28 has 0 coincident flares
-GW 29 has 1 coincident flares
-GW 30 has 0 coincident flares
-GW 31 has 0 coincident flares
-GW 32 has 0 coincident flares
-GW 33 has 1 coincident flares
-GW 34 has 0 coincident flares
-GW 35 has 0 coincident flares
-GW 36 has 0 coincident flares
-GW 37 has 0 coincident flares
-GW 38 has 0 coincident flares
-GW 39 has 1 coincident flares
-GW 40 has 0 coincident flares
-GW 41 has 0 coincident flares
-GW 42 has 0 coincident flares
-GW 43 has 0 coincident flares
-GW 44 has 0 coincident flares
-GW 45 has 0 coincident flares
-GW 46 has 0 coincident flares
-GW 47 has 0 coincident flares
-GW 48 has 0 coincident flares
-GW 49 has 0 coincident flares
-GW 50 has 0 coincident flares
-GW 51 has 0 coincident flares
-GW 52 has 0 coincident flares
-GW 53 has 0 coincident flares
-GW 54 has 0 coincident flares
-GW 55 has 0 coincident flares
-GW 56 has 0 coincident flares
-GW 57 has 0 coincident flares
-GW 58 has 0 coincident flares
-GW 59 has 0 coincident flares
-GW 60 has 0 coincident flares
-GW 61 has 0 coincident flares
-GW 62 has 0 coincident flares
-GW 63 has 0 coincident flares
-GW 64 has 0 coincident flares
-GW 65 has 0 coincident flares
-GW 66 has 0 coincident flares
-GW 67 has 0 coincident flares
-GW 68 has 0 coincident flares
-GW 69 has 0 coincident flares
-GW 70 has 0 coincident flares
-GW 71 has 0 coincident flares
-GW 72 has 0 coincident flares
-GW 73 has 0 coincident flares
-GW 74 has 0 coincident flares
-GW 75 has 0 coincident flares
-GW 76 has 0 coincident flares
-GW 77 has 0 coincident flares
-GW 78 has 0 coincident flares
-GW 79 has 0 coincident flares
-GW 80 has 0 coincident flares
-GW 81 has 0 coincident flares
-GW 82 has 0 coincident flares
-******************** MCMC ********************
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-  0%|          | 0/5000 [00:00<?, ?it/s]/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
-  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
-  0%|          | 8/5000 [00:00<01:03, 78.34it/s]  0%|          | 16/5000 [00:00<01:03, 79.06it/s]  0%|          | 25/5000 [00:00<01:01, 80.49it/s]  1%|          | 34/5000 [00:00<00:59, 82.87it/s]  1%|          | 44/5000 [00:00<00:55, 88.85it/s]  1%|          | 54/5000 [00:00<00:54, 90.12it/s]  1%|▏         | 64/5000 [00:00<00:55, 88.20it/s]  1%|▏         | 73/5000 [00:00<00:56, 87.01it/s]  2%|▏         | 83/5000 [00:00<00:55, 88.67it/s]  2%|▏         | 93/5000 [00:01<00:54, 90.69it/s]  2%|▏         | 103/5000 [00:01<00:53, 91.03it/s]  2%|▏         | 113/5000 [00:01<00:56, 86.69it/s]  2%|▏         | 122/5000 [00:01<00:56, 86.43it/s]  3%|▎         | 132/5000 [00:01<00:54, 88.56it/s]  3%|▎         | 141/5000 [00:01<00:55, 87.58it/s]  3%|▎         | 150/5000 [00:01<00:56, 86.11it/s]  3%|▎         | 160/5000 [00:01<00:54, 88.61it/s]  3%|▎         | 171/5000 [00:01<00:51, 93.41it/s]  4%|▎         | 182/5000 [00:02<00:49, 97.28it/s]  4%|▍         | 193/5000 [00:02<00:48, 99.35it/s]  4%|▍         | 204/5000 [00:02<00:47, 101.11it/s]  4%|▍         | 215/5000 [00:02<00:46, 102.66it/s]  5%|▍         | 226/5000 [00:02<00:45, 104.76it/s]  5%|▍         | 237/5000 [00:02<00:45, 105.74it/s]  5%|▍         | 248/5000 [00:02<00:45, 105.47it/s]  5%|▌         | 259/5000 [00:02<00:45, 105.08it/s]  5%|▌         | 270/5000 [00:02<00:44, 105.20it/s]  6%|▌         | 281/5000 [00:02<00:44, 105.43it/s]  6%|▌         | 292/5000 [00:03<00:44, 105.36it/s]  6%|▌         | 303/5000 [00:03<00:44, 106.44it/s]  6%|▋         | 314/5000 [00:03<00:44, 105.30it/s]  6%|▋         | 325/5000 [00:03<00:43, 106.54it/s]  7%|▋         | 336/5000 [00:03<00:43, 106.11it/s]  7%|▋         | 347/5000 [00:03<00:44, 104.96it/s]  7%|▋         | 358/5000 [00:03<00:43, 105.69it/s]  7%|▋         | 369/5000 [00:03<00:43, 105.61it/s]  8%|▊         | 380/5000 [00:03<00:44, 104.51it/s]  8%|▊         | 391/5000 [00:04<00:44, 104.63it/s]  8%|▊         | 402/5000 [00:04<00:44, 103.50it/s]  8%|▊         | 413/5000 [00:04<00:44, 104.11it/s]  8%|▊         | 424/5000 [00:04<00:43, 104.65it/s]  9%|▊         | 435/5000 [00:04<00:43, 105.48it/s]  9%|▉         | 446/5000 [00:04<00:43, 105.51it/s]  9%|▉         | 457/5000 [00:04<00:43, 105.18it/s]  9%|▉         | 468/5000 [00:04<00:42, 106.12it/s] 10%|▉         | 480/5000 [00:04<00:41, 108.50it/s] 10%|▉         | 491/5000 [00:04<00:41, 107.97it/s] 10%|█         | 502/5000 [00:05<00:41, 108.32it/s] 10%|█         | 513/5000 [00:05<00:41, 107.69it/s] 10%|█         | 525/5000 [00:05<00:41, 108.60it/s] 11%|█         | 536/5000 [00:05<00:41, 108.66it/s] 11%|█         | 547/5000 [00:05<00:41, 107.41it/s] 11%|█         | 558/5000 [00:05<00:41, 106.91it/s] 11%|█▏        | 569/5000 [00:05<00:41, 105.66it/s] 12%|█▏        | 580/5000 [00:05<00:42, 104.88it/s] 12%|█▏        | 591/5000 [00:05<00:41, 105.42it/s] 12%|█▏        | 603/5000 [00:06<00:40, 107.42it/s] 12%|█▏        | 615/5000 [00:06<00:40, 108.37it/s] 13%|█▎        | 626/5000 [00:06<00:40, 107.97it/s] 13%|█▎        | 637/5000 [00:06<00:40, 107.14it/s] 13%|█▎        | 648/5000 [00:06<00:40, 106.58it/s] 13%|█▎        | 659/5000 [00:06<00:40, 106.62it/s] 13%|█▎        | 670/5000 [00:06<00:40, 107.14it/s] 14%|█▎        | 681/5000 [00:06<00:40, 107.30it/s] 14%|█▍        | 693/5000 [00:06<00:39, 108.25it/s] 14%|█▍        | 704/5000 [00:06<00:39, 108.09it/s] 14%|█▍        | 715/5000 [00:07<00:39, 108.08it/s] 15%|█▍        | 726/5000 [00:07<00:39, 107.14it/s] 15%|█▍        | 737/5000 [00:07<00:39, 107.23it/s] 15%|█▍        | 748/5000 [00:07<00:39, 106.72it/s] 15%|█▌        | 759/5000 [00:07<00:39, 106.22it/s] 15%|█▌        | 770/5000 [00:07<00:39, 106.82it/s] 16%|█▌        | 781/5000 [00:07<00:39, 105.61it/s] 16%|█▌        | 792/5000 [00:07<00:39, 106.14it/s] 16%|█▌        | 803/5000 [00:07<00:39, 105.57it/s] 16%|█▋        | 814/5000 [00:07<00:39, 105.71it/s] 16%|█▋        | 825/5000 [00:08<00:39, 106.12it/s] 17%|█▋        | 836/5000 [00:08<00:39, 106.02it/s] 17%|█▋        | 847/5000 [00:08<00:39, 105.63it/s] 17%|█▋        | 858/5000 [00:08<00:39, 105.94it/s] 17%|█▋        | 869/5000 [00:08<00:38, 106.22it/s] 18%|█▊        | 880/5000 [00:08<00:38, 106.09it/s] 18%|█▊        | 891/5000 [00:08<00:38, 105.98it/s] 18%|█▊        | 902/5000 [00:08<00:38, 106.57it/s] 18%|█▊        | 913/5000 [00:08<00:38, 106.69it/s] 18%|█▊        | 924/5000 [00:09<00:37, 107.31it/s] 19%|█▊        | 935/5000 [00:09<00:38, 105.99it/s] 19%|█▉        | 946/5000 [00:09<00:38, 105.24it/s] 19%|█▉        | 957/5000 [00:09<00:38, 106.25it/s] 19%|█▉        | 968/5000 [00:09<00:38, 105.59it/s] 20%|█▉        | 979/5000 [00:09<00:37, 105.98it/s] 20%|█▉        | 990/5000 [00:09<00:37, 106.59it/s] 20%|██        | 1001/5000 [00:09<00:37, 106.09it/s] 20%|██        | 1012/5000 [00:09<00:37, 106.34it/s] 20%|██        | 1023/5000 [00:09<00:37, 106.78it/s] 21%|██        | 1034/5000 [00:10<00:36, 107.41it/s] 21%|██        | 1045/5000 [00:10<00:36, 107.54it/s] 21%|██        | 1056/5000 [00:10<00:36, 107.86it/s] 21%|██▏       | 1067/5000 [00:10<00:37, 105.99it/s] 22%|██▏       | 1078/5000 [00:10<00:37, 104.91it/s] 22%|██▏       | 1089/5000 [00:10<00:37, 104.16it/s] 22%|██▏       | 1100/5000 [00:10<00:37, 104.57it/s] 22%|██▏       | 1111/5000 [00:10<00:37, 104.58it/s] 22%|██▏       | 1122/5000 [00:10<00:36, 104.93it/s] 23%|██▎       | 1133/5000 [00:10<00:36, 105.48it/s] 23%|██▎       | 1144/5000 [00:11<00:36, 105.39it/s] 23%|██▎       | 1156/5000 [00:11<00:35, 107.22it/s] 23%|██▎       | 1168/5000 [00:11<00:35, 108.87it/s] 24%|██▎       | 1179/5000 [00:11<00:35, 107.50it/s] 24%|██▍       | 1190/5000 [00:11<00:35, 107.07it/s] 24%|██▍       | 1201/5000 [00:11<00:35, 105.75it/s] 24%|██▍       | 1213/5000 [00:11<00:35, 107.46it/s] 24%|██▍       | 1224/5000 [00:11<00:34, 108.16it/s] 25%|██▍       | 1236/5000 [00:11<00:34, 108.83it/s] 25%|██▍       | 1247/5000 [00:12<00:34, 108.51it/s] 25%|██▌       | 1258/5000 [00:12<00:34, 108.60it/s] 25%|██▌       | 1269/5000 [00:12<00:34, 108.60it/s] 26%|██▌       | 1280/5000 [00:12<00:34, 108.08it/s] 26%|██▌       | 1291/5000 [00:12<00:35, 105.41it/s] 26%|██▌       | 1302/5000 [00:12<00:35, 105.24it/s] 26%|██▋       | 1313/5000 [00:12<00:35, 105.26it/s] 26%|██▋       | 1324/5000 [00:12<00:34, 106.52it/s] 27%|██▋       | 1335/5000 [00:12<00:34, 106.40it/s] 27%|██▋       | 1346/5000 [00:12<00:34, 107.37it/s] 27%|██▋       | 1357/5000 [00:13<00:34, 106.35it/s] 27%|██▋       | 1369/5000 [00:13<00:33, 108.44it/s] 28%|██▊       | 1380/5000 [00:13<00:33, 108.10it/s] 28%|██▊       | 1391/5000 [00:13<00:33, 108.36it/s] 28%|██▊       | 1402/5000 [00:13<00:33, 107.80it/s] 28%|██▊       | 1413/5000 [00:13<00:33, 107.18it/s] 28%|██▊       | 1424/5000 [00:13<00:33, 106.59it/s] 29%|██▊       | 1435/5000 [00:13<00:33, 106.28it/s] 29%|██▉       | 1446/5000 [00:13<00:33, 105.59it/s] 29%|██▉       | 1457/5000 [00:14<00:33, 105.10it/s] 29%|██▉       | 1468/5000 [00:14<00:33, 105.50it/s] 30%|██▉       | 1479/5000 [00:14<00:33, 106.30it/s] 30%|██▉       | 1490/5000 [00:14<00:32, 106.85it/s] 30%|███       | 1501/5000 [00:14<00:32, 106.44it/s] 30%|███       | 1512/5000 [00:14<00:33, 105.61it/s] 30%|███       | 1523/5000 [00:14<00:33, 104.62it/s] 31%|███       | 1534/5000 [00:14<00:33, 104.83it/s] 31%|███       | 1545/5000 [00:14<00:32, 105.68it/s] 31%|███       | 1557/5000 [00:14<00:32, 107.43it/s] 31%|███▏      | 1568/5000 [00:15<00:31, 107.98it/s] 32%|███▏      | 1579/5000 [00:15<00:31, 107.68it/s] 32%|███▏      | 1590/5000 [00:15<00:31, 107.46it/s] 32%|███▏      | 1601/5000 [00:15<00:31, 106.75it/s] 32%|███▏      | 1612/5000 [00:15<00:31, 107.25it/s] 32%|███▏      | 1623/5000 [00:15<00:31, 106.90it/s] 33%|███▎      | 1634/5000 [00:15<00:31, 106.78it/s] 33%|███▎      | 1645/5000 [00:15<00:31, 106.69it/s] 33%|███▎      | 1656/5000 [00:15<00:31, 106.47it/s] 33%|███▎      | 1667/5000 [00:15<00:31, 106.33it/s] 34%|███▎      | 1678/5000 [00:16<00:31, 105.71it/s] 34%|███▍      | 1690/5000 [00:16<00:30, 107.27it/s] 34%|███▍      | 1701/5000 [00:16<00:30, 106.89it/s] 34%|███▍      | 1712/5000 [00:16<00:30, 106.79it/s] 34%|███▍      | 1723/5000 [00:16<00:30, 106.90it/s] 35%|███▍      | 1735/5000 [00:16<00:30, 108.24it/s] 35%|███▍      | 1746/5000 [00:16<00:30, 107.34it/s] 35%|███▌      | 1757/5000 [00:16<00:30, 106.47it/s] 35%|███▌      | 1768/5000 [00:16<00:30, 105.78it/s] 36%|███▌      | 1779/5000 [00:17<00:30, 106.95it/s] 36%|███▌      | 1790/5000 [00:17<00:30, 106.79it/s] 36%|███▌      | 1801/5000 [00:17<00:29, 107.59it/s] 36%|███▌      | 1812/5000 [00:17<00:29, 106.85it/s] 36%|███▋      | 1824/5000 [00:17<00:29, 108.05it/s] 37%|███▋      | 1836/5000 [00:17<00:29, 108.57it/s] 37%|███▋      | 1847/5000 [00:17<00:29, 107.49it/s] 37%|███▋      | 1858/5000 [00:17<00:29, 106.10it/s] 37%|███▋      | 1869/5000 [00:17<00:29, 106.01it/s] 38%|███▊      | 1880/5000 [00:17<00:29, 106.26it/s] 38%|███▊      | 1891/5000 [00:18<00:29, 106.28it/s] 38%|███▊      | 1902/5000 [00:18<00:28, 107.27it/s] 38%|███▊      | 1913/5000 [00:18<00:28, 107.23it/s] 38%|███▊      | 1925/5000 [00:18<00:28, 108.46it/s] 39%|███▊      | 1936/5000 [00:18<00:28, 108.07it/s] 39%|███▉      | 1947/5000 [00:18<00:28, 108.60it/s] 39%|███▉      | 1959/5000 [00:18<00:27, 109.19it/s] 39%|███▉      | 1970/5000 [00:18<00:28, 107.91it/s] 40%|███▉      | 1982/5000 [00:18<00:27, 108.74it/s] 40%|███▉      | 1993/5000 [00:19<00:27, 107.77it/s] 40%|████      | 2004/5000 [00:19<00:27, 107.31it/s] 40%|████      | 2015/5000 [00:19<00:27, 107.84it/s] 41%|████      | 2026/5000 [00:19<00:27, 107.74it/s] 41%|████      | 2037/5000 [00:19<00:27, 107.24it/s] 41%|████      | 2048/5000 [00:19<00:27, 106.63it/s] 41%|████      | 2059/5000 [00:19<00:27, 106.75it/s] 41%|████▏     | 2070/5000 [00:19<00:27, 106.69it/s] 42%|████▏     | 2081/5000 [00:19<00:27, 107.29it/s] 42%|████▏     | 2092/5000 [00:19<00:26, 107.82it/s] 42%|████▏     | 2103/5000 [00:20<00:27, 106.75it/s] 42%|████▏     | 2114/5000 [00:20<00:26, 107.31it/s] 43%|████▎     | 2126/5000 [00:20<00:26, 109.17it/s] 43%|████▎     | 2137/5000 [00:20<00:26, 107.18it/s] 43%|████▎     | 2148/5000 [00:20<00:26, 107.35it/s] 43%|████▎     | 2160/5000 [00:20<00:26, 108.46it/s] 43%|████▎     | 2171/5000 [00:20<00:26, 108.12it/s] 44%|████▎     | 2182/5000 [00:20<00:26, 107.88it/s] 44%|████▍     | 2193/5000 [00:20<00:25, 108.28it/s] 44%|████▍     | 2204/5000 [00:20<00:25, 108.02it/s] 44%|████▍     | 2215/5000 [00:21<00:25, 107.51it/s] 45%|████▍     | 2226/5000 [00:21<00:25, 107.91it/s] 45%|████▍     | 2238/5000 [00:21<00:25, 108.50it/s] 45%|████▍     | 2249/5000 [00:21<00:25, 108.55it/s] 45%|████▌     | 2260/5000 [00:21<00:25, 107.17it/s] 45%|████▌     | 2271/5000 [00:21<00:25, 107.58it/s] 46%|████▌     | 2282/5000 [00:21<00:25, 108.16it/s] 46%|████▌     | 2293/5000 [00:21<00:24, 108.59it/s] 46%|████▌     | 2304/5000 [00:21<00:24, 108.91it/s] 46%|████▋     | 2315/5000 [00:22<00:24, 107.95it/s] 47%|████▋     | 2326/5000 [00:22<00:24, 108.16it/s] 47%|████▋     | 2337/5000 [00:22<00:24, 108.29it/s] 47%|████▋     | 2348/5000 [00:22<00:24, 107.10it/s] 47%|████▋     | 2359/5000 [00:22<00:24, 107.23it/s] 47%|████▋     | 2370/5000 [00:22<00:24, 107.28it/s] 48%|████▊     | 2381/5000 [00:22<00:24, 108.05it/s] 48%|████▊     | 2392/5000 [00:22<00:24, 106.88it/s] 48%|████▊     | 2403/5000 [00:22<00:24, 107.12it/s] 48%|████▊     | 2414/5000 [00:22<00:24, 107.48it/s] 48%|████▊     | 2425/5000 [00:23<00:23, 107.37it/s] 49%|████▊     | 2436/5000 [00:23<00:23, 107.03it/s] 49%|████▉     | 2447/5000 [00:23<00:23, 107.55it/s] 49%|████▉     | 2458/5000 [00:23<00:23, 107.40it/s] 49%|████▉     | 2469/5000 [00:23<00:23, 107.53it/s] 50%|████▉     | 2481/5000 [00:23<00:23, 108.69it/s] 50%|████▉     | 2492/5000 [00:23<00:23, 108.60it/s] 50%|█████     | 2504/5000 [00:23<00:22, 109.67it/s] 50%|█████     | 2516/5000 [00:23<00:22, 112.68it/s] 51%|█████     | 2528/5000 [00:23<00:22, 111.26it/s] 51%|█████     | 2540/5000 [00:24<00:22, 110.80it/s] 51%|█████     | 2552/5000 [00:24<00:22, 110.92it/s] 51%|█████▏    | 2564/5000 [00:24<00:22, 109.92it/s] 52%|█████▏    | 2575/5000 [00:24<00:22, 107.93it/s] 52%|█████▏    | 2586/5000 [00:24<00:22, 107.45it/s] 52%|█████▏    | 2597/5000 [00:24<00:22, 106.41it/s] 52%|█████▏    | 2608/5000 [00:24<00:22, 106.64it/s] 52%|█████▏    | 2619/5000 [00:24<00:22, 106.91it/s] 53%|█████▎    | 2630/5000 [00:24<00:22, 105.89it/s] 53%|█████▎    | 2641/5000 [00:25<00:22, 106.75it/s] 53%|█████▎    | 2652/5000 [00:25<00:21, 106.94it/s] 53%|█████▎    | 2663/5000 [00:25<00:21, 106.69it/s] 53%|█████▎    | 2674/5000 [00:25<00:21, 107.27it/s] 54%|█████▎    | 2686/5000 [00:25<00:21, 108.74it/s] 54%|█████▍    | 2697/5000 [00:25<00:21, 107.44it/s] 54%|█████▍    | 2708/5000 [00:25<00:21, 107.09it/s] 54%|█████▍    | 2719/5000 [00:25<00:21, 106.74it/s] 55%|█████▍    | 2730/5000 [00:25<00:21, 107.24it/s] 55%|█████▍    | 2741/5000 [00:25<00:21, 106.65it/s] 55%|█████▌    | 2752/5000 [00:26<00:21, 106.09it/s] 55%|█████▌    | 2763/5000 [00:26<00:21, 106.28it/s] 55%|█████▌    | 2774/5000 [00:26<00:20, 106.71it/s] 56%|█████▌    | 2785/5000 [00:26<00:20, 106.05it/s] 56%|█████▌    | 2796/5000 [00:26<00:20, 106.22it/s] 56%|█████▌    | 2807/5000 [00:26<00:20, 106.65it/s] 56%|█████▋    | 2819/5000 [00:26<00:20, 107.79it/s] 57%|█████▋    | 2830/5000 [00:26<00:20, 107.45it/s] 57%|█████▋    | 2841/5000 [00:26<00:20, 106.63it/s] 57%|█████▋    | 2852/5000 [00:26<00:20, 106.51it/s] 57%|█████▋    | 2863/5000 [00:27<00:19, 106.96it/s] 57%|█████▊    | 2875/5000 [00:27<00:19, 108.00it/s] 58%|█████▊    | 2887/5000 [00:27<00:19, 108.79it/s] 58%|█████▊    | 2898/5000 [00:27<00:19, 108.77it/s] 58%|█████▊    | 2909/5000 [00:27<00:19, 108.60it/s] 58%|█████▊    | 2920/5000 [00:27<00:19, 107.54it/s] 59%|█████▊    | 2932/5000 [00:27<00:19, 108.54it/s] 59%|█████▉    | 2944/5000 [00:27<00:18, 109.22it/s] 59%|█████▉    | 2955/5000 [00:27<00:18, 108.23it/s] 59%|█████▉    | 2966/5000 [00:28<00:18, 107.48it/s] 60%|█████▉    | 2977/5000 [00:28<00:18, 108.07it/s] 60%|█████▉    | 2988/5000 [00:28<00:18, 108.10it/s] 60%|█████▉    | 2999/5000 [00:28<00:18, 107.69it/s] 60%|██████    | 3010/5000 [00:28<00:18, 106.96it/s] 60%|██████    | 3021/5000 [00:28<00:18, 106.90it/s] 61%|██████    | 3032/5000 [00:28<00:18, 107.25it/s] 61%|██████    | 3043/5000 [00:28<00:18, 107.09it/s] 61%|██████    | 3054/5000 [00:28<00:18, 107.63it/s] 61%|██████▏   | 3065/5000 [00:28<00:17, 107.56it/s] 62%|██████▏   | 3076/5000 [00:29<00:17, 107.29it/s] 62%|██████▏   | 3087/5000 [00:29<00:18, 105.98it/s] 62%|██████▏   | 3098/5000 [00:29<00:17, 106.48it/s] 62%|██████▏   | 3109/5000 [00:29<00:17, 106.19it/s] 62%|██████▏   | 3120/5000 [00:29<00:17, 106.34it/s] 63%|██████▎   | 3131/5000 [00:29<00:17, 106.77it/s] 63%|██████▎   | 3143/5000 [00:29<00:17, 109.02it/s] 63%|██████▎   | 3154/5000 [00:29<00:17, 108.44it/s] 63%|██████▎   | 3165/5000 [00:29<00:17, 107.70it/s] 64%|██████▎   | 3176/5000 [00:30<00:16, 108.05it/s] 64%|██████▎   | 3187/5000 [00:30<00:16, 107.38it/s] 64%|██████▍   | 3198/5000 [00:30<00:16, 106.47it/s] 64%|██████▍   | 3209/5000 [00:30<00:16, 106.69it/s] 64%|██████▍   | 3220/5000 [00:30<00:16, 106.07it/s] 65%|██████▍   | 3231/5000 [00:30<00:16, 105.13it/s] 65%|██████▍   | 3242/5000 [00:30<00:16, 104.63it/s] 65%|██████▌   | 3253/5000 [00:30<00:16, 105.68it/s] 65%|██████▌   | 3265/5000 [00:30<00:16, 106.91it/s] 66%|██████▌   | 3276/5000 [00:30<00:16, 107.20it/s] 66%|██████▌   | 3287/5000 [00:31<00:15, 107.46it/s] 66%|██████▌   | 3298/5000 [00:31<00:15, 107.34it/s] 66%|██████▌   | 3309/5000 [00:31<00:15, 106.51it/s] 66%|██████▋   | 3320/5000 [00:31<00:15, 106.11it/s] 67%|██████▋   | 3331/5000 [00:31<00:15, 105.58it/s] 67%|██████▋   | 3342/5000 [00:31<00:15, 106.44it/s] 67%|██████▋   | 3353/5000 [00:31<00:15, 106.84it/s] 67%|██████▋   | 3364/5000 [00:31<00:15, 107.38it/s] 68%|██████▊   | 3375/5000 [00:31<00:15, 106.81it/s] 68%|██████▊   | 3386/5000 [00:31<00:15, 107.38it/s] 68%|██████▊   | 3397/5000 [00:32<00:15, 106.65it/s] 68%|██████▊   | 3408/5000 [00:32<00:14, 106.74it/s] 68%|██████▊   | 3420/5000 [00:32<00:14, 108.63it/s] 69%|██████▊   | 3432/5000 [00:32<00:14, 110.56it/s] 69%|██████▉   | 3444/5000 [00:32<00:13, 112.23it/s] 69%|██████▉   | 3456/5000 [00:32<00:13, 111.41it/s] 69%|██████▉   | 3468/5000 [00:32<00:13, 111.74it/s] 70%|██████▉   | 3480/5000 [00:32<00:13, 110.92it/s] 70%|██████▉   | 3492/5000 [00:32<00:13, 111.40it/s] 70%|███████   | 3504/5000 [00:33<00:13, 111.35it/s] 70%|███████   | 3516/5000 [00:33<00:13, 110.45it/s] 71%|███████   | 3528/5000 [00:33<00:13, 109.32it/s] 71%|███████   | 3539/5000 [00:33<00:13, 108.92it/s] 71%|███████   | 3550/5000 [00:33<00:13, 109.11it/s] 71%|███████   | 3561/5000 [00:33<00:13, 108.17it/s] 71%|███████▏  | 3572/5000 [00:33<00:13, 107.03it/s] 72%|███████▏  | 3583/5000 [00:33<00:13, 107.77it/s] 72%|███████▏  | 3594/5000 [00:33<00:13, 106.94it/s] 72%|███████▏  | 3605/5000 [00:33<00:13, 105.91it/s] 72%|███████▏  | 3616/5000 [00:34<00:13, 105.89it/s] 73%|███████▎  | 3627/5000 [00:34<00:12, 106.92it/s] 73%|███████▎  | 3638/5000 [00:34<00:12, 107.17it/s] 73%|███████▎  | 3649/5000 [00:34<00:12, 107.32it/s] 73%|███████▎  | 3660/5000 [00:34<00:12, 107.74it/s] 73%|███████▎  | 3671/5000 [00:34<00:12, 106.73it/s] 74%|███████▎  | 3682/5000 [00:34<00:12, 106.47it/s] 74%|███████▍  | 3693/5000 [00:34<00:12, 105.90it/s] 74%|███████▍  | 3704/5000 [00:34<00:12, 105.82it/s] 74%|███████▍  | 3715/5000 [00:35<00:12, 105.42it/s] 75%|███████▍  | 3726/5000 [00:35<00:11, 106.69it/s] 75%|███████▍  | 3737/5000 [00:35<00:11, 106.07it/s] 75%|███████▍  | 3748/5000 [00:35<00:11, 106.06it/s] 75%|███████▌  | 3759/5000 [00:35<00:11, 106.54it/s] 75%|███████▌  | 3770/5000 [00:35<00:11, 105.71it/s] 76%|███████▌  | 3781/5000 [00:35<00:11, 105.79it/s] 76%|███████▌  | 3792/5000 [00:35<00:11, 105.82it/s] 76%|███████▌  | 3803/5000 [00:35<00:11, 106.32it/s] 76%|███████▋  | 3814/5000 [00:35<00:11, 106.13it/s] 76%|███████▋  | 3825/5000 [00:36<00:11, 106.51it/s] 77%|███████▋  | 3836/5000 [00:36<00:10, 106.37it/s] 77%|███████▋  | 3847/5000 [00:36<00:10, 105.94it/s] 77%|███████▋  | 3858/5000 [00:36<00:10, 106.21it/s] 77%|███████▋  | 3869/5000 [00:36<00:10, 106.38it/s] 78%|███████▊  | 3880/5000 [00:36<00:10, 106.65it/s] 78%|███████▊  | 3892/5000 [00:36<00:10, 107.94it/s] 78%|███████▊  | 3903/5000 [00:36<00:10, 107.73it/s] 78%|███████▊  | 3915/5000 [00:36<00:09, 108.74it/s] 79%|███████▊  | 3926/5000 [00:36<00:09, 108.03it/s] 79%|███████▉  | 3938/5000 [00:37<00:09, 109.13it/s] 79%|███████▉  | 3950/5000 [00:37<00:09, 109.49it/s] 79%|███████▉  | 3961/5000 [00:37<00:09, 108.62it/s] 79%|███████▉  | 3972/5000 [00:37<00:09, 107.97it/s] 80%|███████▉  | 3983/5000 [00:37<00:09, 108.04it/s] 80%|███████▉  | 3994/5000 [00:37<00:09, 108.36it/s] 80%|████████  | 4005/5000 [00:37<00:09, 107.87it/s] 80%|████████  | 4017/5000 [00:37<00:09, 108.52it/s] 81%|████████  | 4028/5000 [00:37<00:08, 108.60it/s] 81%|████████  | 4039/5000 [00:38<00:08, 108.17it/s] 81%|████████  | 4050/5000 [00:38<00:08, 108.13it/s] 81%|████████  | 4062/5000 [00:38<00:08, 109.59it/s] 81%|████████▏ | 4073/5000 [00:38<00:08, 109.51it/s] 82%|████████▏ | 4085/5000 [00:38<00:08, 109.86it/s] 82%|████████▏ | 4096/5000 [00:38<00:08, 109.12it/s] 82%|████████▏ | 4107/5000 [00:38<00:08, 108.82it/s] 82%|████████▏ | 4119/5000 [00:38<00:08, 109.35it/s] 83%|████████▎ | 4130/5000 [00:38<00:08, 108.14it/s] 83%|████████▎ | 4141/5000 [00:38<00:07, 108.44it/s] 83%|████████▎ | 4152/5000 [00:39<00:07, 108.53it/s] 83%|████████▎ | 4163/5000 [00:39<00:07, 107.61it/s] 84%|████████▎ | 4175/5000 [00:39<00:07, 109.63it/s] 84%|████████▎ | 4187/5000 [00:39<00:07, 109.75it/s] 84%|████████▍ | 4199/5000 [00:39<00:07, 110.71it/s] 84%|████████▍ | 4211/5000 [00:39<00:07, 110.27it/s] 84%|████████▍ | 4223/5000 [00:39<00:07, 109.64it/s] 85%|████████▍ | 4234/5000 [00:39<00:06, 109.45it/s] 85%|████████▍ | 4245/5000 [00:39<00:06, 109.38it/s] 85%|████████▌ | 4256/5000 [00:40<00:06, 109.22it/s] 85%|████████▌ | 4267/5000 [00:40<00:06, 107.89it/s] 86%|████████▌ | 4278/5000 [00:40<00:06, 107.69it/s] 86%|████████▌ | 4289/5000 [00:40<00:06, 107.46it/s] 86%|████████▌ | 4300/5000 [00:40<00:06, 107.07it/s] 86%|████████▌ | 4311/5000 [00:40<00:06, 107.89it/s] 86%|████████▋ | 4322/5000 [00:40<00:06, 108.51it/s] 87%|████████▋ | 4333/5000 [00:40<00:06, 108.15it/s] 87%|████████▋ | 4345/5000 [00:40<00:05, 109.69it/s] 87%|████████▋ | 4357/5000 [00:40<00:05, 111.11it/s] 87%|████████▋ | 4369/5000 [00:41<00:05, 110.53it/s] 88%|████████▊ | 4381/5000 [00:41<00:05, 111.08it/s] 88%|████████▊ | 4393/5000 [00:41<00:05, 110.60it/s] 88%|████████▊ | 4405/5000 [00:41<00:05, 109.54it/s] 88%|████████▊ | 4417/5000 [00:41<00:05, 109.89it/s] 89%|████████▊ | 4429/5000 [00:41<00:05, 110.21it/s] 89%|████████▉ | 4441/5000 [00:41<00:05, 110.09it/s] 89%|████████▉ | 4453/5000 [00:41<00:04, 109.83it/s] 89%|████████▉ | 4464/5000 [00:41<00:04, 109.40it/s] 90%|████████▉ | 4476/5000 [00:42<00:04, 110.50it/s] 90%|████████▉ | 4488/5000 [00:42<00:04, 110.54it/s] 90%|█████████ | 4500/5000 [00:42<00:04, 111.10it/s] 90%|█████████ | 4512/5000 [00:42<00:04, 112.13it/s] 90%|█████████ | 4524/5000 [00:42<00:04, 111.29it/s] 91%|█████████ | 4536/5000 [00:42<00:04, 111.22it/s] 91%|█████████ | 4548/5000 [00:42<00:04, 109.57it/s] 91%|█████████ | 4559/5000 [00:42<00:04, 109.16it/s] 91%|█████████▏| 4570/5000 [00:42<00:03, 109.16it/s] 92%|█████████▏| 4581/5000 [00:42<00:03, 108.45it/s] 92%|█████████▏| 4592/5000 [00:43<00:03, 107.77it/s] 92%|█████████▏| 4603/5000 [00:43<00:03, 107.75it/s] 92%|█████████▏| 4614/5000 [00:43<00:03, 108.35it/s] 92%|█████████▎| 4625/5000 [00:43<00:03, 108.09it/s] 93%|█████████▎| 4636/5000 [00:43<00:03, 108.59it/s] 93%|█████████▎| 4647/5000 [00:43<00:03, 107.89it/s] 93%|█████████▎| 4658/5000 [00:43<00:03, 108.34it/s] 93%|█████████▎| 4670/5000 [00:43<00:03, 109.08it/s] 94%|█████████▎| 4681/5000 [00:43<00:02, 108.48it/s] 94%|█████████▍| 4692/5000 [00:44<00:02, 108.59it/s] 94%|█████████▍| 4703/5000 [00:44<00:02, 107.98it/s] 94%|█████████▍| 4714/5000 [00:44<00:02, 107.75it/s] 95%|█████████▍| 4726/5000 [00:44<00:02, 108.50it/s] 95%|█████████▍| 4737/5000 [00:44<00:02, 108.14it/s] 95%|█████████▍| 4748/5000 [00:44<00:02, 108.03it/s] 95%|█████████▌| 4759/5000 [00:44<00:02, 107.61it/s] 95%|█████████▌| 4770/5000 [00:44<00:02, 106.55it/s] 96%|█████████▌| 4781/5000 [00:44<00:02, 106.99it/s] 96%|█████████▌| 4792/5000 [00:44<00:01, 106.18it/s] 96%|█████████▌| 4803/5000 [00:45<00:01, 105.99it/s] 96%|█████████▋| 4814/5000 [00:45<00:01, 106.98it/s] 96%|█████████▋| 4825/5000 [00:45<00:01, 107.59it/s] 97%|█████████▋| 4836/5000 [00:45<00:01, 108.17it/s] 97%|█████████▋| 4847/5000 [00:45<00:01, 107.75it/s] 97%|█████████▋| 4858/5000 [00:45<00:01, 107.88it/s] 97%|█████████▋| 4869/5000 [00:45<00:01, 106.82it/s] 98%|█████████▊| 4880/5000 [00:45<00:01, 106.70it/s] 98%|█████████▊| 4891/5000 [00:45<00:01, 107.44it/s] 98%|█████████▊| 4903/5000 [00:45<00:00, 108.78it/s] 98%|█████████▊| 4914/5000 [00:46<00:00, 107.57it/s] 98%|█████████▊| 4925/5000 [00:46<00:00, 106.48it/s] 99%|█████████▊| 4936/5000 [00:46<00:00, 105.95it/s] 99%|█████████▉| 4947/5000 [00:46<00:00, 105.49it/s] 99%|█████████▉| 4958/5000 [00:46<00:00, 106.23it/s] 99%|█████████▉| 4970/5000 [00:46<00:00, 108.96it/s]100%|█████████▉| 4981/5000 [00:46<00:00, 109.00it/s]100%|█████████▉| 4992/5000 [00:46<00:00, 108.63it/s]100%|██████████| 5000/5000 [00:46<00:00, 106.66it/s]
-******************** Output ********************
-(10432, 1)
-Saving data...
-******************** Corner plot ********************
-Making corner plot...
-Done.
+Traceback (most recent call last):
+  File "/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_inference_lambda_O3/Posterior_inference_lambda_O3.py", line 164, in <module>
+    lnprob_args = inference.setup(config, nproc=config["nproc"])
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py", line 573, in setup
+    results = p.starmap(
+              ^^^^^^^^^^
+  File "/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/lib/python3.11/multiprocessing/pool.py", line 375, in starmap
+    return self._map_async(func, iterable, starmapstar, chunksize).get()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/lib/python3.11/multiprocessing/pool.py", line 774, in get
+    raise self._value
+KeyError: 'assoc_csv'

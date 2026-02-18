@@ -254,8 +254,8 @@ def calc_arrs(
     z_max_b,
 ):
     # Initialize cosmology
-    # thiscosmo = FlatLambdaCDM(H0=H0, Om0=omegam)
-    thiscosmo = Planck15
+    thiscosmo = FlatLambdaCDM(H0=H0, Om0=omegam)
+    # thiscosmo = Planck15
 
     # Iterate through true associations
     # NOTE: np.<>_like(u.Quantity) returns a Quantity with the same unit as the input

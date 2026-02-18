@@ -155,3 +155,6 @@ DF_GW = pd.concat(
 )
 df_gw_path = pa.join(DATADIR, "graham23_tables", "gw.csv")
 DF_GW.to_csv(df_gw_path, index=False)
+
+### Make LaTeX table
+print(DF_GW)

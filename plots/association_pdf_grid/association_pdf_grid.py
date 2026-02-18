@@ -319,7 +319,7 @@ def initialize_mosaic_axes(
     gweventnames,
     flarenames,
     subplot_mosaic_kwargs={
-        "figsize": (10, 10),
+        "figsize": (12, 12),
         "gridspec_kw": {
             "wspace": 0.0,
             "hspace": 0.1,
