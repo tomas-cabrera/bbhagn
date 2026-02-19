@@ -31,7 +31,7 @@ def plot_lambda_posterior(path, offset=0, plot_kwargs={}, ax=None):
     samples_kde = np.concatenate([samples, -samples, 2 - samples])
     # Gaussian kde
     kernel = gaussian_kde(samples_kde, bw_method=0.005)
-    x = np.linspace(0, 0.45, 1001)
+    x = np.linspace(0, 0.35, 1001)
     pdf = 3 * kernel(
         x
     )  # "3 *" because the KDE is normalized over [-samples_max, samples_max]
@@ -158,7 +158,7 @@ def plot_lambda_posteriors(paths):
             },
         )
         # Format
-        axd[pi].set_xlim(0, 0.45)
+        axd[pi].set_xlim(0, 0.35)
         if pi == len(paths) - 1:
             axd[pi].set_xlabel(r"$\lambda$")
         # axd[pi].set_ylabel("PDF")
