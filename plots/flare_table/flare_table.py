@@ -23,7 +23,7 @@ tabstr = (
     + str(len(df))
     + r""" AGN flares used in this study.
         Host redshifts are reproduced from \citealt{veronesi_agn-flares_2025}.
-        Onset dates ${\rm MJD}_0$ are calculated as ${\rm MJD}_{\rm peak} - 3 \sigma_{\rm rise}$, where the two parameters are taken from fitting a Gaussian rise-exponential decay model to the ZTF g-band lightcurve \citep{graham_light_2023}: ${\rm MJD}_{\rm peak}$ is the fit time of flare maximum, and $\sigma_{\rm rise}$ is the fit standard deviation of the Gaussian rise.
+        Onset dates ${\rm MJD}_0$ are calculated as ${\rm MJD}_{\rm peak} - 3 \sigma_{\rm rise}$, where the two parameters are taken from fitting a Gaussian rise-exponential decay model to the ZTF $g$-band lightcurve \citep{graham_light_2023}: ${\rm MJD}_{\rm peak}$ is the fit time of flare maximum, and $\sigma_{\rm rise}$ is the fit standard deviation of the Gaussian rise.
     }
     \tablehead{
         \colhead{Event ID} & \colhead{Redshift} & \colhead{${\rm MJD}_{\rm peak}$} & \colhead{$\sigma_{\rm rise}$} & \colhead{${\rm MJD}_0$}
