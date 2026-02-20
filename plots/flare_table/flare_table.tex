@@ -1,0 +1,32 @@
+
+\begin{deluxetable}{ccccc}
+    \label{tab:flares}
+    \tablecaption{
+        Parameters for the 17 AGN flares used in this study.
+        Host redshifts are reproduced from \citealt{veronesi_agn-flares_2025}.
+        Onset dates ${\rm MJD}_0$ are calculated as ${\rm MJD}_{\rm peak} - 3 \sigma_{\rm rise}$, where the two parameters are taken from fitting a Gaussian rise-exponential decay model to the ZTF $g$-band lightcurve \citep{graham_light_2023}: ${\rm MJD}_{\rm peak}$ is the fit time of flare maximum, and $\sigma_{\rm rise}$ is the fit standard deviation of the Gaussian rise.
+        Note that the RA and declination of each flare are recoverable from the respective Event ID, which is the SDSS designation of the host galaxy.
+    }
+    \tablehead{
+        \colhead{Event ID} & \colhead{Redshift} & \colhead{${\rm MJD}_{\rm peak}$} & \colhead{$\sigma_{\rm rise}$} & \colhead{${\rm MJD}_0$}
+    }
+    \startdata
+		J120437.98+500024.0 & 0.389 & 58893.6 & 18.4 & 58838.3 \\
+		J124942.30+344928.9 & 0.438 & 58662.3 & 4.9 & 58647.7 \\
+		J140941.88+552928.1 & 0.074 & 58611.4 & 11.2 & 58577.9 \\
+		J143157.51+451544.0 & 0.693 & 58861.1 & 70.7 & 58649.1 \\
+		J143536.15+173755.4 & 0.095 & 58676.2 & 7.3 & 58654.4 \\
+		J145500.22+321637.1 & 0.177 & 58594.3 & 74.9 & 58369.6 \\
+		J152433.35+274311.6 & 0.069 & 58611.6 & 11.1 & 58578.3 \\
+		J154342.46+461233.4 & 0.599 & 58966.7 & 32.3 & 58869.8 \\
+		J154806.31+291216.3 & 1.090 & 59000.5 & 93.6 & 58719.9 \\
+		J160822.16+401217.8 & 0.627 & 58931.0 & 35.1 & 58825.7 \\
+		J161833.77+263226.0 & 0.126 & 58596.7 & 6.8 & 58576.2 \\
+		J163641.61+092459.2 & 1.155 & 58691.1 & 3.6 & 58680.4 \\
+		J181719.95+541910.0 & 0.234 & 58781.4 & 21.9 & 58715.8 \\
+		J183412.42+365655.2 & 0.419 & 58694.1 & 15.7 & 58647.0 \\
+		J224333.95+760619.2 & 0.353 & 58777.7 & 33.1 & 58678.5 \\
+		J233252.05+034559.7 & 1.119 & 58845.0 & 61.1 & 58661.7 \\
+		J233746.08-013116.3 & 0.115 & 58701.1 & 1.8 & 58695.6 \\
+\enddata
+\end{deluxetable}

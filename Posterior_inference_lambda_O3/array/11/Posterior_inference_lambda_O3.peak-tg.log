@@ -1,0 +1,692 @@
+******************** Initializing ********************
+******************** Preparing inputs ********************
+Setting up science...
+
+ J120437.98+500024.0
+g 2.12e-06
+r 2.12e-06
+
+ J124942.30+344928.9
+g 2.12e-06
+r 2.12e-06
+
+ J140941.88+552928.1
+g 2.12e-06
+r 2.12e-06
+
+ J143157.51+451544.0
+g 2.12e-06
+r 2.12e-06
+
+ J143536.15+173755.4
+g 2.12e-06
+r 2.12e-06
+
+ J145500.22+321637.1
+g 2.12e-06
+r 2.12e-06
+
+ J152433.35+274311.6
+g 2.12e-06
+r 2.12e-06
+
+ J154342.46+461233.4
+g 2.12e-06
+r 2.12e-06
+
+ J154806.31+291216.3
+g 2.12e-06
+r 2.12e-06
+
+ J160822.16+401217.8
+g 2.12e-06
+r 2.12e-06
+
+ J161833.77+263226.0
+g 2.12e-06
+r 2.12e-06
+
+ J163641.61+092459.2
+g 2.12e-06
+r 2.12e-06
+
+ J181719.95+541910.0
+g 2.12e-06
+r 2.12e-06
+
+ J183412.42+365655.2
+g 2.12e-06
+r 2.12e-06
+
+ J224333.95+760619.2
+g 2.12e-06
+r 2.12e-06
+
+ J233252.05+034559.7
+g 2.12e-06
+r 2.12e-06
+
+ J233746.08-013116.3
+g 2.12e-06
+r 2.12e-06
+Using 76/76 GWs with 0.0 <= mass_1_source < 200.0...
+******************************
+Index 17
+GW190701_203306
+0/17 coincident flares:
+******************************
+
+******************************
+Index 11
+GW190521
+1/17 coincident flares:
+	J124942.30+344928.9
+******************************
+
+******************************
+Index 15
+GW190620_030421
+2/17 coincident flares:
+	J124942.30+344928.9
+	J143157.51+451544.0
+******************************
+
+******************************
+Index 4
+GW190421_213856
+0/17 coincident flares:
+******************************
+
+******************************
+Index 8
+GW190514_065416
+2/17 coincident flares:
+	J124942.30+344928.9
+	J224333.95+760619.2
+******************************
+
+******************************
+Index 9
+GW190517_055101
+0/17 coincident flares:
+******************************
+
+******************************
+Index 18
+GW190706_222641
+1/17 coincident flares:
+	J183412.42+365655.2
+******************************
+
+******************************
+Index 25
+GW190731_140936
+0/17 coincident flares:
+******************************
+
+******************************
+Index 23
+GW190727_060333
+0/17 coincident flares:
+******************************
+
+******************************
+Index 14
+GW190602_175927
+0/17 coincident flares:
+******************************
+
+******************************
+Index 16
+GW190630_185205
+0/17 coincident flares:
+******************************
+
+******************************
+Index 5
+GW190503_185404
+0/17 coincident flares:
+******************************
+
+******************************
+Index 13
+GW190527_092055
+0/17 coincident flares:
+******************************
+
+******************************
+Index 7
+GW190513_205428
+0/17 coincident flares:
+******************************
+
+******************************
+Index 26
+GW190803_022701
+1/17 coincident flares:
+	J120437.98+500024.0
+******************************
+
+******************************
+Index 19
+GW190707_093326
+0/17 coincident flares:
+******************************
+
+******************************
+Index 12
+GW190521_074359
+0/17 coincident flares:
+******************************
+
+******************************
+Index 6
+GW190512_180714
+0/17 coincident flares:
+******************************
+
+******************************
+Index 0
+GW190408_181802
+0/17 coincident flares:
+******************************
+
+******************************
+Index 28
+GW190828_063405
+0/17 coincident flares:
+******************************
+
+******************************
+Index 2
+GW190413_052954
+0/17 coincident flares:
+******************************
+
+******************************
+Index 29
+GW190828_065509
+0/17 coincident flares:
+******************************
+
+******************************
+Index 22
+GW190720_000836
+0/17 coincident flares:
+******************************
+
+******************************
+Index 10
+GW190519_153544
+0/17 coincident flares:
+******************************
+
+******************************
+Index 21
+GW190719_215514
+1/17 coincident flares:
+	J181719.95+541910.0
+******************************
+
+******************************
+Index 30
+GW190910_112807
+0/17 coincident flares:
+******************************
+
+******************************
+Index 3
+GW190413_134308
+0/17 coincident flares:
+******************************
+
+******************************
+Index 24
+GW190728_064510
+0/17 coincident flares:
+******************************
+
+******************************
+Index 1
+GW190412
+0/17 coincident flares:
+******************************
+
+******************************
+Index 31
+GW190915_235702
+0/17 coincident flares:
+******************************
+
+******************************
+Index 20
+GW190708_232457
+1/17 coincident flares:
+	J233746.08-013116.3
+******************************
+
+******************************
+Index 27
+GW190814
+0/17 coincident flares:
+******************************
+
+******************************
+Index 33
+GW190929_012149
+0/17 coincident flares:
+******************************
+
+******************************
+Index 36
+GW190426_190642
+0/17 coincident flares:
+******************************
+
+******************************
+Index 39
+GW190916_200658
+1/17 coincident flares:
+	J143157.51+451544.0
+******************************
+
+******************************
+Index 38
+GW190805_211137
+0/17 coincident flares:
+******************************
+
+******************************
+Index 32
+GW190924_021846
+0/17 coincident flares:
+******************************
+
+******************************
+Index 35
+GW190403_051519
+1/17 coincident flares:
+	J124942.30+344928.9
+******************************
+
+******************************
+Index 42
+GW190926_050336
+0/17 coincident flares:
+******************************
+
+******************************
+Index 55
+GW191230_180458
+0/17 coincident flares:
+******************************
+
+******************************
+Index 34
+GW190930_133541
+0/17 coincident flares:
+******************************
+
+******************************
+Index 52
+GW191215_223052
+0/17 coincident flares:
+******************************
+
+******************************
+Index 41
+GW190925_232845
+0/17 coincident flares:
+******************************
+
+******************************
+Index 44
+GW191105_143521
+0/17 coincident flares:
+******************************
+
+******************************
+Index 54
+GW191222_033537
+0/17 coincident flares:
+******************************
+
+******************************
+Index 46
+GW191113_071753
+0/17 coincident flares:
+******************************
+
+******************************
+Index 45
+GW191109_010717
+0/17 coincident flares:
+******************************
+
+******************************
+Index 47
+GW191126_115259
+0/17 coincident flares:
+******************************
+
+******************************
+Index 37
+GW190725_174728
+0/17 coincident flares:
+******************************
+
+******************************
+Index 48
+GW191127_050227
+0/17 coincident flares:
+******************************
+
+******************************
+Index 61
+GW200208_222617
+0/17 coincident flares:
+******************************
+
+******************************
+Index 43
+GW191103_012549
+0/17 coincident flares:
+******************************
+
+******************************
+Index 50
+GW191204_110529
+0/17 coincident flares:
+******************************
+
+******************************
+Index 57
+GW200128_022011
+1/17 coincident flares:
+	J120437.98+500024.0
+******************************
+
+******************************
+Index 40
+GW190917_114630
+0/17 coincident flares:
+******************************
+
+******************************
+Index 49
+GW191129_134029
+0/17 coincident flares:
+******************************
+
+******************************
+Index 60
+GW200208_130117
+0/17 coincident flares:
+******************************
+
+/hildafs/projects/phy220048p/tcabrera/bbhagn/mycode/ligo.skymap/ligo/skymap/postprocess/crossmatch.py:459: RuntimeWarning: invalid value encountered in subtract
+  contour_dists = (hi - lo).tolist()
+******************************
+Index 62
+GW200209_085452
+0/17 coincident flares:
+******************************
+
+******************************
+Index 56
+GW200112_155838
+0/17 coincident flares:
+******************************
+
+******************************
+Index 51
+GW191204_171526
+0/17 coincident flares:
+******************************
+
+******************************
+Index 53
+GW191216_213338
+0/17 coincident flares:
+******************************
+
+******************************
+Index 59
+GW200202_154313
+0/17 coincident flares:
+******************************
+
+******************************
+Index 63
+GW200210_092254
+0/17 coincident flares:
+******************************
+
+******************************
+Index 58
+GW200129_065458
+0/17 coincident flares:
+******************************
+
+/hildafs/projects/phy220048p/tcabrera/bbhagn/mycode/ligo.skymap/ligo/skymap/postprocess/crossmatch.py:459: RuntimeWarning: invalid value encountered in subtract
+  contour_dists = (hi - lo).tolist()
+/hildafs/projects/phy220048p/tcabrera/bbhagn/mycode/ligo.skymap/ligo/skymap/postprocess/crossmatch.py:459: RuntimeWarning: invalid value encountered in subtract
+  contour_dists = (hi - lo).tolist()
+/hildafs/projects/phy220048p/tcabrera/bbhagn/mycode/ligo.skymap/ligo/skymap/postprocess/crossmatch.py:459: RuntimeWarning: invalid value encountered in subtract
+  contour_dists = (hi - lo).tolist()
+/hildafs/projects/phy220048p/tcabrera/bbhagn/mycode/ligo.skymap/ligo/skymap/postprocess/crossmatch.py:459: RuntimeWarning: invalid value encountered in subtract
+  contour_dists = (hi - lo).tolist()
+/hildafs/projects/phy220048p/tcabrera/bbhagn/mycode/ligo.skymap/ligo/skymap/postprocess/crossmatch.py:459: RuntimeWarning: invalid value encountered in subtract
+  contour_dists = (hi - lo).tolist()
+/hildafs/projects/phy220048p/tcabrera/bbhagn/mycode/ligo.skymap/ligo/skymap/postprocess/crossmatch.py:459: RuntimeWarning: invalid value encountered in subtract
+  contour_dists = (hi - lo).tolist()
+/hildafs/projects/phy220048p/tcabrera/bbhagn/mycode/ligo.skymap/ligo/skymap/postprocess/crossmatch.py:459: RuntimeWarning: invalid value encountered in subtract
+  contour_dists = (hi - lo).tolist()
+/hildafs/projects/phy220048p/tcabrera/bbhagn/mycode/ligo.skymap/ligo/skymap/postprocess/crossmatch.py:459: RuntimeWarning: invalid value encountered in subtract
+  contour_dists = (hi - lo).tolist()
+/hildafs/projects/phy220048p/tcabrera/bbhagn/mycode/ligo.skymap/ligo/skymap/postprocess/crossmatch.py:459: RuntimeWarning: invalid value encountered in subtract
+  contour_dists = (hi - lo).tolist()
+******************************
+Index 64
+GW200216_220804
+1/17 coincident flares:
+	J154342.46+461233.4
+******************************
+
+******************************
+Index 65
+GW200219_094415
+0/17 coincident flares:
+******************************
+
+******************************
+Index 66
+GW200220_061928
+0/17 coincident flares:
+******************************
+
+******************************
+Index 72
+GW200308_173609
+2/17 coincident flares:
+	J154342.46+461233.4
+	J154806.31+291216.3
+******************************
+
+******************************
+Index 67
+GW200220_124850
+1/17 coincident flares:
+	J154342.46+461233.4
+******************************
+
+******************************
+Index 75
+GW200322_091133
+2/17 coincident flares:
+	J154342.46+461233.4
+	J154806.31+291216.3
+******************************
+
+******************************
+Index 70
+GW200302_015811
+0/17 coincident flares:
+******************************
+
+******************************
+Index 71
+GW200306_093714
+0/17 coincident flares:
+******************************
+
+******************************
+Index 68
+GW200224_222234
+0/17 coincident flares:
+******************************
+
+******************************
+Index 69
+GW200225_060421
+0/17 coincident flares:
+******************************
+
+******************************
+Index 73
+GW200311_115853
+0/17 coincident flares:
+******************************
+
+******************************
+Index 74
+GW200316_215756
+0/17 coincident flares:
+******************************
+
+Calculating signal and background arrays...
+WARNING: UnitsWarning: 'pct' did not parse as fits unit: At col 0, Unit 'pct' not supported by the FITS standard. Did you mean PC, PT, cT, ct, pC, pT or pc? If this is meant to be a custom unit, define it with 'u.def_unit'. To have it recognized inside a file reader or other code, enable it with 'u.add_enabled_units'. For details, see https://docs.astropy.org/en/latest/units/combining_and_defining.html [astropy.units.core]
+******************** MCMC ********************
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:134: RuntimeWarning: All-NaN slice encountered
+  max_n_agn = np.nanmax([np.nanmax(n) for n in n_agns if len(n) > 0])
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/utils/inference.py:163: RuntimeWarning: All-NaN slice encountered
+  np.nanmax(n_flares_bgs_i),
+Traceback (most recent call last):
+  File "/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_inference_lambda_O3/Posterior_inference_lambda_O3.py", line 216, in <module>
+    sampler.run_mcmc(*mcmc_args, **mcmc_kwargs)
+  File "/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/lib/python3.11/site-packages/emcee/ensemble.py", line 450, in run_mcmc
+    for results in self.sample(initial_state, iterations=nsteps, **kwargs):
+  File "/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/lib/python3.11/site-packages/emcee/ensemble.py", line 351, in sample
+    state.log_prob, state.blobs = self.compute_log_prob(state.coords)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/hildafs/projects/phy200025p/tcabrera/.conda/envs/bbhagn/lib/python3.11/site-packages/emcee/ensemble.py", line 551, in compute_log_prob
+    raise ValueError("Probability function returned NaN")
+ValueError: Probability function returned NaN

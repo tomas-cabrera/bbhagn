@@ -5,45 +5,69 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from astropy.coordinates import SkyCoord
+import astropy.units as u
+from astropy.table import Table
 from matplotlib.ticker import MultipleLocator
 from scipy.optimize import curve_fit
 from tqdm import tqdm
 
 # Local imports
 sys.path.append(pa.dirname(pa.dirname(__file__)))
+from utils.paths import DATADIR
 from utils import graham23_tables as g23
 from utils.flaremorphology import graham23_flare_model
-from utils.lightcurves import AlerceLightcurve
+from utils.lightcurves import IRSAZTF, AlerceLightcurve
 
-# Flare peak times (estimated from Graham+23 Fig. 3)
-peak_times = {
-    "J053408.41+085450.6": 58900,
-    "J120437.98+500024.0": 58900,
-    "J124942.30+344928.9": 58675,
-    "J154342.46+461233.4": 58950,
-    "J181719.94+541910.0": 58800,
-    "J183412.42+365655.3": 58700,
-    "J224333.95+760619.2": 58775,
-}
+# Initilize query
+ztfquery = IRSAZTF()
+
+# Load flare info
+flare_path = f"{DATADIR}/graham23_tables/flare20.csv"
+df_flares = pd.read_csv(flare_path)
 
 # Iterate over flarenames
 fitparams = []
-for flarename in tqdm(np.unique(g23.DF_ASSOC["flarename"])):
+mjds = []
+mjds_peak = []
+tgs = []
+ras = []
+decs = []
+force = False
+for i, row in df_flares.iterrows():
+
+    # SkyCoord
+    rastr = row["flarename"][1:10]
+    decstr = row["flarename"][10:19]
+    sc = SkyCoord(
+        float(rastr[0:2]) + float(rastr[2:4]) / 60 + float(rastr[4:]) / 3600,
+        {"+": 1, "-": -1}[decstr[0]]
+        * (float(decstr[1:3]) + float(decstr[3:5]) / 60 + float(decstr[5:]) / 3600),
+        unit=(u.hourangle, u.deg),
+    )
+    ras.append(sc.ra.deg)
+    decs.append(sc.dec.deg)
 
     ## Load in data
 
     # Get lightcurve
-    lightcurve = AlerceLightcurve(flarename)
+    lc_path = f"{DATADIR}/xml_lightcurves/{row['flarename']}.xml"
+    if not pa.exists(lc_path) or force:
+        # Query
+        lc_result = ztfquery.conesearch(sc.ra.deg, sc.dec.deg, 3 / 3600)
+        # Check for error
+        if lc_result.status_code != 200:
+            print(f"Error [{lc_result.status_code}] for query {lc_result.url}")
+        # Save to file
+        with open(lc_path, "wb") as f:
+            for chunk in lc_result.iter_content(chunk_size=128):
+                f.write(chunk)
+    lc = Table.read(lc_path)
 
     # Convert magnitudes to fluxes
-    (
-        lightcurve.data["mflux"],
-        lightcurve.data["mflux_err_hi"],
-        lightcurve.data["mflux_err_lo"],
-    ) = lightcurve.calculate_fluxes()
-
-    # Apply sigma cut
-    lightcurve.apply_sigma_cut("mag", 5)
+    lc["mflux"] = 10 ** (-0.4 * (lc["mag"] - lc["magzp"]))
+    lc["mflux_err_hi"] = (1 - 10 ** (-0.4 * lc["magerr"])) * lc["mflux"]
+    lc["mflux_err_lo"] = -(1 - 10 ** (0.4 * lc["magerr"])) * lc["mflux"]
 
     ## Diagnostic plot
 
@@ -51,20 +75,26 @@ for flarename in tqdm(np.unique(g23.DF_ASSOC["flarename"])):
     fig = plt.figure(figsize=(10, 6))
 
     # Iterate over filters
-    filter2color = {"g": "xkcd:green", "r": "xkcd:red", "i": "xkcd:orange"}
+    filter2color = {"zg": "xkcd:green", "zr": "xkcd:red", "zi": "xkcd:orange"}
     plot_data = "mag_binned"
     train_data = "mag_binned"
     ylim = []
-    for f in np.unique(lightcurve.data["filter"]):
+    for f in np.unique(lc["filtercode"]):
         # Mask for filter
-        mask = lightcurve.data["filter"] == f
-        fdata = lightcurve.data[mask]
+        mask = lc["filtercode"] == f
+        fdata = lc[mask].copy()
+
+        # Apply sigma cut
+        mean = np.mean(fdata["mflux"])
+        std = np.std(fdata["mflux"])
+        mask = np.abs(fdata["mflux"] - mean) < 5 * std
+        fdata = fdata[mask]
 
         # Get data
         x = fdata["mjd"]
         if plot_data.startswith("mag"):
             y = fdata["mag"]
-            y_err = fdata["mag_err"]
+            y_err = fdata["magerr"]
         elif plot_data.startswith("mflux"):
             y = fdata["mflux"]
             y_err_lo = fdata["mflux_err_lo"]
@@ -148,7 +178,7 @@ for flarename in tqdm(np.unique(g23.DF_ASSOC["flarename"])):
                 y_err_train = y_err
 
             # Get peak time
-            t_peak = peak_times[flarename]
+            t_peak = row["MJDpeak"]
 
             # Get data around peak; remove NaNs
             tcrop = 200
@@ -173,7 +203,7 @@ for flarename in tqdm(np.unique(g23.DF_ASSOC["flarename"])):
                     p0=p0,
                     bounds=bounds,
                 )
-            except np.AxisError:
+            except np.exceptions.AxisError:
                 try:
                     popt, pcov = curve_fit(
                         graham23_flare_model,
@@ -191,8 +221,8 @@ for flarename in tqdm(np.unique(g23.DF_ASSOC["flarename"])):
             # Save fit parameters
             fitparams.append(
                 {
-                    "flarename": flarename,
-                    "filter": f,
+                    "flarename": row["flarename"],
+                    "filter": f[-1],
                     **dict(
                         zip(
                             [
@@ -207,6 +237,15 @@ for flarename in tqdm(np.unique(g23.DF_ASSOC["flarename"])):
                     ),
                 }
             )
+
+            # Save g-band mjds
+            if f == "zg":
+                mjds_peak.append(popt[0])
+                tgs.append(popt[2])
+                mjds.append(
+                    popt[0] - 3 * popt[2]
+                )  # Cabrera+ cutoffs (3 gaussrise sigma before peak)
+                # mjds.append(row["MJDpeak"] - row["tg"])  # Veronesi+23 cutoffs
 
         # Plot data
         if plot_data.endswith("binned"):
@@ -237,7 +276,6 @@ for flarename in tqdm(np.unique(g23.DF_ASSOC["flarename"])):
 
         # Plot fit
         if train_data:
-            t_peak = peak_times[flarename]
             x_fit = np.linspace(t_peak - tcrop, t_peak + tcrop, 1000)
             y_fit = graham23_flare_model(x_fit, *popt)
             plt.plot(x_fit, y_fit, color=filter2color[f])
@@ -246,17 +284,27 @@ for flarename in tqdm(np.unique(g23.DF_ASSOC["flarename"])):
         plt.axvline(t_peak, color="k", linestyle="--", alpha=0.5)
 
     # Format plot
-    ylim = np.array(ylim)
-    ylim = [np.nanmin(ylim[:, 0]), np.nanmax(ylim[:, 1])]
-    plt.ylim(ylim)
+    if ylim:
+        ylim = np.array(ylim)
+        if len(ylim.shape) > 1:
+            ylim = [np.nanmin(ylim[:, 0]), np.nanmax(ylim[:, 1])]
+        plt.ylim(ylim)
     if plot_data.startswith("mag"):
         plt.gca().invert_yaxis()
     plt.gca().xaxis.set_major_locator(MultipleLocator(250))
     plt.gca().xaxis.set_minor_locator(MultipleLocator(50))
     plt.legend()
-    plt.savefig(f"{pa.dirname(__file__)}/{flarename}.png")
+    plt.savefig(f"{pa.dirname(__file__)}/{row['flarename']}.png")
     plt.close()
 
 # Save fit parameters
 fitparams = pd.DataFrame(fitparams)
 fitparams.to_csv(f"{pa.dirname(__file__)}/fitparams.csv", index=False)
+
+# Save fit params to flare20
+df_flares["mjd"] = mjds
+df_flares["mjd_peak_fit"] = mjds_peak
+df_flares["tg_rise_fit"] = tgs
+df_flares["ra"] = ras
+df_flares["dec"] = decs
+df_flares.to_csv(flare_path, index=False)

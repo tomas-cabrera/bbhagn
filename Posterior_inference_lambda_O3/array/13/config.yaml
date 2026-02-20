@@ -7,7 +7,9 @@ frac_det: 1.0 # Fraction of flares detected
 dt_followup: 200.0 # Length of follow-up campaign in days
 gwmapdir: "/hildafs/projects/phy220048p/share/skymaps"
 gw_csv: "/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/data/graham23_tables/gw.csv"
-flare_csv: "/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/data/graham23_tables/flare.csv"
+flare_csv: "/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/data/graham23_tables/flare20.csv"
+assoc_csv: "None"
+force_assoc_calc: False
 
 # Mass cuts
 bbhmass_type: "mass_1_source" # Type of mass to apply cuts to
@@ -45,7 +47,7 @@ flare_rate:
 
 # MCMC parameters
 lambda0: 0.2 # Initial lambda for MCMC
-H00: 70.0 # Initial H0 for MCMC
+H00: 70 # Initial H0 for MCMC
 Om0: 0.3 # Initial Omega_m for MCMC
 nwalkers: 32 # Number of walkers
 nsteps: 5000 # Number of steps

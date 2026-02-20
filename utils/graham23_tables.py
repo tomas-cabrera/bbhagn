@@ -38,7 +38,7 @@ DF_FLARE = DF_ASSOC.drop_duplicates(subset=["flarename"]).drop(
 )
 DF_FLARE.rename(columns={"flare_ra": "ra", "flare_dec": "dec"}, inplace=True)
 # Add fit parameters
-df_fitparams = pd.read_csv(f"{PROJDIR}/fit_lightcurves/fitparams.csv")
+df_fitparams = pd.read_csv(f"{PROJDIR}/fit_lightcurves_prev/fitparams.csv")
 df_temp = []
 # Iterate over flares
 for fn in np.unique(df_fitparams["flarename"]):
@@ -75,6 +75,19 @@ DF_ASSOCPARAMS = pd.read_csv(f"{TABLEDIR}/graham23_table5.plus.dat", sep="\s+")
 # Get gweventname, f_cover from table 1
 DF_GW = DF_GW_G23[["gweventname", "f_cover"]].copy()
 
+# Remove events
+skip_events = [
+    "GW190425",  # BNS?
+    "GW190426_152155",  # NSBH?
+    "GW191219_163120",  # NSBH?
+    "GW200105_162426",  # NSBH
+    "GW200115_042309",  # NSBH
+    "GW190424_180648",  # Lowered significance in GWTC2.1
+    "GW190909_114149",  # Lowered significance in GWTC2.1
+]
+mask = [e.strip("*") not in skip_events for e in DF_GW["gweventname"]]
+DF_GW = DF_GW[mask].reset_index(drop=True)
+
 # Add skymap paths
 MAPDIR = "/hildafs/projects/phy220048p/share/skymaps"
 DF_GW["skymap_path"] = DF_GW["gweventname"].apply(
@@ -88,6 +101,9 @@ DF_GW["gweventname"] = DF_GW["gweventname"].str.strip("*")
 DF_GWTC = pd.read_csv(f"{DATADIR}/gwtc/events.csv")
 matchrows = []
 for i, row in DF_GW.iterrows():
+    if row["gweventname"] in skip_events:
+        print(f"Skipping {row['gweventname']}")
+        continue
     # GW200105_162426 is not in the table
     if row["gweventname"] == "GW200105_162426":
         print("Copying custom data for GW200105_162426")
@@ -129,7 +145,7 @@ for i, row in DF_GW.iterrows():
         matchrows.append(matchrow)
     else:
         print(f"Did not find {row['gweventname']} in gwtc")
-df_match = pd.DataFrame(matchrows)
+df_match = pd.DataFrame(matchrows).reset_index(drop=True)
 DF_GW = pd.concat(
     [
         DF_GW,
@@ -139,3 +155,6 @@ DF_GW = pd.concat(
 )
 df_gw_path = pa.join(DATADIR, "graham23_tables", "gw.csv")
 DF_GW.to_csv(df_gw_path, index=False)
+
+### Make LaTeX table
+print(DF_GW)

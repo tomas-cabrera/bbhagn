@@ -1,3 +1,6 @@
+## NBe:
+# The GW190521-J124942.30+344928.9 and GW190803_022701-J120437.98+500024.0 association posteriors are similar because s_arr/b_arr is similar for the two distributions, and the lambda samples are identical
+
 import os
 import os.path as pa
 import sys
@@ -30,7 +33,7 @@ def calc_arrs_for_directory(directory, force=False):
     # Check if cached
     # cache_dir = pa.join(pa.dirname(__file__), ".cache", pa.basename(directory))
     # This is for displaying jobs 11 and 18; should have identical s/b_arrs, but the lambda samples will change
-    cache_dir = pa.join(pa.dirname(__file__), ".cache", "11")
+    cache_dir = pa.join(pa.dirname(__file__), ".cache", pa.basename(directory))
     s_arr_path = pa.join(cache_dir, "s_arrs.npy")
     b_arr_path = pa.join(cache_dir, "b_arrs.npy")
     n_flares_bgs_path = pa.join(cache_dir, "n_flares_bgs.npy")
@@ -41,7 +44,9 @@ def calc_arrs_for_directory(directory, force=False):
         n_agns = pd.read_csv(n_flares_bgs_path, index_col=0)
     else:
         # Config
-        config = yaml.safe_load(open(pa.join(directory, "config.yaml")))
+        config_path = pa.join(directory, "config.yaml")
+        config = yaml.safe_load(open(config_path))
+        config["config_file"] = config_path
         # Parse AGN distribution config
         for k, v in config["agn_distribution"].items():
             if v["model"] == "ConstantPhysicalDensity":
@@ -72,9 +77,9 @@ def calc_arrs_for_directory(directory, force=False):
             config["z_max_b"],
         )
         # Cast as pd.DataFrames
-        gweventnames = g23.DF_GW_G23["gweventname"].values
-        gweventnames = np.array([gn.replace("*", "") for gn in gweventnames])
-        flarenames = g23.DF_FLARE["flarename"].values
+        gweventnames = pd.read_csv(config["gw_csv"])["gweventname"].values
+        gweventnames = np.array([gn.strip("*") for gn in gweventnames])
+        flarenames = pd.read_csv(config["flare_csv"])["flarename"].values
         s_arrs = pd.DataFrame(
             s_arrs,
             index=gweventnames,
@@ -131,7 +136,7 @@ def plot_association_pdf(directory, signal, signals, background, ax=None):
         peak = quants[0]
         lo = peak - quants[1]
         hi = quants[2] - peak
-        if f"{peak:.2f}" == "0.00":
+        if quants[1] < 0.01:
             quantstr = f"$p < {hi:.2f}$"
         else:
             quantstr = f"${peak:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$"
@@ -235,9 +240,9 @@ def plot_background_pdf(directory, signals, background, ax=None):
         peak = quants[0]
         lo = peak - quants[1]
         hi = quants[2] - peak
-        if f"{peak:.2f}" == "0.00":
+        if quants[1] < 0.01:
             quantstr = f"$p < {quants[2]:.2f}$"
-        elif f"{peak:.2f}" == "1.00":
+        elif quants[2] > 0.99:
             quantstr = f"$p > {quants[1]:.2f}$"
         else:
             quantstr = f"${peak:.2f}_{{- {lo:.2f}}}^{{+ {hi:.2f}}}$"
@@ -314,7 +319,7 @@ def initialize_mosaic_axes(
     gweventnames,
     flarenames,
     subplot_mosaic_kwargs={
-        "figsize": (10, 7),
+        "figsize": (12, 12),
         "gridspec_kw": {
             "wspace": 0.0,
             "hspace": 0.1,
@@ -323,9 +328,9 @@ def initialize_mosaic_axes(
 ):
     # Initialize figure
     mosaic_arr = []
-    for fn in flarenames:
+    for fn in sorted(flarenames):
         mosaic_row = []
-        for gwn in gweventnames:
+        for gwn in sorted(gweventnames):
             mosaic_row.append(f"{fn}|{gwn}")
         mosaic_row.append(f"{fn}|Background")
         mosaic_arr.append(mosaic_row)
@@ -359,33 +364,37 @@ def plot_association_pdf_grid(
                     b_arr_assoc.loc[gn, fn],
                     ax=ax,
                 )
+                assoc = s_arr_assoc.loc[gn, fn] != 0
             else:
-                # Find background terms, skip GW190620_030421
+                # Find background terms
                 mask = (
                     b_arr_assoc.loc[
-                        [n for n in b_arr_assoc.index if n != "GW190620_030421"], fn
+                        [n for n in b_arr_assoc.index], fn
                     ]
                     != 2.12e-6
-                )
+                ).values
                 if not np.any(mask):
-                    gn = gweventnames[0]
+                    gn_temp = gweventnames[0]
                 else:
-                    gn = gweventnames[mask][0]
+                    gn_temp = gweventnames[mask][0]
                 plot_background_pdf(
                     directory,
                     s_arr_assoc.loc[:, fn][~np.isnan(s_arr_assoc.loc[:, fn])],
-                    b_arr_assoc.loc[gn, fn],
+                    b_arr_assoc.loc[gn_temp, fn],
                     ax=ax,
                 )
+                assoc = True
             # Formatting
             ax.set_xlim(0, 1)
             ax.set_ylim(0, 7)
             # Define flags
-            bottom = fi == len(flarenames) - 1
-            top = fi == 0
-            left = gi == 0
-            right = gi == len(gweventnames)
-            assoc = s_arr_assoc.loc[gn, fn] != 0
+            bottom = fn == sorted(flarenames)[-1]
+            top = fn == sorted(flarenames)[0]
+            left = gn == sorted(gweventnames)[0]
+            right = gn == "Background"
+            # print(
+            #     f"{gn:20s} {fn} bottom {bottom}, top {top}, left {left}, right {right}"
+            # )
             # General labels
             ax.set_xticks(np.arange(0, 1, 0.25))
             ax.set_yticks(np.arange(0, 8, 2))
@@ -400,7 +409,7 @@ def plot_association_pdf_grid(
             )
             # Ticks
             if not assoc:
-                ax.set_facecolor("lightgray")
+                ax.set_facecolor((0.9, 0.9, 0.9))
                 tps = ax.tick_params()
                 ax.tick_params(
                     "both",
@@ -464,21 +473,31 @@ def plot_association_pdf_grid(
 
 def plot_association_pdfs(
     directories,
-    gweventnames,
-    flarenames,
     s_arrs,
     b_arrs,
     axs=None,
 ):
+    # Config; select gwevents with associations
+    d = directories[0]
+    config_file = pa.join(d, "config.yaml")
+    config = yaml.safe_load(open(config_file))
+    assoc_path = config["assoc_csv"]
+    if assoc_path == "None":
+        assoc_path = pa.join(pa.dirname(config_file), "assoc.csv")
+    df_assoc = pd.read_csv(assoc_path, index_col="gweventname")
+    assoc_rows = np.any(df_assoc, axis=1)
+    assoc_cols = np.any(df_assoc, axis=0)
+    # Get gweventnames, flarenames
+    gweventnames = np.array(df_assoc.index[assoc_rows])
+    flarenames = np.array(df_assoc.columns[assoc_cols])
     # Initialize figure if needed
     if axs is None:
         fig, axs = initialize_mosaic_axes(gweventnames, flarenames)
     # Plot
     for d, s, b in zip(directories, s_arrs, b_arrs):
         # Trim s_arr and b_arr to rows with associations
-        assoc_rows = np.unique(np.where(s > 0)[0])
-        s_arr_assoc = s.iloc[assoc_rows, :]
-        b_arr_assoc = b.iloc[assoc_rows, :]
+        s_arr_assoc = s[assoc_rows]
+        b_arr_assoc = b[assoc_rows]
         plot_association_pdf_grid(
             d,
             gweventnames,
@@ -554,34 +573,5 @@ for p in paths:
     s_arrs.append(s_arr)
     b_arrs.append(b_arr)
 
-# Get GW and flare names
-gweventnames = g23.DF_GWBRIGHT.sort_values("dataset")["gweventname"].values
-# Remove GW190731_140936, GW200216_220804, and GW200220_124850
-gweventnames = np.array(
-    [
-        gn
-        for gn in gweventnames
-        if gn
-        not in [
-            "GW190731_140936",
-            "GW200216_220804",
-            "GW200220_124850",
-        ]
-    ]
-)
-flarenames = g23.DF_FLARE["flarename"].values
-selected_flarenames = np.unique(g23.DF_ASSOC["flarename"].values)
-selected_flarenames = np.array(
-    [
-        fn
-        for fn in flarenames
-        if fn not in ["J183412.42+365655.3", "J154342.46+461233.4"]
-    ]
-)
-selected_gws = np.unique(g23.DF_ASSOC["gweventname"].values)
-gweventnames = np.array([gn for gn in gweventnames if gn in selected_gws])
-flarenames = np.array([fn for fn in flarenames if fn in selected_flarenames])
-
-
 # Plot the association probabilities
-plot_association_pdfs(paths, gweventnames, flarenames, s_arrs, b_arrs)
+plot_association_pdfs(paths, s_arrs, b_arrs)

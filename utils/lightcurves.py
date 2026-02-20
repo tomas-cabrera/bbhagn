@@ -2,6 +2,7 @@ import glob
 import os
 import os.path as pa
 
+import requests
 import numpy as np
 import pandas as pd
 from astropy.io.votable import parse
@@ -52,3 +53,23 @@ class AlerceLightcurve(Lightcurve):
         data = parse(datafile).get_first_table().to_table().to_pandas()
 
         return data
+
+
+class IRSAZTF:
+
+    def __init__(
+        self,
+        base_url="https://irsa.ipac.caltech.edu/cgi-bin/ZTF/nph_light_curves",
+    ):
+        # Save url
+        self.base_url = base_url
+
+    def conesearch(self, ra_deg, dec_deg, radius_deg):
+        # Construct arguments
+        payload = {
+            "POS": f"CIRCLE {ra_deg:.6f} {dec_deg:.6f} {radius_deg:.6f}",
+        }
+        # Query
+        r = requests.get(self.base_url, params=payload)
+        # return
+        return r

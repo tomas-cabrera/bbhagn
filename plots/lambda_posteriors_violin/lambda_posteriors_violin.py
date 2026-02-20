@@ -31,7 +31,7 @@ def plot_lambda_posterior(path, offset=0, plot_kwargs={}, ax=None):
     samples_kde = np.concatenate([samples, -samples, 2 - samples])
     # Gaussian kde
     kernel = gaussian_kde(samples_kde, bw_method=0.005)
-    x = np.linspace(0, 0.45, 1001)
+    x = np.linspace(0, 0.35, 1001)
     pdf = 3 * kernel(
         x
     )  # "3 *" because the KDE is normalized over [-samples_max, samples_max]
@@ -46,16 +46,17 @@ def plot_lambda_posterior(path, offset=0, plot_kwargs={}, ax=None):
         quantstr = f"$\lambda = {peak:.3f}_{{- {lo:.3f}}}^{{+ {hi:.3f}}}$"
     # Scale to figure
     y_lo = offset - 0.45 * pdf / np.nanmax(pdf)
-    y_hi = offset + 0.45 * pdf / np.nanmax(pdf)
+    y_hi = offset + 0.85 * pdf / 60
     # Plot
     # plot_kwargs["label"] += f": {quantstr}"
     lines = ax.plot(x, [offset] * len(x), rasterized=True, lw=0.5, **plot_kwargs)
-    color = lines[0].get_color()
-    ax.plot(x, y_lo, rasterized=True, color=color, lw=0.5, **plot_kwargs)
+    if "color" in plot_kwargs:
+        color = plot_kwargs.pop("color")
+    # ax.plot(x, y_lo, rasterized=True, color=color, lw=0.5, **plot_kwargs)
     ax.plot(x, y_hi, rasterized=True, color=color, lw=0.5, **plot_kwargs)
     ax.fill_between(
         x,
-        y_lo,
+        offset,
         y_hi,
         where=(x >= quants[1]) & (x <= quants[2]),
         color=color,
@@ -65,7 +66,7 @@ def plot_lambda_posterior(path, offset=0, plot_kwargs={}, ax=None):
     )
     ax.fill_between(
         x,
-        y_lo,
+        offset,
         y_hi,
         where=(x >= 0) & (x <= np.quantile(samples, 0.9)),
         color=color,
@@ -82,11 +83,11 @@ def plot_lambda_posterior(path, offset=0, plot_kwargs={}, ax=None):
     #     rasterized=True,
     # )
     ax.text(
-        0.44,
-        offset,
+        0.975 * x.max(),
+        0.95 * ax.get_ylim()[1],
         f"{plot_kwargs['label']}\n$\lambda_{{1 \sigma}} = {hi:.3f}, \lambda_{{90\%}} = {np.quantile(samples, 0.9):.3f}$",
         ha="right",
-        va="bottom",
+        va="top",
         fontsize=10,
         # bbox=dict(
         #     facecolor="none",
@@ -120,25 +121,28 @@ def plot_lambda_posterior_hist(path, plot_kwargs={}, ax=None):
 
 def plot_lambda_posteriors(paths):
     # Initialize figure
-    fig, ax = plt.subplots(
-        1,
-        1,
+    fig, axd = plt.subplot_mosaic(
+        np.transpose([list(range(len(paths)))]),
         figsize=(4, 6),
+        sharex=True,
+        # sharey=True,
+        gridspec_kw={"hspace": 0},
     )
     # Plot
+    color_cycle = plt.rcParams["axes.prop_cycle"].by_key()["color"]
     for pi, (path, label) in enumerate(
         zip(
             paths,
             [
-                "GWTC-3.0 (83 BBHs)",
-                "BBHs with flares (6 BBHs)",
-                r"$m_1 < 40~M_\odot$ (51 BBHs, 2 flares)",
-                r"$m_1 \geq 40~M_\odot$ (29 BBHs, 4 flares)",
-                r"$m_{\rm fin} < 40~M_\odot$ (27 BBHs, 0 flares)",
-                r"$m_{\rm fin} \geq 40~M_\odot$ (52 BBHs, 4 flares)",
-                r"$L_{\rm bol} \geq$ 3e42 erg/s",
+                r"GWTC-3.0 (76 BBHs$\to$8 flares)",
+                r"BBHs with flares (8 BBHs)",
+                r"$m_1 < 40~M_\odot$ (47 BBHs$\to$3 flares)",
+                r"$m_1 \geq 40~M_\odot$ (29 BBHs$\to$6 flares)",
+                r"$m_{\rm fin} < 40~M_\odot$ (24 BBHs$\to$1 flare)",
+                r"$m_{\rm fin} \geq 40~M_\odot$ (52 BBHs$\to$7 flares)",
+                r"$L_{\rm bol}^{\rm AGN} \geq$ 3e42 erg/s",
                 # "^same, only coincidences",
-                r"$L_{\rm bol} \geq$ 5e41 erg/s",
+                r"$L_{\rm bol}^{\rm AGN} \geq$ 5e41 erg/s",
                 # "^same, only coincidences",
             ],
         )
@@ -146,22 +150,27 @@ def plot_lambda_posteriors(paths):
         plot_lambda_posterior(
             # plot_lambda_posterior_hist(
             path,
-            offset=-pi,
-            ax=ax,
-            plot_kwargs={"label": label},
+            # offset=-pi,
+            ax=axd[pi],
+            plot_kwargs={
+                "label": label,
+                "color": color_cycle[pi % len(color_cycle)],
+            },
         )
-    # Format
-    ax.set_xlim(0, 0.45)
-    ax.set_xlabel(r"$\lambda$")
-    ax.set_ylabel("Normalized PDF")
-    ax.tick_params(left=False, labelleft=False)
-    # ax.grid()
-    # ax.legend(
-    #     title="Flares/AGN/day",
-    #     loc="upper right",
-    #     edgecolor="k",
-    # )
+        # Format
+        axd[pi].set_xlim(0, 0.35)
+        if pi == len(paths) - 1:
+            axd[pi].set_xlabel(r"$\lambda$")
+        # axd[pi].set_ylabel("PDF")
+        # axd[pi].tick_params(left=False, labelleft=False)
+        # ax.grid()
+        # ax.legend(
+        #     title="Flares/AGN/day",
+        #     loc="upper right",
+        #     edgecolor="k",
+        # )
     # Save
+    fig.supylabel("Posterior PDF")
     plt.tight_layout()
     plt.savefig(
         __file__.replace(".py", ".pdf"),

@@ -9,7 +9,7 @@ import pandas as pd
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
 from astropy.io import fits
-from astropy.cosmology import FlatLambdaCDM
+from astropy.cosmology import FlatLambdaCDM, Planck15
 from ligo.skymap.io import read_sky_map
 from ligo.skymap.postprocess.crossmatch import crossmatch
 import ligo.skymap.moc as lsm_moc
@@ -255,6 +255,7 @@ def calc_arrs(
 ):
     # Initialize cosmology
     thiscosmo = FlatLambdaCDM(H0=H0, Om0=omegam)
+    # thiscosmo = Planck15
 
     # Iterate through true associations
     # NOTE: np.<>_like(u.Quantity) returns a Quantity with the same unit as the input
@@ -278,7 +279,6 @@ def calc_arrs(
 
         ##############################
         # Skip remainder if no candidates
-        print(f"GW {gwi} has {len(fis)} coincident flares")
         if len(fis) == 0:
             continue
         ##############################
@@ -324,8 +324,9 @@ def calc_arrs(
 
 
 def _setup_task(i, config):
-    print("*" * 30)
-    print(f"Index {i}")
+    outstring = ""
+    outstring += ("*" * 30) + "\n"
+    outstring += f"Index {i}\n"
     return_dict = {}
     cosmo = FlatLambdaCDM(H0=config["H00"], Om0=config["Om0"])
     df_gw = pd.read_csv(config["gw_csv"])
@@ -345,12 +346,11 @@ def _setup_task(i, config):
     gweventname = df_gw["gweventname"][i]
     if gweventname.endswith("*"):
         gweventname = gweventname[:-1]
-    print(gweventname)
+    outstring += f"{gweventname}\n"
 
     ##############################
     ###       GW skymap        ###
     ##############################
-    print("Loading skymap...")
 
     # Load skymap
     sm = read_sky_map(df_gw["skymap_path"][i], moc=True)
@@ -364,17 +364,28 @@ def _setup_task(i, config):
     ##############################
     ###         Flares         ###
     ##############################
-    print("Loading flares...")
 
     # Get flares for this followup
-    mask = mask_flares_in_followup(
-        df_gw["skymap_path"][i],
-        flare_coords,
-        flare_times,
-        cosmo=cosmo,
-        dt_followup=config["dt_followup"] * u.day,
-    )
+    assoc_path = config["assoc_csv"]
+    if config["assoc_csv"] == "None":
+        assoc_path = pa.join(pa.dirname(config["config_file"]), "assoc.csv")
+    if not pa.exists(config["assoc_csv"]) or config["force_assoc_calc"]:
+        mask = mask_flares_in_followup(
+            df_gw["skymap_path"][i],
+            flare_coords,
+            flare_times,
+            cosmo=cosmo,
+            dt_followup=config["dt_followup"] * u.day,
+        )
+    else:
+        df_assoc = pd.read_csv(assoc_path)
+        df_assoc.set_index("gweventname")
+        mask = df_assoc[gweventname]
     followup_flares = df_flare["flarename"][mask]
+    return_dict["flare_mask"] = mask
+    outstring += f"{sum(mask)}/{len(mask)} coincident flares:\n"
+    for f in followup_flares:
+        outstring += f"\t{f}\n"
 
     # Iterate over flares
     pbdens = []
@@ -415,8 +426,6 @@ def _setup_task(i, config):
     ##############################
     ###    Background rate     ###
     ##############################
-
-    print("Calculating background rate...")
 
     ### Set AGN count model (polynomial as function of H0)
     # Get AGN distribution
@@ -473,6 +482,10 @@ def _setup_task(i, config):
 
     # Append f_cover for GW event
     return_dict["f_covers"] = df_gw["f_cover"][i]
+
+    # Print outstring
+    outstring += ("*" * 30) + "\n"
+    print(outstring)
 
     return return_dict
 
@@ -572,6 +585,20 @@ def setup(config, nproc=1):
     pbdens = u.Quantity([r["pbdens"] for r in results])
     n_agn_coeffs = [r["n_agn_coeffs"] for r in results]
     flares_per_agn_average = np.array(flares_per_agn_average)
+
+    # Save associations
+    if not pa.exists(config["assoc_csv"]):
+        # Make df
+        df_assoc = pd.DataFrame(
+            [r["flare_mask"] for r in results],
+            index=df_gw.loc[idxs]["gweventname"],
+            columns=df_flare["flarename"],
+        )
+        if config["assoc_csv"] == "None":
+            assoc_file = pa.join(pa.dirname(config["config_file"]), "assoc.csv")
+        else:
+            assoc_file = config["assoc_csv"]
+        df_assoc.to_csv(assoc_file)
 
     return (
         f_covers,
