@@ -409,7 +409,7 @@ def plot_association_pdf_grid(
             )
             # Ticks
             if not assoc:
-                ax.set_facecolor("lightgray")
+                ax.set_facecolor((0.9, 0.9, 0.9))
                 tps = ax.tick_params()
                 ax.tick_params(
                     "both",

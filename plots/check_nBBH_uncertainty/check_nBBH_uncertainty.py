@@ -16,9 +16,9 @@ def inverse_power(x, k):
 
 
 # Data from lambda_posteriors_violin.py
-nBBH = np.array([76, 7, 47, 29, 24, 52])
-lambda1sigma = np.array([0.017, 0.156, 0.025, 0.040, 0.047, 0.023])
-lambda90 = np.array([0.030, 0.325, 0.049, 0.077, 0.094, 0.043])
+nBBH = np.array([76, 8, 47, 29, 24, 52])
+lambda1sigma = np.array([0.016, 0.140, 0.025, 0.041, 0.048, 0.023])
+lambda90 = np.array([0.031, 0.290, 0.049, 0.079, 0.096, 0.043])
 mask_fit = np.array(
     [
         True,
@@ -50,7 +50,7 @@ line = plt.plot(
     lambda1sigma[mask_fit],
     ls="",
     marker="o",
-    label=r"$\lambda_{1 \sigma}$",
+    label=r"$\lambda_{1 \sigma} (k = $" + f"{popt[0]:.2f}" + r")",
 )
 plt.plot(
     nBBH[~mask_fit],
@@ -79,7 +79,7 @@ line = plt.plot(
     lambda90[mask_fit],
     ls="",
     marker="o",
-    label=r"$\lambda_{90\%}$",
+    label=r"$\lambda_{90\%} (k = $" + f"{popt[0]:.2f}" + r")",
 )
 plt.plot(
     nBBH[~mask_fit],
