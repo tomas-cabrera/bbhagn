@@ -13,6 +13,8 @@ dirs = [
     15,
     16,
     17,
+    "11_planck",
+    "11_shoes",
 ]
 dir_labels = dict(
     zip(
@@ -26,6 +28,8 @@ dir_labels = dict(
             r"$m_{\rm fin} \geq 40~M_\odot$ (52 BBHs, 7 flares)",
             r"$L_{\rm bol} \geq$ 3e42 erg/s",
             r"$L_{\rm bol} \geq$ 5e41 erg/s",
+            "Planck cosmology",
+            "SHoES cosmology",
         ],
     )
 )

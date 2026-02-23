@@ -3,7 +3,7 @@
 #SBATCH -n 32
 #SBATCH --mem 64000
 #SBATCH -t 24:00:00
-#SBATCH -J Posterior_inference_lambda_O3 
+#SBATCH -J Posterior_inference_lambda_O3.shoes 
 #SBATCH -o %x.log
 #SBATCH -A phy220048p
 #SBATCH -p HENON
@@ -31,10 +31,13 @@ scriptPATH="/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_infere
 ### RUN JOB ###
 
 # Set job path
-jobPATH="/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_inference_lambda_O3/array/${SLURM_ARRAY_TASK_ID}"
+jobPATH="/hildafs/projects/phy220048p/tcabrera/bbhagn/bbhagn/Posterior_inference_lambda_O3/array/11_shoes"
 
 # Set config path
-configPATH="./config.yaml"
+configPATH="${jobPATH}/config.yaml"
+
+# Define log path
+logPATH="${jobPATH}/Posterior_inference_lambda_O3.log"
 
 # Call script
-time python -u $scriptPATH $configPATH
+time python -u $scriptPATH $configPATH > $logPATH 2>&1

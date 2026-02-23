@@ -28,3 +28,6 @@ Folder for running jobs as sbatch array.
 *: The observed distribution is the same as the astrophysical
 
 ^: The entry is the same as the previous line
+
+11_planck is 11 done with Planck cosmology
+11_shoes is 11 donew with SH0ES cosmology

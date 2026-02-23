@@ -9,7 +9,7 @@ import pandas as pd
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
 from astropy.io import fits
-from astropy.cosmology import FlatLambdaCDM, Planck15
+from astropy.cosmology import FlatLambdaCDM, Planck18
 from ligo.skymap.io import read_sky_map
 from ligo.skymap.postprocess.crossmatch import crossmatch
 import ligo.skymap.moc as lsm_moc
@@ -255,7 +255,8 @@ def calc_arrs(
 ):
     # Initialize cosmology
     thiscosmo = FlatLambdaCDM(H0=H0, Om0=omegam)
-    # thiscosmo = Planck15
+    # thiscosmo = Planck18 # planck
+    # thiscosmo = FlatLambdaCDM(H0=73.04, Om0=0.3)  # shoes
 
     # Iterate through true associations
     # NOTE: np.<>_like(u.Quantity) returns a Quantity with the same unit as the input
