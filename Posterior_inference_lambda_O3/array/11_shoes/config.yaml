@@ -47,6 +47,7 @@ flare_rate:
 
 # MCMC parameters
 lambda0: 0.2 # Initial lambda for MCMC
+# Cosmology manually set in inference.py
 H00: 70 # Initial H0 for MCMC
 Om0: 0.3 # Initial Omega_m for MCMC
 nwalkers: 32 # Number of walkers
